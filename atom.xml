@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[ExtJS 4 mvc架构演化]]></title>
-    <link href="http://stonelee.github.com/blog/2012/04/26/new-extjs-mvc/"/>
+    <link href="http://stonelee.info/blog/2012/04/26/new-extjs-mvc/"/>
     <updated>2012-04-26T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/04/26/new-extjs-mvc</id>
+    <id>http://stonelee.info/blog/2012/04/26/new-extjs-mvc</id>
     <content type="html"><![CDATA[<p>从年前技术选型开始算起，使用Extjs 4已经四五个月时间了。对比之前的3.x版本，Extjs 4给了我们太多的惊喜：全新的mvc架构、强大的class体系、灵活的js加载方式、纯div布局页面。因此，项目组毫不犹豫地选择其作为前端架构进行新项目的开发。</p>
 
 <p>项目初始时，我们一直遵循推荐的MVC架构：在view中配置页面控件，controller中编写业务逻辑。但随着项目的推进，模块代码越来越多，加之由于种种原因开发时间严重缩短，没有时间进行代码评审，controller中的代码灵活性过强，调用页面控件方式相对繁琐等问题逐渐暴露出来，页面基本无法复用，controller一片狼藉。</p>
@@ -45,15 +45,15 @@
 
 <p>例如Grid可以拆分为Columns（基本列）,Crud（增删改）,Operate（操作）,filter（筛选）等minin类,这几个类都包含了控件和业务逻辑,可以灵活配置在各个view中。</p>
 
-<p><img src="http://stonelee.github.com/images/blog/Extjs-New-MVC.png" alt="" /></p>
+<p><img src="http://stonelee.info/images/blog/Extjs-New-MVC.png" alt="" /></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[ExtJS 4打包工具]]></title>
-    <link href="http://stonelee.github.com/blog/2012/02/16/extjs-4-build-tool/"/>
+    <link href="http://stonelee.info/blog/2012/02/16/extjs-4-build-tool/"/>
     <updated>2012-02-16T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/02/16/extjs-4-build-tool</id>
+    <id>http://stonelee.info/blog/2012/02/16/extjs-4-build-tool</id>
     <content type="html"><![CDATA[<p>ExtJS 4采用新的MVC思路进行开发。 在项目开发阶段这种分散式的代码组织方式是很爽的，但是应用到生产环境中时为了减少服务端压力，需要对js文件进行压缩打包。 为解决这一问题，官方提供了打包工具<a href="http://www.sencha.com/products/jsbuilder">JSBuilder</a>, 使用方法如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -127,9 +127,9 @@
   
   <entry>
     <title type="html"><![CDATA[Ext Core设计模式]]></title>
-    <link href="http://stonelee.github.com/blog/2012/02/01/ext-core-design-pattern/"/>
+    <link href="http://stonelee.info/blog/2012/02/01/ext-core-design-pattern/"/>
     <updated>2012-02-01T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/02/01/ext-core-design-pattern</id>
+    <id>http://stonelee.info/blog/2012/02/01/ext-core-design-pattern</id>
     <content type="html"><![CDATA[<p>参考:
 <a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
 
@@ -230,9 +230,9 @@
   
   <entry>
     <title type="html"><![CDATA[Ext Core学习笔记]]></title>
-    <link href="http://stonelee.github.com/blog/2012/01/30/ext-core-record/"/>
+    <link href="http://stonelee.info/blog/2012/01/30/ext-core-record/"/>
     <updated>2012-01-30T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/01/30/ext-core-record</id>
+    <id>http://stonelee.info/blog/2012/01/30/ext-core-record</id>
     <content type="html"><![CDATA[<p>Ext Core与jQuery类似，提供了跨浏览器的js封装。
 主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
 作为类库它提供了更高层次的抽象，方便具体问题的解决
@@ -836,9 +836,9 @@ Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
   
   <entry>
     <title type="html"><![CDATA[恶搞jquery]]></title>
-    <link href="http://stonelee.github.com/blog/2011/11/30/trick-on-jquery/"/>
+    <link href="http://stonelee.info/blog/2011/11/30/trick-on-jquery/"/>
     <updated>2011-11-30T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/11/30/trick-on-jquery</id>
+    <id>http://stonelee.info/blog/2011/11/30/trick-on-jquery</id>
     <content type="html"><![CDATA[<p>有人使用jquery来get服务端数据吗？
 相信略微有点功能的jquery程序都会使用把。</p>
 
@@ -905,9 +905,9 @@ Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
   
   <entry>
     <title type="html"><![CDATA[chrome15中无法使用svg的currentScale方法]]></title>
-    <link href="http://stonelee.github.com/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/"/>
+    <link href="http://stonelee.info/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/"/>
     <updated>2011-11-11T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15</id>
+    <id>http://stonelee.info/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15</id>
     <content type="html"><![CDATA[<p><a href="http://stonelee.info/demos/currentscale_bug_in_chrome15/index.html">测试网址</a></p>
 
 <p>已提交bug，待解决</p>
@@ -946,9 +946,9 @@ Google是不是把资源都放到canvas上了，svg这么明显的bug都不管�
   
   <entry>
     <title type="html"><![CDATA[IE6下渲染svg的解决方案]]></title>
-    <link href="http://stonelee.github.com/blog/2011/10/24/svg-solution-in-ie6/"/>
+    <link href="http://stonelee.info/blog/2011/10/24/svg-solution-in-ie6/"/>
     <updated>2011-10-24T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/10/24/svg-solution-in-ie6</id>
+    <id>http://stonelee.info/blog/2011/10/24/svg-solution-in-ie6</id>
     <content type="html"><![CDATA[<p>IE6下svg的渲染是个问题，目前主要有以下几种解决方案：</p>
 
 <h2><a href="http://code.google.com/p/svgweb/">svgweb</a></h2>
@@ -1063,9 +1063,9 @@ Google是不是把资源都放到canvas上了，svg这么明显的bug都不管�
   
   <entry>
     <title type="html"><![CDATA[打造纯净前端开发环境(附nginx反向代理解决跨域问题)]]></title>
-    <link href="http://stonelee.github.com/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/"/>
+    <link href="http://stonelee.info/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/"/>
     <updated>2011-09-13T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript</id>
+    <id>http://stonelee.info/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript</id>
     <content type="html"><![CDATA[<p>最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。</p>
 
 <h2>要求</h2>
@@ -1138,9 +1138,9 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
   
   <entry>
     <title type="html"><![CDATA[解决ubuntu中激活显卡驱动导致启动黑屏问题]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/30/resolve-ubuntu-blank-screen/"/>
+    <link href="http://stonelee.info/blog/2011/08/30/resolve-ubuntu-blank-screen/"/>
     <updated>2011-08-30T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/30/resolve-ubuntu-blank-screen</id>
+    <id>http://stonelee.info/blog/2011/08/30/resolve-ubuntu-blank-screen</id>
     <content type="html"><![CDATA[<p>今天重新安装了ubuntu，准备作为个人开发的主环境。</p>
 
 <p>晚上的时候忽然蹦出来个激活硬件驱动的提示，我手贱了下随手就点了，结果重启后系统就进不去了，一直是黑屏，连ctrl+alt+F1都进不去。</p>
@@ -1164,14 +1164,14 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
   
   <entry>
     <title type="html"><![CDATA[基于WebGL的魔兽争霸Demo]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/21/warcraft3-threejs-blender-demo/"/>
+    <link href="http://stonelee.info/blog/2011/08/21/warcraft3-threejs-blender-demo/"/>
     <updated>2011-08-21T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/21/warcraft3-threejs-blender-demo</id>
+    <id>http://stonelee.info/blog/2011/08/21/warcraft3-threejs-blender-demo</id>
     <content type="html"><![CDATA[<p>早就想基于魔兽争霸的模型做点东西，周末抽空研究了下，比较简单。</p>
 
 <p>先看看效果。</p>
 
-<p><img src="http://stonelee.github.com/images/blog/warcraft.jpg" alt="" /></p>
+<p><img src="http://stonelee.info/images/blog/warcraft.jpg" alt="" /></p>
 
 <h2>导出魔兽争霸模型</h2>
 
@@ -1235,14 +1235,14 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
   
   <entry>
     <title type="html"><![CDATA[基于WebGL的矿井三维演示]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/20/web-mine-demo-with-threejs/"/>
+    <link href="http://stonelee.info/blog/2011/08/20/web-mine-demo-with-threejs/"/>
     <updated>2011-08-20T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/20/web-mine-demo-with-threejs</id>
+    <id>http://stonelee.info/blog/2011/08/20/web-mine-demo-with-threejs</id>
     <content type="html"><![CDATA[<p>用了一周的时间研究WebGL相关技术，发现该技术竟然已经发展到如此地步，足以应用于企业开发领域。因此我使用Blender建模，基于ThreeJS实现了一个能够在浏览器上运行的矿井结构的三维效果展示。</p>
 
-<p><img src="http://stonelee.github.com/images/blog/webmine.jpg" alt="" /></p>
+<p><img src="http://stonelee.info/images/blog/webmine.jpg" alt="" /></p>
 
-<p><img src="http://stonelee.github.com/images/blog/webmine2.jpg" alt="" /></p>
+<p><img src="http://stonelee.info/images/blog/webmine2.jpg" alt="" /></p>
 
 <h2>浏览器兼容</h2>
 
@@ -1281,9 +1281,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[搭建基于github的免费博客]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/12/how-to-build-github-blog/"/>
+    <link href="http://stonelee.info/blog/2011/08/12/how-to-build-github-blog/"/>
     <updated>2011-08-12T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/12/how-to-build-github-blog</id>
+    <id>http://stonelee.info/blog/2011/08/12/how-to-build-github-blog</id>
     <content type="html"><![CDATA[<h2>优势</h2>
 
 <ul>
@@ -1391,9 +1391,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[糅合Markdown和语法高亮，快速写作技术博客]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/29/blog-with-markdown-and-highlight/"/>
+    <link href="http://stonelee.info/blog/2011/07/29/blog-with-markdown-and-highlight/"/>
     <updated>2011-07-29T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/29/blog-with-markdown-and-highlight</id>
+    <id>http://stonelee.info/blog/2011/07/29/blog-with-markdown-and-highlight</id>
     <content type="html"><![CDATA[<p>之前博客在javaeye，不知道触犯了老大哪根神经，不声不响就给封了，现在来到CSDN，又正好赶上改版，好好的博客写完后格式乱七八糟。国内的其他博客商也都好不到哪里去，不知道什么时候就被封，算了，自己动手丰衣足食，自己搞个独立博客吧。</p>
 
 <h2>要求</h2>
@@ -1472,7 +1472,7 @@ IE8需要借助ChromeFrame插件</p>
 
 <h2>样例</h2>
 
-<p><img src="http://stonelee.github.com/images/blog/markdown.gif" alt="" /></p>
+<p><img src="http://stonelee.info/images/blog/markdown.gif" alt="" /></p>
 
 <h2>源文件</h2>
 
@@ -1564,9 +1564,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[LINQ流水线]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/27/linq-example/"/>
+    <link href="http://stonelee.info/blog/2011/07/27/linq-example/"/>
     <updated>2011-07-27T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/27/linq-example</id>
+    <id>http://stonelee.info/blog/2011/07/27/linq-example</id>
     <content type="html"><![CDATA[<p>linq帅呆了~这一刻函数编程附身</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -1602,9 +1602,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[Tornado模板机制分析]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/26/tornado-template-analyse/"/>
+    <link href="http://stonelee.info/blog/2011/07/26/tornado-template-analyse/"/>
     <updated>2011-07-26T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/26/tornado-template-analyse</id>
+    <id>http://stonelee.info/blog/2011/07/26/tornado-template-analyse</id>
     <content type="html"><![CDATA[<p>Tornado自带的模板系统非常有特色，相对django等框架来说，可以任意插入python语句，这对于前后台通吃的小团队和个人开发者来说非常方便，而且可以方便的从Tornado框架中剥离出来单独使用。下面简单研究一下模板的实现机制。</p>
 
 <p>模板的实现集中在template.py中，之所以可以随意在模板文本中插入python语句，是因为代码运行时会直接将文本转成python代码。这是如何实现的呢？</p>
@@ -1655,9 +1655,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[DotNetBar中ComboTree显示整条路径信息]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/22/dotnetbar-combotree-show-path/"/>
+    <link href="http://stonelee.info/blog/2011/07/22/dotnetbar-combotree-show-path/"/>
     <updated>2011-07-22T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/22/dotnetbar-combotree-show-path</id>
+    <id>http://stonelee.info/blog/2011/07/22/dotnetbar-combotree-show-path</id>
     <content type="html"><![CDATA[<h2>背景</h2>
 
 <p>ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示：</p>
@@ -1682,7 +1682,7 @@ IE8需要借助ChromeFrame插件</p>
 
 <p>更改显示节点，即SelectedNode的Text，这下行了。ComboBox显示成功，但问题是原来节点的信息也被更改了，导致树变得很难看。没办法，在弹出菜单出现时再改回去，弹出菜单出现时改回来吧！真是个丑陋的做法！</p>
 
-<p><img src="http://stonelee.github.com/images/blog/combobox.gif" alt="" /></p>
+<p><img src="http://stonelee.info/images/blog/combobox.gif" alt="" /></p>
 
 <h2>无代码无真相</h2>
 
@@ -1745,9 +1745,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[连续票号剔除算法]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/14/continue-bill-number-reject/"/>
+    <link href="http://stonelee.info/blog/2011/07/14/continue-bill-number-reject/"/>
     <updated>2011-07-14T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/14/continue-bill-number-reject</id>
+    <id>http://stonelee.info/blog/2011/07/14/continue-bill-number-reject</id>
     <content type="html"><![CDATA[<h2>问题场景</h2>
 
 <p>现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段</p>
@@ -1934,9 +1934,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[LINQ技巧小结]]></title>
-    <link href="http://stonelee.github.com/blog/2011/06/27/linq-trick/"/>
+    <link href="http://stonelee.info/blog/2011/06/27/linq-trick/"/>
     <updated>2011-06-27T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/06/27/linq-trick</id>
+    <id>http://stonelee.info/blog/2011/06/27/linq-trick</id>
     <content type="html"><![CDATA[<p>LINQ可不是简单的SQL语句的替代品，它将繁琐的数据操作（排序、求和、分组、投影、打包）统一起来，极大地简化了代码。</p>
 
 <h2>查询所有以ABC开头的字符串</h2>
@@ -1987,9 +1987,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[LINQ方式实现学生成绩汇总（右连接、聚合函数）]]></title>
-    <link href="http://stonelee.github.com/blog/2011/06/27/linq-score-collect/"/>
+    <link href="http://stonelee.info/blog/2011/06/27/linq-score-collect/"/>
     <updated>2011-06-27T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/06/27/linq-score-collect</id>
+    <id>http://stonelee.info/blog/2011/06/27/linq-score-collect</id>
     <content type="html"><![CDATA[<h2>需求</h2>
 
 <p>从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表</p>
@@ -2002,7 +2002,7 @@ IE8需要借助ChromeFrame插件</p>
 
 <p>先看效果图：</p>
 
-<p><img src="http://stonelee.github.com/images/blog/score.gif" alt="" /></p>
+<p><img src="http://stonelee.info/images/blog/score.gif" alt="" /></p>
 
 <p>数据库结构简化模拟如下：</p>
 
@@ -2125,9 +2125,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[数据抓包及分析经验小结]]></title>
-    <link href="http://stonelee.github.com/blog/2011/04/08/data-scratch-and-analysis/"/>
+    <link href="http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis/"/>
     <updated>2011-04-08T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/04/08/data-scratch-and-analysis</id>
+    <id>http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis</id>
     <content type="html"><![CDATA[<ul>
 <li>分析网络包——Wireshark</li>
 <li>查看AMF数据结构工具——AMF Explorer</li>

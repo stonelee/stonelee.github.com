@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: office | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/office/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/office/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[如何解析word中存在合并单元格的表格]]></title>
-    <link href="http://stonelee.github.com/blog/2011/04/08/analysis-complicated-cell-of-word/"/>
+    <link href="http://stonelee.info/blog/2011/04/08/analysis-complicated-cell-of-word/"/>
     <updated>2011-04-08T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/04/08/analysis-complicated-cell-of-word</id>
+    <id>http://stonelee.info/blog/2011/04/08/analysis-complicated-cell-of-word</id>
     <content type="html"><![CDATA[<p>对于word中存在合并单元格的表格：</p>
 
 <p><img src="/images/blog/table.png" alt="" /></p>
@@ -45,9 +45,9 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
   
   <entry>
     <title type="html"><![CDATA[菜鸟制作电子印章经验小结]]></title>
-    <link href="http://stonelee.github.com/blog/2011/03/07/make-electronic-stamp/"/>
+    <link href="http://stonelee.info/blog/2011/03/07/make-electronic-stamp/"/>
     <updated>2011-03-07T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/03/07/make-electronic-stamp</id>
+    <id>http://stonelee.info/blog/2011/03/07/make-electronic-stamp</id>
     <content type="html"><![CDATA[<p>在这个神奇的国度，有时候需要制作电子印章来应急。
 本人是PS菜鸟，现学现卖，将电子印章的制作方案总结如下。</p>
 
@@ -95,9 +95,9 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
   
   <entry>
     <title type="html"><![CDATA[多Excel文件导入到一个word]]></title>
-    <link href="http://stonelee.github.com/blog/2011/02/25/many-excel-to-one-word/"/>
+    <link href="http://stonelee.info/blog/2011/02/25/many-excel-to-one-word/"/>
     <updated>2011-02-25T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/02/25/many-excel-to-one-word</id>
+    <id>http://stonelee.info/blog/2011/02/25/many-excel-to-one-word</id>
     <content type="html"><![CDATA[<h2>需求</h2>
 
 <p>多个Excel分布在不同文件夹下，每个Excel又有多个sheet表，现在需要把这些Excel一起汇总到一个word里。</p>
@@ -208,9 +208,9 @@ e.process()
   
   <entry>
     <title type="html"><![CDATA[纸质材料数字化方法总结]]></title>
-    <link href="http://stonelee.github.com/blog/2010/08/02/paper-material-to-digital/"/>
+    <link href="http://stonelee.info/blog/2010/08/02/paper-material-to-digital/"/>
     <updated>2010-08-02T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2010/08/02/paper-material-to-digital</id>
+    <id>http://stonelee.info/blog/2010/08/02/paper-material-to-digital</id>
     <content type="html"><![CDATA[<p>如何将纸质材料转为word文档？</p>
 
 <h2>通过扫描仪将纸质材料扫描成图片格式。</h2>
@@ -276,9 +276,9 @@ join(pathname)
   
   <entry>
     <title type="html"><![CDATA[dwg转化为svg]]></title>
-    <link href="http://stonelee.github.com/blog/2010/07/13/dwg-to-svg/"/>
+    <link href="http://stonelee.info/blog/2010/07/13/dwg-to-svg/"/>
     <updated>2010-07-13T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2010/07/13/dwg-to-svg</id>
+    <id>http://stonelee.info/blog/2010/07/13/dwg-to-svg</id>
     <content type="html"><![CDATA[<p>最近一个项目想将AutoCAD做的矿图转化为svg格式来在网页上作为底图展示。初步考虑使用Acme CAD Converter进行格式转化。</p>
 
 <p>命令行使用:</p>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: extjs | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/extjs/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/extjs/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[ExtJS 4 mvc架构演化]]></title>
-    <link href="http://stonelee.github.com/blog/2012/04/26/new-extjs-mvc/"/>
+    <link href="http://stonelee.info/blog/2012/04/26/new-extjs-mvc/"/>
     <updated>2012-04-26T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/04/26/new-extjs-mvc</id>
+    <id>http://stonelee.info/blog/2012/04/26/new-extjs-mvc</id>
     <content type="html"><![CDATA[<p>从年前技术选型开始算起，使用Extjs 4已经四五个月时间了。对比之前的3.x版本，Extjs 4给了我们太多的惊喜：全新的mvc架构、强大的class体系、灵活的js加载方式、纯div布局页面。因此，项目组毫不犹豫地选择其作为前端架构进行新项目的开发。</p>
 
 <p>项目初始时，我们一直遵循推荐的MVC架构：在view中配置页面控件，controller中编写业务逻辑。但随着项目的推进，模块代码越来越多，加之由于种种原因开发时间严重缩短，没有时间进行代码评审，controller中的代码灵活性过强，调用页面控件方式相对繁琐等问题逐渐暴露出来，页面基本无法复用，controller一片狼藉。</p>
@@ -51,9 +51,9 @@
   
   <entry>
     <title type="html"><![CDATA[ExtJS 4打包工具]]></title>
-    <link href="http://stonelee.github.com/blog/2012/02/16/extjs-4-build-tool/"/>
+    <link href="http://stonelee.info/blog/2012/02/16/extjs-4-build-tool/"/>
     <updated>2012-02-16T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/02/16/extjs-4-build-tool</id>
+    <id>http://stonelee.info/blog/2012/02/16/extjs-4-build-tool</id>
     <content type="html"><![CDATA[<p>ExtJS 4采用新的MVC思路进行开发。 在项目开发阶段这种分散式的代码组织方式是很爽的，但是应用到生产环境中时为了减少服务端压力，需要对js文件进行压缩打包。 为解决这一问题，官方提供了打包工具<a href="http://www.sencha.com/products/jsbuilder">JSBuilder</a>, 使用方法如下：</p>
 
 <p><code>bash
@@ -118,9 +118,9 @@
   
   <entry>
     <title type="html"><![CDATA[Ext Core设计模式]]></title>
-    <link href="http://stonelee.github.com/blog/2012/02/01/ext-core-design-pattern/"/>
+    <link href="http://stonelee.info/blog/2012/02/01/ext-core-design-pattern/"/>
     <updated>2012-02-01T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/02/01/ext-core-design-pattern</id>
+    <id>http://stonelee.info/blog/2012/02/01/ext-core-design-pattern</id>
     <content type="html"><![CDATA[<p>参考:
 <a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
 
@@ -200,9 +200,9 @@ c.update(2, 8, 'some'); //3
   
   <entry>
     <title type="html"><![CDATA[Ext Core学习笔记]]></title>
-    <link href="http://stonelee.github.com/blog/2012/01/30/ext-core-record/"/>
+    <link href="http://stonelee.info/blog/2012/01/30/ext-core-record/"/>
     <updated>2012-01-30T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2012/01/30/ext-core-record</id>
+    <id>http://stonelee.info/blog/2012/01/30/ext-core-record</id>
     <content type="html"><![CDATA[<p>Ext Core与jQuery类似，提供了跨浏览器的js封装。
 主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
 作为类库它提供了更高层次的抽象，方便具体问题的解决

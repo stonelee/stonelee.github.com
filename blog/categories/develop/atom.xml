@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: develop | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/develop/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/develop/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[非专业python编程方法小结]]></title>
-    <link href="http://stonelee.github.com/blog/2011/03/31/not-professional-python-program-method/"/>
+    <link href="http://stonelee.info/blog/2011/03/31/not-professional-python-program-method/"/>
     <updated>2011-03-31T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/03/31/not-professional-python-program-method</id>
+    <id>http://stonelee.info/blog/2011/03/31/not-professional-python-program-method</id>
     <content type="html"><![CDATA[<p>本人是非计算机专业毕业的非专业程序员，毕业后也是在非专业软件公司从事业余编码工作，总结的这套编程方法可能会不入某些牛人的法眼，请指点~</p>
 
 <h2>1.明确需求</h2>
@@ -52,9 +52,9 @@
   
   <entry>
     <title type="html"><![CDATA[hg版本管理最优实践]]></title>
-    <link href="http://stonelee.github.com/blog/2011/01/19/hg-optimal-practice/"/>
+    <link href="http://stonelee.info/blog/2011/01/19/hg-optimal-practice/"/>
     <updated>2011-01-19T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/01/19/hg-optimal-practice</id>
+    <id>http://stonelee.info/blog/2011/01/19/hg-optimal-practice</id>
     <content type="html"><![CDATA[<p>使用hg不短时间了，但是一直作为个备份工具来用，今天看到几位牛人的hg实践，很受启发，总结如下</p>
 
 <p><img src="/images/blog/hg.png" alt="" /></p>
@@ -151,9 +151,9 @@ hotfix自己单独使用，不需要再release了</p>
   
   <entry>
     <title type="html"><![CDATA[为tortoisehg出把力]]></title>
-    <link href="http://stonelee.github.com/blog/2010/12/17/help-tortoisehg/"/>
+    <link href="http://stonelee.info/blog/2010/12/17/help-tortoisehg/"/>
     <updated>2010-12-17T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2010/12/17/help-tortoisehg</id>
+    <id>http://stonelee.info/blog/2010/12/17/help-tortoisehg</id>
     <content type="html"><![CDATA[<p><a href="https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484">https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484</a></p>
 
 <p>开源项目：tortoisehg</p>

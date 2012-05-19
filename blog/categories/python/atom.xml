@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: python | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/python/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[lxml中xpath的text()陷阱]]></title>
-    <link href="http://stonelee.github.com/blog/2011/04/01/lxml-xpath-text-trap/"/>
+    <link href="http://stonelee.info/blog/2011/04/01/lxml-xpath-text-trap/"/>
     <updated>2011-04-01T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/04/01/lxml-xpath-text-trap</id>
+    <id>http://stonelee.info/blog/2011/04/01/lxml-xpath-text-trap</id>
     <content type="html"><![CDATA[<p>lxml中使用xpath方法获取html标签中的内容时经常会使用text()</p>
 
 <p><code>python
@@ -79,9 +79,9 @@ s = get_text(nodes)[0]
   
   <entry>
     <title type="html"><![CDATA[python字符串格式化小结]]></title>
-    <link href="http://stonelee.github.com/blog/2011/03/31/python-string-format/"/>
+    <link href="http://stonelee.info/blog/2011/03/31/python-string-format/"/>
     <updated>2011-03-31T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/03/31/python-string-format</id>
+    <id>http://stonelee.info/blog/2011/03/31/python-string-format</id>
     <content type="html"><![CDATA[<p>将python字符串格式化方法以例子的形式表述如下：</p>
 
 <p>定义宽度</p>
@@ -136,9 +136,9 @@ s = get_text(nodes)[0]
   
   <entry>
     <title type="html"><![CDATA[windows下编译开源代码中的sphinx文档]]></title>
-    <link href="http://stonelee.github.com/blog/2011/03/22/windows-compile-sphinx-doc/"/>
+    <link href="http://stonelee.info/blog/2011/03/22/windows-compile-sphinx-doc/"/>
     <updated>2011-03-22T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/03/22/windows-compile-sphinx-doc</id>
+    <id>http://stonelee.info/blog/2011/03/22/windows-compile-sphinx-doc</id>
     <content type="html"><![CDATA[<p>许多python开源代码clone下来后会发现里面附带docs，有许多是Sphinx格式的帮助文件，可以将其编译为html以便在本地查看。</p>
 
 <p>编译sphinx文档的方法很简单，首先安装Sphinx</p>
@@ -188,9 +188,9 @@ Error:Cannot find source directory
   
   <entry>
     <title type="html"><![CDATA[基于签名的数据传输]]></title>
-    <link href="http://stonelee.github.com/blog/2011/03/21/data-transfer-based-on-signature/"/>
+    <link href="http://stonelee.info/blog/2011/03/21/data-transfer-based-on-signature/"/>
     <updated>2011-03-21T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/03/21/data-transfer-based-on-signature</id>
+    <id>http://stonelee.info/blog/2011/03/21/data-transfer-based-on-signature</id>
     <content type="html"><![CDATA[<p>来自PyCon上的演讲：</p>
 
 <p><a href="http://www.slideshare.net/doughellmann/hidden-treasures-of-the-python-standard-library">Hidden Treasures of the Standard Library</a></p>
@@ -287,9 +287,9 @@ print get_msg(key, buffer)
   
   <entry>
     <title type="html"><![CDATA[你可能所不知道的python中有用的特性]]></title>
-    <link href="http://stonelee.github.com/blog/2011/03/18/hidden-features-in-python/"/>
+    <link href="http://stonelee.info/blog/2011/03/18/hidden-features-in-python/"/>
     <updated>2011-03-18T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/03/18/hidden-features-in-python</id>
+    <id>http://stonelee.info/blog/2011/03/18/hidden-features-in-python</id>
     <content type="html"><![CDATA[<p>来自stackoverflow中python标签下按投票数排列第一位的问题：
 <a href="http://stackoverflow.com/questions/101268/hidden-features-of-python?tab=votes#tab-top">Hidden features of Python</a></p>
 

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: csharp | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/csharp/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/csharp/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[LINQ流水线]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/27/linq-example/"/>
+    <link href="http://stonelee.info/blog/2011/07/27/linq-example/"/>
     <updated>2011-07-27T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/27/linq-example</id>
+    <id>http://stonelee.info/blog/2011/07/27/linq-example</id>
     <content type="html"><![CDATA[<p>linq帅呆了~这一刻函数编程附身</p>
 
 <p>```c#
@@ -42,9 +42,9 @@ private List<int> getDirtyNumList(int startNum, int endNum, string txtDirtyNums)
   
   <entry>
     <title type="html"><![CDATA[DotNetBar中ComboTree显示整条路径信息]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/22/dotnetbar-combotree-show-path/"/>
+    <link href="http://stonelee.info/blog/2011/07/22/dotnetbar-combotree-show-path/"/>
     <updated>2011-07-22T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/22/dotnetbar-combotree-show-path</id>
+    <id>http://stonelee.info/blog/2011/07/22/dotnetbar-combotree-show-path</id>
     <content type="html"><![CDATA[<h2>背景</h2>
 
 <p>ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示：</p>
@@ -117,9 +117,9 @@ if (thisNode!=null)
   
   <entry>
     <title type="html"><![CDATA[连续票号剔除算法]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/14/continue-bill-number-reject/"/>
+    <link href="http://stonelee.info/blog/2011/07/14/continue-bill-number-reject/"/>
     <updated>2011-07-14T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/14/continue-bill-number-reject</id>
+    <id>http://stonelee.info/blog/2011/07/14/continue-bill-number-reject</id>
     <content type="html"><![CDATA[<h2>问题场景</h2>
 
 <p>现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段</p>
@@ -250,9 +250,9 @@ Assert.AreEqual(results, asserts);
   
   <entry>
     <title type="html"><![CDATA[LINQ技巧小结]]></title>
-    <link href="http://stonelee.github.com/blog/2011/06/27/linq-trick/"/>
+    <link href="http://stonelee.info/blog/2011/06/27/linq-trick/"/>
     <updated>2011-06-27T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/06/27/linq-trick</id>
+    <id>http://stonelee.info/blog/2011/06/27/linq-trick</id>
     <content type="html"><![CDATA[<p>LINQ可不是简单的SQL语句的替代品，它将繁琐的数据操作（排序、求和、分组、投影、打包）统一起来，极大地简化了代码。</p>
 
 <h2>查询所有以ABC开头的字符串</h2>
@@ -292,9 +292,9 @@ string[] array1 = source.Split(new char[] { '/r', '/n' })</p>
   
   <entry>
     <title type="html"><![CDATA[LINQ方式实现学生成绩汇总（右连接、聚合函数）]]></title>
-    <link href="http://stonelee.github.com/blog/2011/06/27/linq-score-collect/"/>
+    <link href="http://stonelee.info/blog/2011/06/27/linq-score-collect/"/>
     <updated>2011-06-27T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/06/27/linq-score-collect</id>
+    <id>http://stonelee.info/blog/2011/06/27/linq-score-collect</id>
     <content type="html"><![CDATA[<h2>需求</h2>
 
 <p>从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表</p>

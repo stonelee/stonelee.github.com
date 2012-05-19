@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: vim | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/vim/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/vim/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[vim最佳插件实践]]></title>
-    <link href="http://stonelee.github.com/blog/2011/01/09/vim-plugin/"/>
+    <link href="http://stonelee.info/blog/2011/01/09/vim-plugin/"/>
     <updated>2011-01-09T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/01/09/vim-plugin</id>
+    <id>http://stonelee.info/blog/2011/01/09/vim-plugin</id>
     <content type="html"><![CDATA[<p>基本都是直接复制到bundle，然后添加doc帮助</p>
 
 <p><code>
@@ -207,9 +207,9 @@ let javaScript_fold=1
   
   <entry>
     <title type="html"><![CDATA[windows使用vim插件cscope查询python项目]]></title>
-    <link href="http://stonelee.github.com/blog/2010/11/17/use-cscope-in-vim-to-query-python-project/"/>
+    <link href="http://stonelee.info/blog/2010/11/17/use-cscope-in-vim-to-query-python-project/"/>
     <updated>2010-11-17T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2010/11/17/use-cscope-in-vim-to-query-python-project</id>
+    <id>http://stonelee.info/blog/2010/11/17/use-cscope-in-vim-to-query-python-project</id>
     <content type="html"><![CDATA[<p>cscope可以方便的查找函数在哪里被调用，或者标签在哪些地方出现过，vim可以对其进行很好的集成。</p>
 
 <ol>
@@ -262,9 +262,9 @@ os.system(cmd)
   
   <entry>
     <title type="html"><![CDATA[在ubuntu 10.0.4上编译vim7.3]]></title>
-    <link href="http://stonelee.github.com/blog/2010/10/18/compile-vim73-in-ubuntu1004/"/>
+    <link href="http://stonelee.info/blog/2010/10/18/compile-vim73-in-ubuntu1004/"/>
     <updated>2010-10-18T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2010/10/18/compile-vim73-in-ubuntu1004</id>
+    <id>http://stonelee.info/blog/2010/10/18/compile-vim73-in-ubuntu1004</id>
     <content type="html"><![CDATA[<h2>编译前准备</h2>
 
 <p>如果要编译GVIM，需要先安装必要的库，否则可能会报各种编译错误</p>

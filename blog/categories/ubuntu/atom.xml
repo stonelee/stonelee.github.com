@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ubuntu | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/ubuntu/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[解决ubuntu中激活显卡驱动导致启动黑屏问题]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/30/resolve-ubuntu-blank-screen/"/>
+    <link href="http://stonelee.info/blog/2011/08/30/resolve-ubuntu-blank-screen/"/>
     <updated>2011-08-30T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/30/resolve-ubuntu-blank-screen</id>
+    <id>http://stonelee.info/blog/2011/08/30/resolve-ubuntu-blank-screen</id>
     <content type="html"><![CDATA[<p>今天重新安装了ubuntu，准备作为个人开发的主环境。</p>
 
 <p>晚上的时候忽然蹦出来个激活硬件驱动的提示，我手贱了下随手就点了，结果重启后系统就进不去了，一直是黑屏，连ctrl+alt+F1都进不去。</p>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: web | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/web/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/web/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[打造纯净前端开发环境(附nginx反向代理解决跨域问题)]]></title>
-    <link href="http://stonelee.github.com/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/"/>
+    <link href="http://stonelee.info/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/"/>
     <updated>2011-09-13T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript</id>
+    <id>http://stonelee.info/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript</id>
     <content type="html"><![CDATA[<p>最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。</p>
 
 <h2>要求</h2>
@@ -83,9 +83,9 @@ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   
   <entry>
     <title type="html"><![CDATA[基于WebGL的魔兽争霸Demo]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/21/warcraft3-threejs-blender-demo/"/>
+    <link href="http://stonelee.info/blog/2011/08/21/warcraft3-threejs-blender-demo/"/>
     <updated>2011-08-21T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/21/warcraft3-threejs-blender-demo</id>
+    <id>http://stonelee.info/blog/2011/08/21/warcraft3-threejs-blender-demo</id>
     <content type="html"><![CDATA[<p>早就想基于魔兽争霸的模型做点东西，周末抽空研究了下，比较简单。</p>
 
 <p>先看看效果。</p>
@@ -145,9 +145,9 @@ scene.addObject( mesh );
   
   <entry>
     <title type="html"><![CDATA[基于WebGL的矿井三维演示]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/20/web-mine-demo-with-threejs/"/>
+    <link href="http://stonelee.info/blog/2011/08/20/web-mine-demo-with-threejs/"/>
     <updated>2011-08-20T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/20/web-mine-demo-with-threejs</id>
+    <id>http://stonelee.info/blog/2011/08/20/web-mine-demo-with-threejs</id>
     <content type="html"><![CDATA[<p>用了一周的时间研究WebGL相关技术，发现该技术竟然已经发展到如此地步，足以应用于企业开发领域。因此我使用Blender建模，基于ThreeJS实现了一个能够在浏览器上运行的矿井结构的三维效果展示。</p>
 
 <p><img src="/images/blog/webmine.jpg" alt="" /></p>
@@ -191,9 +191,9 @@ IE8需要借助ChromeFrame插件</p>
   
   <entry>
     <title type="html"><![CDATA[搭建基于github的免费博客]]></title>
-    <link href="http://stonelee.github.com/blog/2011/08/12/how-to-build-github-blog/"/>
+    <link href="http://stonelee.info/blog/2011/08/12/how-to-build-github-blog/"/>
     <updated>2011-08-12T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/08/12/how-to-build-github-blog</id>
+    <id>http://stonelee.info/blog/2011/08/12/how-to-build-github-blog</id>
     <content type="html"><![CDATA[<h2>优势</h2>
 
 <ul>
@@ -296,9 +296,9 @@ $ gem install liquid -v 2.2.2
   
   <entry>
     <title type="html"><![CDATA[数据抓包及分析经验小结]]></title>
-    <link href="http://stonelee.github.com/blog/2011/04/08/data-scratch-and-analysis/"/>
+    <link href="http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis/"/>
     <updated>2011-04-08T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/04/08/data-scratch-and-analysis</id>
+    <id>http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis</id>
     <content type="html"><![CDATA[<ul>
 <li>分析网络包——Wireshark</li>
 <li>查看AMF数据结构工具——AMF Explorer</li>

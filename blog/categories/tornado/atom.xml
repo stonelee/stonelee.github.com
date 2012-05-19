@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: tornado | Stonelee's Blog]]></title>
-  <link href="http://stonelee.github.com/blog/categories/tornado/atom.xml" rel="self"/>
-  <link href="http://stonelee.github.com/"/>
-  <updated>2012-05-19T20:55:16+08:00</updated>
-  <id>http://stonelee.github.com/</id>
+  <link href="http://stonelee.info/blog/categories/tornado/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-19T22:03:19+08:00</updated>
+  <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[糅合Markdown和语法高亮，快速写作技术博客]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/29/blog-with-markdown-and-highlight/"/>
+    <link href="http://stonelee.info/blog/2011/07/29/blog-with-markdown-and-highlight/"/>
     <updated>2011-07-29T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/29/blog-with-markdown-and-highlight</id>
+    <id>http://stonelee.info/blog/2011/07/29/blog-with-markdown-and-highlight</id>
     <content type="html"><![CDATA[<p>之前博客在javaeye，不知道触犯了老大哪根神经，不声不响就给封了，现在来到CSDN，又正好赶上改版，好好的博客写完后格式乱七八糟。国内的其他博客商也都好不到哪里去，不知道什么时候就被封，算了，自己动手丰衣足食，自己搞个独立博客吧。</p>
 
 <h2>要求</h2>
@@ -158,9 +158,9 @@ def hello()</p>
   
   <entry>
     <title type="html"><![CDATA[Tornado模板机制分析]]></title>
-    <link href="http://stonelee.github.com/blog/2011/07/26/tornado-template-analyse/"/>
+    <link href="http://stonelee.info/blog/2011/07/26/tornado-template-analyse/"/>
     <updated>2011-07-26T00:00:00+08:00</updated>
-    <id>http://stonelee.github.com/blog/2011/07/26/tornado-template-analyse</id>
+    <id>http://stonelee.info/blog/2011/07/26/tornado-template-analyse</id>
     <content type="html"><![CDATA[<p>Tornado自带的模板系统非常有特色，相对django等框架来说，可以任意插入python语句，这对于前后台通吃的小团队和个人开发者来说非常方便，而且可以方便的从Tornado框架中剥离出来单独使用。下面简单研究一下模板的实现机制。</p>
 
 <p>模板的实现集中在template.py中，之所以可以随意在模板文本中插入python语句，是因为代码运行时会直接将文本转成python代码。这是如何实现的呢？</p>
