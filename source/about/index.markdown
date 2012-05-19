@@ -15,7 +15,7 @@ footer: true
 * 喜欢折腾，追求靠谱
 * Keep Simple, Keep Stupid
 
-经历
+## 经历
 
 2010.05至今[北京煤炭科学研究总院安全装备分院](http://www.ccrise.cn/)打杂程序员
 
