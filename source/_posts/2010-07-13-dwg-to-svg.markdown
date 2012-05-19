@@ -1,0 +1,27 @@
+---
+layout: post
+title: dwg转化为svg
+category: office
+---
+
+最近一个项目想将AutoCAD做的矿图转化为svg格式来在网页上作为底图展示。初步考虑使用Acme CAD Converter进行格式转化。
+
+命令行使用:
+
+```bash
+$ AcmeCADConverter /r /p 1 /f 101 /a -2 /w 2000 /h 1500 "d:\Drawing1.dwg"
+```
+
+* /r 命令行模式
+* /p 1 黑色
+* /f 101 svg格式
+* /a -2 转化所有图层
+* /w 2000 宽2000mm（实际上是将svg图形放大到这个范围）
+* /h 1500 高1500mm
+* 可添加多个文件路径。
+* /e 自动伸展图形到合适位置，因为本项目还想在底图基础上绘制新的图形，对位置要求比较严格，因此不使用本项。需要在AutoCAD中将图形拖到一个合适的位置，然后再转化。
+
+未注册版本的Acme CAD Converter生成的svg会有一个水印，但从源码来看实际上就是12个path而已，非常
+容易去掉，不知道该软件作者是基于什么考虑...
+
+Google SketchUp可以很容易的创建三维图形，Inkscape来编辑svg图形。
