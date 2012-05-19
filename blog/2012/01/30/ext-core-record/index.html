@@ -1,0 +1,924 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+<meta name="ujianVerification" content="5372635df695f3c8ff259dfdc1d8dd96" />
+  <title>Ext Core学习笔记 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="Ext Core与jQuery类似，提供了跨浏览器的js封装。
+主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
+作为类库它提供了更高层次的抽象，方便具体问题的解决
+参考: http://docs.sencha.com/core/manual/ 1
+2 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.info/blog/2012/01/30/ext-core-record">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.info" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ext Core学习笔记</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-30T00:00:00+08:00" pubdate data-updated="true">2012-01-30</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+<div class="entry-content"><p>Ext Core与jQuery类似，提供了跨浏览器的js封装。
+主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
+作为类库它提供了更高层次的抽象，方便具体问题的解决
+参考: <a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Ext</span><span class="p">.</span><span class="nx">DomHelper</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span> <span class="p">{</span><span class="nx">tag</span><span class="o">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="nx">cls</span><span class="o">:</span> <span class="s1">&#39;some-class&#39;</span><span class="p">});</span>
+</span><span class='line'>    <span class="nx">Ext</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;p.some-class&#39;</span><span class="p">).</span><span class="nx">update</span><span class="p">(</span><span class="s1">&#39;Ext Core successfully injected&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Class System</h2>
+
+<ul>
+<li>Ext.extend 创建新class，将新的properties/functions添加到prototype中,使用superclass引用父类</li>
+<li>Ext.override 用来更改原来的class</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Person</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nb">Object</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">last</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">=</span> <span class="nx">first</span><span class="p">;</span> <span class="c1">//property</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">lastName</span> <span class="o">=</span> <span class="nx">last</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">getName</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">lastName</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Developer</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Person</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">getName</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isCoding</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="s1">&#39;Go Away!&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">// Access the superclass getName method</span>
+</span><span class='line'>          <span class="k">return</span> <span class="nx">Developer</span><span class="p">.</span><span class="nx">superclass</span><span class="p">.</span><span class="nx">getName</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Developer</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">,</span> <span class="s1">&#39;Smith&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">getName</span><span class="p">());</span> <span class="c1">//John Smith</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">isCoding</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">getName</span><span class="p">());</span> <span class="c1">//Go Away!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>prototype中的会被share，特别要注意{}会被多个子类共享修改，小心！！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">MyClass</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nb">Object</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// This object literal is now shared between all instances of MyClass.</span>
+</span><span class='line'>  <span class="nx">baseParams</span><span class="o">:</span> <span class="p">{},</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">foo</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">baseParams</span><span class="p">.</span><span class="nx">bar</span> <span class="o">=</span> <span class="s1">&#39;baz&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">foo</span><span class="p">();</span>
+</span><span class='line'>  <span class="c1">// Modifying baseParams in a affects baseParams in b.</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">baseParams</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>apply 复制所有property</li>
+<li>applyIf 对于重复的property则不复制</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;John Smith&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">age</span><span class="o">:</span> <span class="mi">30</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">hobby</span><span class="o">:</span> <span class="s1">&#39;Rock Band&#39;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">person</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">hobby</span><span class="o">:</span> <span class="s1">&#39;Coding&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">city</span><span class="o">:</span> <span class="s1">&#39;London&#39;</span>
+</span><span class='line'><span class="p">});</span> <span class="c1">// hobby is not copied over</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>函数</h2>
+
+<p>函数式编程：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">sayHello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">firstName</span><span class="p">,</span> <span class="nx">lastName</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">firstName</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">lastName</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;myButton&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">sayHello</span><span class="p">.</span><span class="nx">createCallback</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">,</span> <span class="s1">&#39;Smith&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="err">等价于</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;myButton&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">sayHello</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">,</span> <span class="s1">&#39;Smith&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>TaskRunner用来固定时间间隔执行函数，例如每隔5s进行ajax请求，TaskMgr是TaskRunner的单例，用起来更方便</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">stop</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">task</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">run</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">runner</span><span class="p">.</span><span class="nx">stop</span><span class="p">(</span><span class="nx">task</span><span class="p">);</span> <span class="c1">// we can stop the task here if we need to.</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">interval</span><span class="o">:</span> <span class="mi">1000</span> <span class="c1">// every 1 seconds</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">runner</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">TaskRunner</span><span class="p">();</span>
+</span><span class='line'><span class="nx">runner</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="nx">task</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">stop</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">TaskMgr</span><span class="p">.</span><span class="nx">start</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">run</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">interval</span><span class="o">:</span> <span class="mi">1000</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>DelayedTask 延时触发事件，如果在延时时间内触发两次事件，则后一次事件会覆盖前一次的触发</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">task</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">DelayedTask</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Ext</span><span class="p">.</span><span class="nx">getDom</span><span class="p">(</span><span class="s1">&#39;myInputField&#39;</span><span class="p">).</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="c1">// Wait 500ms before calling our function. If the user presses another key </span>
+</span><span class='line'><span class="c1">// during that 500ms, it will be cancelled and we&#39;ll wait another 500ms.</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;myInputField&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;keypress&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">task</span><span class="p">.</span><span class="nx">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>延时函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">task</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">DelayedTask</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Ext</span><span class="p">.</span><span class="nx">getDom</span><span class="p">(</span><span class="s1">&#39;myInputField&#39;</span><span class="p">).</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="c1">// Wait 500ms before calling our function. If the user presses another key </span>
+</span><span class='line'><span class="c1">// during that 500ms, it will be cancelled and we&#39;ll wait another 500ms.</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;myInputField&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;keypress&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">task</span><span class="p">.</span><span class="nx">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">whatsTheTime</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">whatsTheTime</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span> <span class="c1">//Wait 3 seconds before executing.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>格式</h2>
+
+<p>urlEncode、urlDecode将object-literal与GET request parameter（key1=value1&amp;key2=value2）互相转化</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">foo</span><span class="o">:</span> <span class="s1">&#39;value1&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">bar</span><span class="o">:</span> <span class="mi">100</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span><span class="nx">params</span><span class="p">);</span> <span class="c1">// s is now foo=value1&amp;bar=100</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>encode、decode将object与json互相转换</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">encode</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">foo</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">bar</span><span class="o">:</span> <span class="mi">2</span>
+</span><span class='line'><span class="p">});</span> <span class="c1">//&quot;{&quot;foo&quot;:1,&quot;bar&quot;:2}&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>字符串格式化：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span>
+</span><span class='line'>   <span class="s1">&#39;Hey {0} {1}&#39;</span><span class="p">,</span> <span class="nx">how</span> <span class="nx">are</span> <span class="nx">you</span><span class="o">?</span><span class="s1">&#39;, </span>
+</span><span class='line'><span class="s1">   &#39;</span><span class="nx">John</span><span class="s1">&#39;, </span>
+</span><span class='line'><span class="s1">   &#39;</span><span class="nx">Smith</span><span class="err">&#39;</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>DOM</h2>
+
+<p>DomQuery提供了高性能的selector/xpath处理，可以应用于html和xml，主要使用select函数，可以使用get预先获取Root来进一步提升性能</p>
+
+<ul>
+<li>多重选择 Ext.select(&#8216;div.foo, span.bar&#8217;);</li>
+<li>链式选择 Ext.select(&#8216;div.foo[title=bar]:first&#8217;);</li>
+<li>子选择 Ext.select(&#8216;div span&#8217;);</li>
+<li>直接子选择 Ext.select(&#8216;ul > li&#8217;);</li>
+<li>属性选择 Ext.select(&#8216;a[href=http://extjs.com]&#8217;);</li>
+<li>有alt tag Ext.select(&#8216;img[alt]&#8217;);</li>
+<li>伪类 Ext.select(&#8216;div:next(span.header));</li>
+<li>css值选择 E{display<sup>=none}</sup> //css value &#8220;display&#8221; that starts with &#8220;none&#8221;</li>
+</ul>
+
+
+<p>DomHelper动态生成html片段：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">DomHelper</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;my-div&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">cn</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>      <span class="nx">tag</span><span class="o">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">href</span><span class="o">:</span> <span class="s1">&#39;http://www.yahoo.com/&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">html</span><span class="o">:</span> <span class="s1">&#39;My Link&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;_blank&#39;</span>
+</span><span class='line'>    <span class="p">}]</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Ext.Element</h2>
+
+<p>浏览器加载页面时，将每个tag解析为HTMLElement，建立DOM，保存到全局变量document里。使用getElementById来获取每个HTMLElement
+Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
+
+<h3>CSS &amp; Styling(setStyle, addClass)</h3>
+
+<ul>
+<li>radioClass实现单选效果，同类中有同样class则remove，否则add</li>
+<li>toggleClass切换</li>
+</ul>
+
+
+<h3>Dom Querying or Traversal(query, select, findParent)</h3>
+
+<p>is 测试element是否符合selector</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">//向上找parent:</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">findParent</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span> <span class="c1">//returns a dom node</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">up</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span> <span class="c1">//返回Ext.Element</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//查找</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;div:nth-child(2)&#39;</span><span class="p">);</span> <span class="c1">//返回CompositeElement</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;div:nth-child(2)&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span> <span class="c1">//返回Array of elements</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="s1">&#39;div:nth-child(2)&#39;</span><span class="p">);</span> <span class="c1">//返回Array of dom nodes</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//返回Ext.Element，第二参数为true则返回dom node</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">child</span><span class="p">(</span><span class="s1">&#39;p.highlight&#39;</span><span class="p">);</span> <span class="c1">//任意深度的single child</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">);</span>  <span class="c1">//直接single child</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还有parent()，next()，prev()，first()，last()</p>
+
+<h3>Dom Manipulation(createChild, remove)</h3>
+
+<p>使用id或Ext.Element或dom node或selectors或CompositeElement</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="s1">&#39;elId2&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用DomHelper config</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">insertFirst</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">tag</span><span class="o">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">html</span><span class="o">:</span> <span class="s1">&#39;Hi I am the new first child&#39;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用Html Fragments</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">insertHtml</span><span class="p">(</span><span class="s1">&#39;beforeBegin&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;p&gt;Hi&lt;/p&gt;&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>包括beforeBegin, beforeEnd, afterBegin, afterEnd</p>
+
+<h3>Event Handling</h3>
+
+<p>Ext.EventObject提供了跨浏览器的event实现，例如按键判断，event-propagation ，preventDefault()</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">el</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// e is a normalized event object (Ext.EventObject)</span>
+</span><span class='line'>  <span class="c1">// t the target that was clicked, this is an Ext.Element.      </span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">el</span><span class="p">.</span><span class="nx">un</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">handlerFn</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Event delegation是利用冒泡机制在container中注册event，而不是在每个元素中注册，这样可以减少内存消耗，防止内存泄漏，更好地集中管理event</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;actions&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click, function(e,t) {</span>
+</span><span class='line'><span class="s1"> switch(t.id) {</span>
+</span><span class='line'><span class="s1">     case &#39;&#39;btn-edit&#39;</span><span class="o">:</span>
+</span><span class='line'>      <span class="c1">// handle the event</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">case</span> <span class="s1">&#39;btn-delete&#39;</span><span class="o">:</span>
+</span><span class='line'>      <span class="c1">// handle the event</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>configuration option:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">el</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// handle click</span>
+</span><span class='line'><span class="p">},</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">delegate</span><span class="o">:</span> <span class="s1">&#39;.clickable&#39;</span><span class="p">,</span><span class="c1">// will filter target to be a descendant with the class &#39;clickable&#39;</span>
+</span><span class='line'>    <span class="nx">single</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// 只响应一次，然后自动删除</span>
+</span><span class='line'>    <span class="nx">buffer</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="c1">// 延时1s，如果在时间间隔内多次触发会覆盖</span>
+</span><span class='line'>    <span class="nx">delay</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="c1">// 延时1s，不会覆盖</span>
+</span><span class='line'>    <span class="nx">target</span><span class="o">:</span> <span class="nx">el</span><span class="p">.</span><span class="nx">up</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">)</span> <span class="c1">// only handles the event when it has bubbled up to the first &#39;div&#39;.</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>hover</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">over</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="nx">t</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">t</span><span class="p">).</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">out</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="nx">t</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">t</span><span class="p">).</span><span class="nx">toggleClass</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;myButton&#39;</span><span class="p">).</span><span class="nx">hover</span><span class="p">(</span><span class="nx">over</span><span class="p">,</span> <span class="nx">out</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Dimensions(getHeight, getWidth)</h3>
+
+<p>可以添加动画configure或直接true</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// changes the height to 200px and animates with default configuration</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">setHeight</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// changes the height to 150px and animates with a custom configuration</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">setHeight</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">duration</span> <span class="o">:</span> <span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="c1">// animation will have a duration of .5 seconds</span>
+</span><span class='line'>    <span class="c1">// will change the content to &quot;finished&quot;</span>
+</span><span class='line'>    <span class="nx">callback</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">this</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="s2">&quot;finished&quot;</span><span class="p">);</span> <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">getPadding</span><span class="p">(</span><span class="s1">&#39;lrtb&#39;</span><span class="p">);</span><span class="c1">//返回四个方向padding之和</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//同时得到x,y坐标</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">elXY</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">getXY</span><span class="p">()</span> <span class="c1">//elXY is an array</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">setXY</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//得到相对位置</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">elOffsets</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;elId&#39;</span><span class="p">).</span><span class="nx">getOffsetsTo</span><span class="p">(</span><span class="nx">anotherEl</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//设置位置</span>
+</span><span class='line'><span class="nx">setLocation</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">32</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>clearPositioning，getPositioning，setPositioning用来存储恢复position</p>
+
+<h3>Animations</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">//共八个方向，&#39;r&#39;表示朝右边滑动</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">fly</span><span class="p">(</span><span class="s1">&#39;slideEl&#39;</span><span class="p">).</span><span class="nx">slideOut</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">callback</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Finished sliding the element out&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-30T00:00:00+08:00" pubdate data-updated="true">2012-01-30</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+
+<!-- UJian Button BEGIN -->
+<div class="ujian-hook"></div>
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1532263"></script>
+<!-- UJian Button END -->
+
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/11/30/trick-on-jquery/" title="Previous Post: 恶搞jquery">&laquo; 恶搞jquery</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/02/01/ext-core-design-pattern/" title="Next Post: Ext Core设计模式">Ext Core设计模式 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+	<h1>Who's stonelee</h1>
+	<a href="/about"><img src="/images/stonelee.jpg"/></a>
+	<p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
+	<p>
+		<a href="http://www.douban.com/people/istonelee/">豆瓣</a>
+		<a href="http://www.renren.com/profile.do?id=72210924">人人</a>
+		<a target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
+			<img border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
+		</a>
+	</p>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<!-- JiaThis Button BEGIN -->
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jiathis_r.js?move=0&amp;uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://stonelee.info/blog/2012/01/30/ext-core-record/';
+        var disqus_url = 'http://stonelee.info/blog/2012/01/30/ext-core-record/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

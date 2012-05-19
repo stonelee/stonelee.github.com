@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: tornado | Stonelee's Blog]]></title>
+  <link href="http://stonelee.info/blog/categories/tornado/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-20T00:55:02+08:00</updated>
+  <id>http://stonelee.info/</id>
+  <author>
+    <name><![CDATA[stonelee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[糅合Markdown和语法高亮，快速写作技术博客]]></title>
+    <link href="http://stonelee.info/blog/2011/07/29/blog-with-markdown-and-highlight/"/>
+    <updated>2011-07-29T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/07/29/blog-with-markdown-and-highlight</id>
+    <content type="html"><![CDATA[<p>之前博客在javaeye，不知道触犯了老大哪根神经，不声不响就给封了，现在来到CSDN，又正好赶上改版，好好的博客写完后格式乱七八糟。国内的其他博客商也都好不到哪里去，不知道什么时候就被封，算了，自己动手丰衣足食，自己搞个独立博客吧。</p>
+
+<h2>要求</h2>
+
+<p>代码写惯了，觉得可视化编辑器非常不靠谱，写代码花时间，写文档花时间，调格式更得花时间，而且不利于备份。因此要求纯文本，标记语言简单易学，实现代码高亮。</p>
+
+<h2>技术选型</h2>
+
+<ul>
+<li>标记语言 Markdown</li>
+<li>python封装库 python-markdown2</li>
+<li>代码高亮工具 Javascript code prettifier</li>
+</ul>
+
+
+<h2>实现</h2>
+
+<h3>1. markdown实现：</h3>
+
+<p><code>python
+import markdown2
+content="something"
+markdown = markdown2.markdown(content)
+</code></p>
+
+<p>字符串content会按照markdown的语法生成相应的html标签，直接输出到页面上即可。</p>
+
+<h3>2. Javascript code prettifier使用：</h3>
+
+<p>引入js文件和选择的css模板</p>
+
+<p>```html</p>
+
+<script src="prettify.js"></script>
+
+
+<p><link rel="stylesheet" href="desert.css" type="text/css" />
+```</p>
+
+<p>函数加载到页面中：</p>
+
+<p>```html</p>
+
+<script src="prettify.js"></script>
+
+
+<p><body onload="prettyPrint(); ">
+```</p>
+
+<p>代码插入：</p>
+
+<p>```html</p>
+
+<div style="width: 40em; display: inline-block">
+    <pre class="prettyprint">
+        somecode
+    </pre>
+</div>
+
+
+<p>```</p>
+
+<p>python-markdown2中已经实现了代码高亮，无奈语焉不详，而且语法也着实丑陋。本着“quick and dirty”的原则，直接定义</p>
+
+<p><code>
+&amp;lt;code&amp;gt;&amp;lt;/code&amp;gt;
+</code></p>
+
+<p>来包裹想高亮的代码，然后用replace来替换上面的div,pre标签。</p>
+
+<p>实现如此简单~</p>
+
+<h2>样例</h2>
+
+<p><img src="/images/blog/markdown.gif" alt="" /></p>
+
+<h2>源文件</h2>
+
+<p>```</p>
+
+<h1>标题</h1>
+
+<p>前言</p>
+
+<p><strong>目录</strong></p>
+
+<ul>
+<li>第一章</li>
+<li>第一节</li>
+<li>第二节</li>
+<li>第二章</li>
+<li>第三章</li>
+</ul>
+
+
+<h2>第一章</h2>
+
+<p><strong>第一节</strong></p>
+
+<p>内容内容内容内容内容内容</p>
+
+<p><strong>第二节</strong></p>
+
+<p><code>
+def hello()</p>
+
+<pre><code>print "hello"
+</code></pre>
+
+<p></code></p>
+
+<h2>第二章</h2>
+
+<p>内容内容内容内容内容内容</p>
+
+<p>```</p>
+
+<h2>附有用的网址</h2>
+
+<p>Markdown</p>
+
+<ul>
+<li><a href="http://daringfireball.net/projects/markdown/basics">入门</a></li>
+<li><a href="http://daringfireball.net/projects/markdown/syntax">语法参考</a></li>
+<li><a href="http://daringfireball.net/projects/markdown/dingus">练习场</a>，熟练后直接使用这个</li>
+<li><a href="https://github.com/trentm/python-markdown2">markdown解析程序</a></li>
+</ul>
+
+
+<p>代码高亮 Javascript code prettifier</p>
+
+<ul>
+<li><a href="http://google-code-prettify.googlecode.com/svn/trunk/README.html">入门</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Tornado模板机制分析]]></title>
+    <link href="http://stonelee.info/blog/2011/07/26/tornado-template-analyse/"/>
+    <updated>2011-07-26T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/07/26/tornado-template-analyse</id>
+    <content type="html"><![CDATA[<p>Tornado自带的模板系统非常有特色，相对django等框架来说，可以任意插入python语句，这对于前后台通吃的小团队和个人开发者来说非常方便，而且可以方便的从Tornado框架中剥离出来单独使用。下面简单研究一下模板的实现机制。</p>
+
+<p>模板的实现集中在template.py中，之所以可以随意在模板文本中插入python语句，是因为代码运行时会直接将文本转成python代码。这是如何实现的呢？</p>
+
+<p><code>python
+exec self.compiled in namespace  
+</code></p>
+
+<p>exec是python的内置语句，其作用是动态执行python代码，第一个参数可以是string，可以是打开的file object，也可以是code object。可以使用in来引入环境变量。这句代码的意思就是在namespace所设定的环境变量中，执行self.compiled的代码。</p>
+
+<p>那么self.compiled从何而来呢？</p>
+
+<p><code>python
+self.compiled = compile(self.code, self.name, "exec")  
+</code></p>
+
+<p>使用exec执行python字符串时，需要先用解释器将其编译为字节代码，为避免多次编译导致没必要的时间消耗，可以预先进行编译。</p>
+
+<p>compile(source,filename,mode[,flags[,dont_inherit]])可以将字符串编译为字节代码，其中source是要被编译的字符串，filename是定义该字符串变量的文件，如果不需要的话推荐设置为<string>,mode指定编译类型（single指单个语句，exec指多个语句，eval指一个表达式）。</p>
+
+<p>exec实际上会动态生成函数_execute()，而且将环境变量插入namespace中，这样就可以从namespace中再取出该函数，然后执行，其结果就是以python代码的方式完成模板文本的解析。</p>
+
+<p>```python
+execute = namespace["_execute"]<br/>
+try:</p>
+
+<pre><code> return execute()  
+</code></pre>
+
+<p>```</p>
+
+<p>那么self.code是怎么生成的呢？</p>
+
+<p><code>python
+reader = _TemplateReader(name, template_string)  
+self.file = _File(_parse(reader))  
+self.code = self._generate_python(loader, compress_whitespace)  
+</code></p>
+
+<p>详细代码可以参见template.py,纯粹是字符串的解析，有时间再看吧。</p>
+]]></content>
+  </entry>
+  
+</feed>

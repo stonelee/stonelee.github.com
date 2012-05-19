@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: web | Stonelee's Blog]]></title>
+  <link href="http://stonelee.info/blog/categories/web/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-20T00:55:02+08:00</updated>
+  <id>http://stonelee.info/</id>
+  <author>
+    <name><![CDATA[stonelee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[打造纯净前端开发环境(附nginx反向代理解决跨域问题)]]></title>
+    <link href="http://stonelee.info/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/"/>
+    <updated>2011-09-13T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript</id>
+    <content type="html"><![CDATA[<p>最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。</p>
+
+<h2>要求</h2>
+
+<ul>
+<li>能够实现前后台数据通信</li>
+<li>保持前端纯洁性，不掺杂过多服务端代码</li>
+<li>前端js使用相对url来获取数据,需要解决跨域问题</li>
+</ul>
+
+
+<h2>解决方案</h2>
+
+<h3>静态服务器nginx</h3>
+
+<p>提供前端html+js+css的静态展示</p>
+
+<p>需要配置nginx.conf:
+alias可以指定映射路径,
+autoindex可以自动列出文件目录</p>
+
+<p>```bash
+location /develop {</p>
+
+<pre><code>alias       "/home/lxd/Develop";
+autoindex   on;
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>后台测试服务器tornado</h3>
+
+<p>不使用template_path和static_path,直接使用write来返回字符串数据,
+服务端简化到只需一个文件,
+tornado只用来产生数据，以独立应用的形式提供服务</p>
+
+<h3>跨域问题</h3>
+
+<p>使用nginx反向代理tornado服务器，来解决跨域问题</p>
+
+<p>nginx.conf添加反向代理</p>
+
+<p>```bash
+location /develop/gmf/zhunqi/tornado {</p>
+
+<pre><code>proxy_pass       "http://localhost:8888";
+proxy_redirect   off;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>tornado文件指定url映射</p>
+
+<p><code>python
+(r"/develop/gmf/zhunqi/tornado/mines", MineHandler),
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[基于WebGL的魔兽争霸Demo]]></title>
+    <link href="http://stonelee.info/blog/2011/08/21/warcraft3-threejs-blender-demo/"/>
+    <updated>2011-08-21T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/08/21/warcraft3-threejs-blender-demo</id>
+    <content type="html"><![CDATA[<p>早就想基于魔兽争霸的模型做点东西，周末抽空研究了下，比较简单。</p>
+
+<p>先看看效果。</p>
+
+<p><img src="/images/blog/warcraft.jpg" alt="" /></p>
+
+<h2>导出魔兽争霸模型</h2>
+
+<p>Warcraft 3 Viewer可以读取warcraft的MPQ文件，从中选择中意的模型，然后可以分别将MDX和texture导出。为了后面使用的方便，texture导出到和mdx相同目录下，格式为jpg。</p>
+
+<h2>导入到blender</h2>
+
+<p>使用modelconv来将mdx文件转换为obj文件。modelconv是一个命令行程序，调用后，输入要转换的mdx文件名和要转换成的obj文件名即可。
+然后使用blender来import该obj文件。</p>
+
+<h2>调整模型</h2>
+
+<p>自动导入的文件往往其大小和角度不符合实际需要，因此需要进行调整。</p>
+
+<ul>
+<li>缩放模型</li>
+<li>调整模型位置</li>
+<li>调整摄像机位置</li>
+<li>删掉多余的面</li>
+</ul>
+
+
+<h2>贴纹理(texture)</h2>
+
+<p>打开UV/Image Editor，打开贴图文件，在3D View视图中查看Textured视角，这时会发现模型已经自动贴好了纹理。但是这时候render的话会发现渲染出的模型依然是难看的灰色。因此需要新加一个Material，然后新加一个Texture，Type选择Image or Movie，Image选择之前的贴图文件，Mapping中Coordinates选择UV，这样才算真正贴好了纹理。</p>
+
+<h2>导出three.js模型</h2>
+
+<p>使用ThreeJS自带的blender导出插件，会自动将模型和纹理导成ThreeJS需要的json。只需将生成的js文件和texture复制到ThreeJS项目中即可正常使用。</p>
+
+<h2>ThreeJS中调用模型</h2>
+
+<p>注意调整模型位置，纹理会自动贴好。</p>
+
+<p>```js
+var loader = new THREE.JSONLoader();
+loader.load( { model: "warcraft/archer.js", callback: createScene } );</p>
+
+<p>function createScene( geometry ) {</p>
+
+<pre><code>var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial());
+mesh.position.x=-15;
+mesh.position.y=-5;
+mesh.scale.x = mesh.scale.y = mesh.scale.z = 4;
+scene.addObject( mesh );
+</code></pre>
+
+<p>}
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[基于WebGL的矿井三维演示]]></title>
+    <link href="http://stonelee.info/blog/2011/08/20/web-mine-demo-with-threejs/"/>
+    <updated>2011-08-20T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/08/20/web-mine-demo-with-threejs</id>
+    <content type="html"><![CDATA[<p>用了一周的时间研究WebGL相关技术，发现该技术竟然已经发展到如此地步，足以应用于企业开发领域。因此我使用Blender建模，基于ThreeJS实现了一个能够在浏览器上运行的矿井结构的三维效果展示。</p>
+
+<p><img src="/images/blog/webmine.jpg" alt="" /></p>
+
+<p><img src="/images/blog/webmine2.jpg" alt="" /></p>
+
+<h2>浏览器兼容</h2>
+
+<p>Chrome和Firefox的较新版本均可流畅运行,
+IE8需要借助ChromeFrame插件</p>
+
+<h2>平台兼容</h2>
+
+<p>基于浏览器的应用，完美跨平台。
+经测试在手机Android2.3的Firefox中也可以显示。</p>
+
+<h2>主要功能</h2>
+
+<ul>
+<li>鼠标对模型的自由旋转、缩放、平移</li>
+<li>巷道文字显示</li>
+<li>人员移动轨迹回放，在模型中显示</li>
+<li>传感器在巷道模型上定点显示</li>
+<li>点击传感器，显示从后台服务器中取得的环境参数</li>
+<li>轮询方式从后台取得报警信息，在界面上展示。</li>
+<li>使用DAT.GUI实现模型参数的实时显示和动态更改。</li>
+</ul>
+
+
+<h2>感想</h2>
+
+<p>发展眼光很重要。新技术浪潮的到来往往会伴随行业洗牌，传统巨头会在一系列历史遗留问题中纠缠不清，无法很好的转移航向来适应未来的发展。新入行者恰恰可以利用后发优势，凭借新技术的潮头，爆发似的抢占市场。新技术不可怕，可怕的是技术上畏首畏尾，不敢突破的心态。跟在别人屁股后面永远只能吃那个。勇于打破既有规则，实现对既有规则的颠覆，建立自己的游戏规则，自己带着别人在圈子里玩，这才是我们应该做的事情。</p>
+
+<p>跨平台很重要，未来不再是windows的天下，随着智能手机和平板电脑的日益普及和流行，Linux系愈发强势。微软早就不是以前的巨无霸，谷歌苹果已经成为新生代的巨头。.net系的技术经常随市场一变再变，千万不要妄想抱住某厂商的大粗腿，民主化的开源社区才是王道（当然没有各大厂商的财力支持也是白搭）。</p>
+
+<p>基于浏览器的应用开发很重要，基于云端的浏览器应用是业界趋势。虽然基于系统原生的程序性能更强，用户体验更好，但是多平台开发需要多语言的移植，对于小公司来说从无论从人力物力还是发维护成本都是不可能的。而且根据摩尔定律，硬件性能越来越强，价格越来越便宜，我们要做的只是等待，而且不会等待太久。</p>
+
+<p>人很重要。好的程序员的工作效率会是垃圾程序员的数十倍，但是工资往往不需要这么多，他们更希望的是得到认可、得到尊重。好的程序员是自我管理的，他们无聊的时候也在学习，因为这是一种乐趣，他们工作效率极高，但从不加班。他们厌恶浪费生命的会议，厌恶一切不必要的手续和流程，厌恶一切没理由的说教和唠叨，推崇使用最简单最有效的方法来解决最复杂的问题。天外飞仙，一剑封喉。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[搭建基于github的免费博客]]></title>
+    <link href="http://stonelee.info/blog/2011/08/12/how-to-build-github-blog/"/>
+    <updated>2011-08-12T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/08/12/how-to-build-github-blog</id>
+    <content type="html"><![CDATA[<h2>优势</h2>
+
+<ul>
+<li>国外著名开源网站，影响力大（无声无息倒掉的风险较少）</li>
+<li>基于git的本地源码控制，安全（防GFW）</li>
+<li>纯文本写作，适合程序控</li>
+<li>可以绑定自己的域名</li>
+<li>空间免费</li>
+</ul>
+
+
+<h2>使用</h2>
+
+<ul>
+<li>fork我的博客</li>
+<li>git clone</li>
+<li>修改一下页面代码，在_posts中写自己的博客</li>
+<li>github page服务后台使用jekyll，为了在本地写作博客， 修改满意后再进行同步，自己安装jekyll是很有必要的。
+然后可以在本地启动</li>
+</ul>
+
+
+<p><code>bash
+jekyll --server
+</code></p>
+
+<h2>功能增强</h2>
+
+<ul>
+<li>添加评论<a href="http://disqus.com">disqus</a></li>
+<li><a href="http://www.google.com/intl/zh-CN/analytics/">Google Analytics</a></li>
+<li>blog订阅:<a href="http://www.feedsky.com">FeedSky</a></li>
+<li>社会化推荐:<a href="http://www.jiathis.com">JiaThis</a></li>
+</ul>
+
+
+<h2>绑定域名</h2>
+
+<p>修改 A record并指向207.97.227.245</p>
+
+<p>我在Godaddy买的域名，还没用就被封DNS了。更换Nameservers后成功访问。使用的是 <a href="https://www.dnspod.cn/">dnspod</a>,据说是国内最早提供免费智能DNS产品的网站，需要邮箱和手机验证。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://saberma.me/other/2010/09/20/saberma-github-page-blog-build-with-jekyll.html">saberma的使用心得</a></li>
+<li><a href="http://pages.github.com/">官方pages简介</a></li>
+<li><a href="https://github.com/mojombo/jekyll/wiki/sites">其他人的博客列表</a></li>
+</ul>
+
+
+<h4>模板引擎liquid,是模版使用的语法</h4>
+
+<ul>
+<li><a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">用法</a></li>
+<li><a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">扩展</a></li>
+</ul>
+
+
+<h3>textile</h3>
+
+<ul>
+<li><a href="http://redcloth.org/hobix.com/textile/">语法参考</a></li>
+<li><a href="http://textile.thresholdstate.com/">练习</a></li>
+</ul>
+
+
+<h3>语法高亮支持语言</h3>
+
+<p><a href="http://pygments.org/docs/lexers/">pygments</a></p>
+
+<h3>模版网址</h3>
+
+<p><a href="http://freehtml5templates.com">基于html5、css3的免费模板</a></p>
+
+<h2>PS</h2>
+
+<h3>2012-05-05更新</h3>
+
+<p>jekyll安装:</p>
+
+<p><code>bash
+$ gem install jekyll 0.11.0
+</code></p>
+
+<p>遇到问题：</p>
+
+<p><code>bash
+Liquid error: undefined method `join’ for #
+</code></p>
+
+<p>解决方法: liquid降级</p>
+
+<p><code>bash
+$ gem uninstall liquid
+$ gem install liquid -v 2.2.2
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据抓包及分析经验小结]]></title>
+    <link href="http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis/"/>
+    <updated>2011-04-08T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis</id>
+    <content type="html"><![CDATA[<ul>
+<li>分析网络包——Wireshark</li>
+<li>查看AMF数据结构工具——AMF Explorer</li>
+<li>查看cookie工具——Firecookie</li>
+<li>cookie操作</li>
+<li>cookie分析</li>
+</ul>
+
+
+<h2>1.分析网络包——Wireshark</h2>
+
+<ul>
+<li>ubuntu下需要sudo wireshark启动</li>
+<li>Capture-interfaces:Start有ip的Device</li>
+<li>本机网络包无法抓取</li>
+<li>filter中填写:
+
+<ul>
+<li>http and ip.src==192.168.1.103只显示本机发送的http协议包</li>
+<li>http and ip.addr==192.168.1.103只显示本机发送和接收的http协议包</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>2.查看AMF数据结构工具——AMF Explorer</h2>
+
+<p>AMF Explorer基于Firebug的AMF查看插件</p>
+
+<h2>3.查看cookie工具——Firecookie</h2>
+
+<p>Firecookie基于Firebug的cookie查看、删除修改等操作插件，还可以下断点</p>
+
+<h2>4.cookie操作</h2>
+
+<p>```python
+import urllib2
+import cookielib</p>
+
+<h1>自动记录cookie</h1>
+
+<p>cj = cookielib.CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+request = urllib2.Request('http://www.pythonchallenge.com/pc/def/linkedlist.php?busynothing=12345')
+response = opener.open(request)</p>
+
+<h1>获取服务器返回的cookie</h1>
+
+<p>cookies = cj.make_cookies(response, request) # extract all cookies that this request-response pair added to the jar</p>
+
+<h1>修改cookie</h1>
+
+<p>cookie = cookies[0]
+cookie.value = 'the flowers are on their way' # 将其值设为要发送的，不必自己转码
+request = urllib2.Request('http://www.pythonchallenge.com/pc/stuff/violin.php')
+cj.set_cookie(cookie)
+cj.add_cookie_header(request) #将cookies放入请求头部
+print urllib2.urlopen(request).read()<br/>
+```</p>
+
+<h2>5.cookie分析</h2>
+
+<p><code>html
+Connection  keep-alive
+</code></p>
+
+<p>说明使用的是长连接，应该使用Httplib2而不是Urllib2</p>
+
+<p>网站登录信息往往保存在基于session的cookie里，因此在发送数据包的时候提供</p>
+
+<p>服务端Response Headers   set-cookie发送给客户端cookie然后</p>
+
+<p>客户端Request Headers    Cookie才能保存</p>
+]]></content>
+  </entry>
+  
+</feed>

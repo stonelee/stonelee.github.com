@@ -1,0 +1,1665 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+<meta name="ujianVerification" content="5372635df695f3c8ff259dfdc1d8dd96" />
+  <title>Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="看高手的源码经常可以看到yield，特地查了一下用法，总结如下： 包含yield表达式的函数是特殊的函数，叫做生成器函数(generator function)，被调用时将返回一个迭代器（iterator），调用时可以使用next或send(msg)。它的用法与return相似， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.info/blog/page/4">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.info" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/02/23/python-yield-usage/">Yield使用心得</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-23T00:00:00+08:00" pubdate data-updated="true">2011-02-23</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>看高手的源码经常可以看到yield，特地查了一下用法，总结如下：</p>
+
+<p>包含yield表达式的函数是特殊的函数，叫做生成器函数(generator function)，被调用时将返回一个迭代器（iterator），调用时可以使用next或send(msg)。它的用法与return相似，区别在于它会记住上次迭代的状态，继续执行。</p>
+
+<p>send(msg)与next()的区别在于send可以传递参数给yield表达式，这时传递的参数会作为yield表达式的值，而yield的参数是返回给调用者的值。初始调用时必须先next()或send(None)，否则会报错。</p>
+
+<p>举个例子：</p>
+
+<p><img src="/images/blog/yield1.png" alt="" /></p>
+
+<p>首先生成一个迭代器f，f.next()会使生成器函数执行到yield，生成一个值然后挂起。</p>
+
+<p><img src="/images/blog/yield2.png" alt="" /></p>
+
+<p>然后f.next()或f.send(msg)会在生成器函数内部返回值，执行到下一个yield，生成值后挂起</p>
+
+<p><img src="/images/blog/yield3.png" alt="" /></p>
+
+<p>然后f.next()或f.send(msg)会在生成器函数内部返回值，意图执行到下一个yield，但是后面没有yield了，所以抛出异常。</p>
+
+<p>使用yield可以有效简化代码，并减少空间浪费。</p>
+
+<p>举个简单例子：列表中的每个元素+1</p>
+
+<p>传统写法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">addlist</span><span class="p">(</span><span class="n">alist</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">alist</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">r</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>yield写法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">addlist</span><span class="p">(</span><span class="n">alist</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">alist</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">yield</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然对于这种简单的问题：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">alist</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>参考资料：</p>
+
+<ul>
+<li><a href="http://blog.donews.com/limodou/archive/2006/09/04/1028747.aspx">2.5版yield之学习心得-limodou</a></li>
+<li><a href="http://developer.51cto.com/art/201003/186451.htm">Python yield具体使用方法探讨</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/02/06/gae-filter-truncate/">GAE中使用自定义filter，实现文字截断</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-06T00:00:00+08:00" pubdate data-updated="true">2011-02-06</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>来自于 <a href="http://daily.profeth.de/2008/04/using-custom-django-template-helpers.html">http://daily.profeth.de/2008/04/using-custom-django-template-helpers.html</a>，原网站被墙，故记录于此</p>
+
+<p>目录结构：</p>
+
+<p><img src="/images/blog/filter.png" alt="" /></p>
+
+<p>templatefilters.py实现只显示固定数目文字的功能</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">google.appengine.ext</span> <span class="kn">import</span> <span class="n">webapp</span>
+</span><span class='line'><span class="n">register</span> <span class="o">=</span> <span class="n">webapp</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">create_template_register</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">maxsize</span><span class="p">,</span><span class="n">stopper</span> <span class="o">=</span> <span class="s">&#39;...&#39;</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot; truncates a string to a given maximum</span>
+</span><span class='line'><span class="sd">        size and appends the stopper if needed &quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="n">stoplen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stopper</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxsize</span> <span class="ow">and</span> <span class="n">maxsize</span> <span class="o">&gt;</span> <span class="n">stoplen</span><span class="p">:</span>
+</span><span class='line'>       <span class="k">return</span> <span class="n">value</span><span class="p">[:(</span><span class="n">maxsize</span><span class="o">-</span><span class="n">stoplen</span><span class="p">)]</span> <span class="o">+</span> <span class="n">stopper</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>       <span class="k">return</span> <span class="n">value</span><span class="p">[:</span><span class="n">maxsize</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">register</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">truncate</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>base.py中注册此filter</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">webapp</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">register_template_library</span><span class="p">(</span><span class="s">&#39;common.templatefilters&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>html中可以使用该filter了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">{</span> <span class="p">{</span> <span class="n">somevalue</span><span class="o">|</span><span class="n">truncate</span><span class="p">:</span><span class="mi">20</span> <span class="p">}</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/21/twisted-ssl-server/">基于twisted的SSL服务器开发</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-21T00:00:00+08:00" pubdate data-updated="true">2011-01-21</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><h2>基于OpenSSL建立自己的CA和签发证书</h2>
+
+<p>参考自 <a href="http://rhythm-zju.blog.163.com/blog/static/310042008015115718637/">http://rhythm-zju.blog.163.com/blog/static/310042008015115718637/</a></p>
+
+<p>建立CA目录</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mkdir -p ./demoCA/<span class="o">{</span>private,newcerts<span class="o">}</span>
+</span><span class='line'><span class="nv">$ </span>touch ./demoCA/index.txt
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo </span>01 &gt; ./demoCA/serial
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>生成CA证书的RSA密钥</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>openssl genrsa -des3 -out ./demoCA/private/cakey.pem 2048
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>生成 CA 证书请求</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>openssl req -new -days 365 -key ./demoCA/private/cakey.pem -out careq.pem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对 CA 证书请求进行自签名</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>openssl ca -selfsign -in careq.pem -out cacert.pem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样我们就建立了一个私有根CA，包括密钥文件cakey.pem和由此签名的CA根证书文件cacert.pem</p>
+
+<p>签发证书：</p>
+
+<p>生成客户密钥：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>openssl genrsa -des3 -out userkey.pem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>生成客户证书：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>openssl req -new -days 365 -key userkey.pem -out userreq.pem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>签发客户证书：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>openssl ca -in userreq.pem -out usercert.pem
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意CA证书和客户证书的国家组织等信息要对应相同，人名邮箱之类的不能相同
+我在ubuntu上生成的证书，放到windows上也可以使用。</p>
+
+<h2>基于SSL的twisted服务器：</h2>
+
+<p>参考自 <a href="http://twistedmatrix.com/documents/current/core/howto/ssl.html">http://twistedmatrix.com/documents/current/core/howto/ssl.html</a>
+只要注意将生成的key和证书文件改名后发到相应的文件夹下，然后照搬上面的例子就可以了。</p>
+
+<h2>todo：基于SSL的客户端数据发送程序实现</h2>
+
+<p>项目需要客户端SSL验证后不断向服务器发送数据，参考 <a href="http://twistedmatrix.com/documents/current/web/howto/client.html">这篇文档</a>发现只能发送一条数据，貌似需要自己开发SSL连接，留下记号，等待研究~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/19/hg-optimal-practice/">Hg版本管理最优实践</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-19T00:00:00+08:00" pubdate data-updated="true">2011-01-19</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>使用hg不短时间了，但是一直作为个备份工具来用，今天看到几位牛人的hg实践，很受启发，总结如下</p>
+
+<p><img src="/images/blog/hg.png" alt="" /></p>
+
+<p>上图来源于 <a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a>，利用git来实践基于branch/merge版本管理。</p>
+
+<p>首先整个项目要有两个主分支：master和develop，其中master是产品发布的主分支，要做到足够稳定，不能轻易修改；而develop是程序员用的开发分支，每日构建要在这个分支上做，也要做到稳定。开发完成后merge到master上并打上版本号tag。</p>
+
+<p>三个辅助分支：release、feature和hotfix。</p>
+
+<p>一个新的功能就是一个新的feature分支。</p>
+
+<ul>
+<li>May branch off from: develop</li>
+<li>Must merge back into: develop</li>
+<li>Branch naming convention: anything except master, develop, release-*, or hotfix-*</li>
+</ul>
+
+
+<p>功能完成，准备发布，这时启用release分支，来修改小bug，为发布做准备</p>
+
+<ul>
+<li>May branch off from: develop</li>
+<li>Must merge back into: develop and master</li>
+<li>Branch naming convention: release-*</li>
+</ul>
+
+
+<p>已上线的产品修改bug，启用hotfix分支</p>
+
+<ul>
+<li>May branch off from: master</li>
+<li>Must merge back into: develop and master</li>
+<li>Branch naming convention: hotfix-*</li>
+</ul>
+
+
+<p>应该说整个流程还是比较繁琐的，该文档是基于git的，<a href="https://github.com/nvie/gitflow">git flow</a>是一个比较靠谱的简化流程工具，推荐使用。</p>
+
+<p>我用的是hg，发现也有一个类似的简化工具：<a href="https://bitbucket.org/yinwm/hgflow/wiki/Home">hg flow</a>，试用了一下感觉不错~</p>
+
+<p>使用方法：
+在没有版本管理的工程中</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>hg init#建立hg仓库
+</span><span class='line'>hg flow init#初始化hg flow，自动生成default<span class="o">(</span>master<span class="o">)</span>和develop分支
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要新增功能的时候，name随意</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>hg flow feature start &lt;name&gt;#新建功能分支，会自动切换到该分支上
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>新增功能</p>
+
+<p>使用TortoiseHg的 Repository Explorer查看目前所处分支状况,
+使用TortoiseHg的commit提交功能</p>
+
+<p>功能完成的时候</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>hg flow feature finish &lt;name&gt;#功能完成后使用，会自动merge到develop分支上
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要添加新的功能：重复上两个步骤</p>
+
+<p>如果同时开了多个功能，切换不同功能开发的时候要先切换到该功能的分支</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>hg flow feature change &lt;name&gt;#切换当前分支
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到达预定的功能发布点，name：release-版本号</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>hg flow release start &lt;name&gt;
+</span><span class='line'>hg flow release finish &lt;name&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>只在修改小型bug时使用，如果在hotfix上新建feature的话会导致直接从develop上开分支，hotfix的更改会暂时隐藏，只有在hotfix finish的时候才能merge。
+name：hotfix-版本号.hotfix号</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>hg flow hotfix start &lt;name&gt;
+</span><span class='line'>hg flow hotfix finish &lt;name&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>feature和release要一块使用
+hotfix自己单独使用，不需要再release了</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/14/orbited-not-use-demjson/">Orbited中最好不要使用demjson，会导致twisted报错</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-14T00:00:00+08:00" pubdate data-updated="true">2011-01-14</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>Orbited是一个非常好用的推（comet）服务器，它内置了twisted作为异步服务器，集成了MorbidQ来作为消息队列服务器，对于服务端直接推数据到客户端的应用参考 <a href="http://cometdaily.com/2008/10/10/scalable-real-time-web-architecture-part-2-a-live-graph-with-orbited-morbidq-and-jsio/">这篇文档</a>就可以了。</p>
+
+<p>实际编码中问题来了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">DataProducer</span><span class="p">(</span><span class="n">StompClientFactory</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">recv_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;Connected; producing data&#39;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="n">LoopingCall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">send_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;num&#39;</span><span class="p">,</span> <span class="s">&#39;num&#39;</span><span class="p">:</span><span class="n">random</span><span class="p">()}</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">CHANNEL_NAME</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">reactor</span><span class="o">.</span><span class="n">connectTCP</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">61613</span><span class="p">,</span> <span class="n">DataProducer</span><span class="p">())</span>
+</span><span class='line'>    <span class="n">reactor</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>执行程序的话会报错：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="ne">TypeError</span><span class="p">:</span><span class="n">Data</span> <span class="n">must</span> <span class="ow">not</span> <span class="n">be</span> <span class="nb">unicode</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看twisted源码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span> <span class="c"># no, really, I mean it</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Data must not be unicode&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看注释的意思，好像作者非常强调这个类型啊，不让改就不改呗</p>
+
+<p>再看orbited.json源码：
+提供了cjson、simplejson、demjson的调用</p>
+
+<p>在我本机上实际上调用的是demjson,它序列化的对象是unicode类型的，而我常用的json.dumps()返回的对象是str类型，符合twisted的需要，因此直接使用后者即可。</p>
+
+<p>关于这个bug我已经 <a href="https://bitbucket.org/site/master/issue/2419/demjson-cause-typeerror-in-twisted">提交</a>了，Orbited开发者很活跃，应该很快就会有回应。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/09/vim-plugin/">Vim最佳插件实践</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-09T00:00:00+08:00" pubdate data-updated="true">2011-01-09</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>基本都是直接复制到bundle，然后添加doc帮助</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>：helptags ~/.vim/bundle/something/doc</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2332">pathogen</a> 将插件按文件夹放置，方便管理</h2>
+
+<p>将pathogen放到autoload下</p>
+
+<p>.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">filetype</span> off
+</span><span class='line'><span class="k">call</span> pathogen#runtime_append_all_bundles<span class="p">()</span>&quot;方便管理plugin
+</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=790">python增强语法高亮</a></h2>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=30">python增强编辑</a></h2>
+
+<p>会提供一个python菜单，快捷键也相应提供了</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=159">minibufexpl</a>多标签切换</h2>
+
+<p>.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="c">&quot;&lt;C-hjkl&gt;minibuffer中移动</span>
+</span><span class='line'><span class="k">let</span> g:miniBufExplMapWindowNavVim <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'><span class="c">&quot;&lt;C-TAB&gt; and &lt;C-S-TAB&gt; 直接在当前窗口切换buffer</span>
+</span><span class='line'><span class="k">let</span> g:miniBufExplMapCTabSwitchBufs <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'><span class="c">&quot;防止与Taglist冲突</span>
+</span><span class='line'><span class="k">let</span> g:miniBufExplModSelTarget <span class="p">=</span> <span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1218">NERDCommenter</a>自动注释</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">c</span><span class="p">&lt;</span>space<span class="p">&gt;</span>来切换注释与否
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1658">NERDTree</a>树状菜单</h2>
+
+<p>.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">e</span> :NERDTreeToggle<span class="p">&lt;</span><span class="k">cr</span><span class="p">&gt;</span>
+</span><span class='line'><span class="k">let</span> NERDTreeIgnore<span class="p">=</span>[<span class="s1">&#39;.vim$&#39;</span><span class="p">,</span> <span class="s1">&#39;\~$&#39;</span><span class="p">,</span> <span class="s1">&#39;.*\.pyc$&#39;</span><span class="p">,</span> <span class="s1">&#39;pip-log\.txt$&#39;</span>]
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">e</span>来切换树形菜单显示与否
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://code.google.com/p/xptemplate/">xptemplate</a> Snippet Template engine</h2>
+
+<p>支持嵌套，支持同文件多模板识别</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>C<span class="p">-</span>\<span class="p">&gt;</span>显示模板，<span class="p">&lt;</span>Tab<span class="p">&gt;&lt;</span>S<span class="p">-</span>Tab<span class="p">&gt;</span>切换焦点
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自己更改模板：
+ftplugin下找到对应模板文件，添加新的模板</p>
+
+<p>去掉多余空格：
+.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> g:xptemplate_vars <span class="p">=</span> <span class="c">&quot;SParg=&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Ack 目录文件中查找字符</h2>
+
+<p>安装Ack:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ack-grep
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装 <a href="https://github.com/mileszs/ack.vim">Ack</a>插件
+.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> g:ackprg<span class="p">=</span><span class="s2">&quot;ack-grep -H --nocolor --nogroup --column&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ack something可以在当前目录查找字符</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2981">zencoding</a>扩展html</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;,</span> 扩展
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">n</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">N</span> 到下/上一个输入点
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">d</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span> D选中
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">j</span> 简写标签，也可扩展
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span>i img上使用可以自动添加宽高
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span>a 在连接上可以添加a标签
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1234">YankRing</a>增强型粘贴</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>YRShow显示剪贴板
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">p</span><span class="p">&gt;</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">n</span><span class="p">&gt;</span> 轮番切换剪贴板
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2996">translate</a></h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>Trans翻译光标所在文字
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1697">surround</a>增删改标签</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">ds</span>“ 删除两端的”“
+</span><span class='line'>dst 删除两端的标签
+</span><span class='line'>cs”{ 将两端的“”改为{  } 有空格
+</span><span class='line'>cs”} 将两端的“”改为{} 无空格
+</span><span class='line'>yss<span class="p">)</span> 两端加上<span class="p">()</span>
+</span><span class='line'>ysiw） 将光标所在单词两端加上（）
+</span><span class='line'>配合repeat实现.重复操作
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="https://github.com/jpalardy/dotfiles/raw/master/vim/plugin/slime.vim">slime</a>测试代码段</h2>
+
+<p>终端中建立一个screen</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>screen -S devshell
+</span><span class='line'>python
+</span><span class='line'>
+</span><span class='line'>选中代码，&lt;C-c&gt;&lt;C-c&gt;可以在screen中查看运行情况。
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>screen的使用可以参看：
+http://hi.baidu.com/ubuntu2me/blog/item/ce61b23798a5a93b0b55a960.html
+http://wiki.ubuntu.org.cn/GNUScreen
+http://www.9usb.net/201002/linux-screen-mingling.html</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2914">pep8</a>代码静态检查</h2>
+
+<p>需要先安装工具 &#8220;pep8&#8221;:http://github.com/cburroughs/pep8.py
+F5 安装pep8规则检查代码</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2527">jpythonfold</a>代码折叠</h2>
+
+<p>需要重命名为python.vim
+.vimrc中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>nnoremap <span class="p">&lt;</span>space<span class="p">&gt;</span> za
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>空格 折叠、打开代码段
+zr 打开所有折叠
+zm 所有折叠</p>
+
+<p>js代码折叠</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> javaScript_fold<span class="p">=</span><span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://ctags.sourceforge.net/">ctags</a>+ <a href="http://www.vim.org/scripts/script.php?script_id=273">taglist</a>展示代码结构</h2>
+
+<p>安装ctags，在要生成tags的目录下ctags -R
+安装taglist插件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>TlistToggle切换<span class="k">tags</span>显示与否
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2607">tasklist</a>显示todo列表</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">t</span> 打开todo列表
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/24/mark-time-to-plant-and-build/">盖房子种树记好时间</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-24T00:00:00+08:00" pubdate data-updated="true">2010-12-24</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><h2>问题描述</h2>
+
+<p>设想以下场景：盖个房子，房子需要m秒才能盖好；然后种了棵树，树需要n秒才能长好。盖房子、种树等行为都是连续的操作，手动即可，不能间断，而时间的存储一般人是需要存到脑子中，或者记到笔记本上，或者定个闹钟。时间到后再进行相应的处理。</p>
+
+<h2>解决方案</h2>
+
+<p>模拟人的行为：手动操作作为主线程顺序执行，需要存储时间时开启新的一个线程来保存时间并计时（也就是说两者需要做到异步）。仅仅存储时间是不够的，还需要将该时间所对应的状态信息保存下来，以供时间到后的下步操作。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;等待线程</span>
+</span><span class='line'><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
+</span><span class='line'><span class="sd">        name如果已存在，则会覆盖原来的</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
+</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">TimeThread</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
+</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;farm1&#39;</span><span class="p">,</span> <span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
+</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 结果如下：</p>
+
+<p><img src="/images/blog/plant_build.png" alt="" /></p>
+
+<p>改进了一下代码，去掉了不必要的线程名，这样就不用去考虑命名重复的问题了。另外把线程类简化成一个内部函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="p">))</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
+</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
+</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/24/draw-algorithm/">算法时间复杂度直观展示</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-24T00:00:00+08:00" pubdate data-updated="true">2010-12-24</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>整天看算法复杂度说什么冒泡排序o(N*N)，快排o(NlogN)，今天有空实际画了下，还真是差别挺大的。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span><span class='line'><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">s1</span> <span class="o">=</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span>
+</span><span class='line'><span class="n">s2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="s">&#39;b-&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="s">&#39;r-&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s">r&#39;$n^2$&#39;</span><span class="p">,</span> <span class="s">&#39;nlog(n)&#39;</span><span class="p">),</span> <span class="n">shadow</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 效果：</p>
+
+<p><img src="/images/blog/algorithm.png" alt="" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/17/python-embed-web-browser/">python嵌入IE浏览器</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-17T00:00:00+08:00" pubdate data-updated="true">2010-12-17</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>今天在研究visual studio 2008中的WebBroswer时忽然想到，对于我的简单需求（只想在程序中嵌入一个浏览器，而不是开发一个浏览器程序与Chrome、Firefox竞争）来说，只需要简单的调用IE就可以了（我的程序只是针对windows用户），这样的另一个好处是如果用户用IE曾经载入过的文件（如Flash游戏），用我的嵌入式浏览器就不用再次载入的。比以前的思路更符合我的需求，因此我决定顺着这个思路找找看，结果发现人家wxpython早就有了web.lib.iewin，骑驴找驴的事情再次发生~</p>
+
+<p>关键代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">ie</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">iewin</span><span class="o">.</span><span class="n">IEHtmlWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打开网页：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">ie</span><span class="o">.</span><span class="n">LoadUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此简单~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/17/help-tortoisehg/">为tortoisehg出把力</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-17T00:00:00+08:00" pubdate data-updated="true">2010-12-17</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p><a href="https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484">https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484</a></p>
+
+<p>开源项目：tortoisehg</p>
+
+<p>bug内容：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#936 ImportError: MemoryLoadLibrary failed loading win32api.pyd
+</span><span class='line'>Reported by Dmitry Zanozin / dmitryzan, created 10 months ago.
+</span><span class='line'>I've received error message on startup of my WinXP after reboot just after install of the latest nightly build tortoisehg-unstable-0.9.35067-hg-1.4.3+67-07bd7608a0ea.exe
+</span><span class='line'>There was a suggestion to examine thgtaskbar.exe.log file:
+</span><span class='line'>thgtaskbar.exe.log
+</span><span class='line'>Traceback (most recent call last):
+</span><span class='line'>File "thgtaskbar.py", line 13, in &lt;module&gt;
+</span><span class='line'>File "zipextimporter.pyo", line 98, in load_module
+</span><span class='line'>ImportError: MemoryLoadLibrary failed loading win32api.pyd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>偶的解决方案：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>istonelee
+</span><span class='line'>written about a month ago
+</span><span class='line'>when I use py2exe to create my project,I receive the same error.I analyse the depends of this dll,and found that py2exe makes some mistakes that include mswsock.dll and powrprof.dll into the library. and my solution is modify the setup.py
+</span><span class='line'>'dll_excludes': [ "mswsock.dll", "powrprof.dll" ]
+</span><span class='line'>hope my experience could be any useful :)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>被作者采纳了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Steve Borho / sborho
+</span><span class='line'>written about a month ago
+</span><span class='line'>That is interesting that it causes the same error for you. I've added those two and several more DLLs to the dll_excludes list in the setup.cfg file. setup.cfg hasn't changed in 9 months, since 1.0 was released.
+</span><span class='line'>http://bitbucket.org/tortoisehg/thg-winbuild/src/tip/misc/setup.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So Happy~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/5/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/3/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+	<h1>Who&#8217;s stonelee</h1>
+	<a href="/about"><img src="/images/stonelee.jpg"/></a>
+	<p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
+	<p>
+		<a href="http://www.douban.com/people/istonelee/">豆瓣</a>
+		<a href="http://www.renren.com/profile.do?id=72210924">人人</a>
+		<a target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
+			<img border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
+		</a>
+	</p>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<!-- JiaThis Button BEGIN -->
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jiathis_r.js?move=0&amp;uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

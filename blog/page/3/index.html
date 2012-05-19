@@ -1,0 +1,1599 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+<meta name="ujianVerification" content="5372635df695f3c8ff259dfdc1d8dd96" />
+  <title>Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="对于word中存在合并单元格的表格： 下图是对Cells遍历的结果，True表示该行该列的单元格存在，False表示不存在。 可以看到，word表格中行和列的合并单元格（Merge）机制是不一样的。
+Cells数组在计算时会无视行中的合并，将合并单元格作为普通格，依次进行存储， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.info/blog/page/3">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.info" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/08/analysis-complicated-cell-of-word/">如何解析word中存在合并单元格的表格</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">2011-04-08</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>对于word中存在合并单元格的表格：</p>
+
+<p><img src="/images/blog/table.png" alt="" /></p>
+
+<p>下图是对Cells遍历的结果，True表示该行该列的单元格存在，False表示不存在。</p>
+
+<p><img src="/images/blog/cells.png" alt="" /></p>
+
+<p>可以看到，word表格中行和列的合并单元格（Merge）机制是不一样的。
+Cells数组在计算时会无视行中的合并，将合并单元格作为普通格，依次进行存储，合并后空出的项排在本行的最后。
+而在计算列时，会在第一次遇到合并单元格时将其进行存储，其后遇到时保留其指针，但是将该格剔除（不太好描述，可以理解为将其作为None值保存）。这是符合我们一般理解的。</p>
+
+<p>问题来了：
+在存在合并单元格的行中，如何知晓哪些行被合并？</p>
+
+<p>从网上搜索解决方案，在 <a href="http://www.xtremevbtalk.com/showthread.php?t=307600">这篇帖子</a>中提到,在word可以支持合并单元格操作之前，VBA中就实现了table对象，但是一直没有升级。因此当表格中存在合并单元格时，表格内容无法完整获取。</p>
+
+<p>目前想到的思路是判断每个单元格的宽度，用单元格数量完整的行做参照，判断单元格数量不全的行每个单元格的宽度，但是这个方案只对标准的合并单元格有效，宽度略微有所调整就不行了。</p>
+
+<p>Excel没有这种问题，难道Word的表格就是个纯粹的杯具吗？</p>
+
+<p>解决方案待续~，期待大牛解答。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/01/lxml-xpath-text-trap/">Lxml中xpath的text()陷阱</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-01T00:00:00+08:00" pubdate data-updated="true">2011-04-01</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>lxml中使用xpath方法获取html标签中的内容时经常会使用text()</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">tree</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+</span><span class='line'><span class="n">s</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;//p[@id=&quot;lk&quot;]/a[3]/text()&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段代码是从百度首页html中解析hao123这段文字。</p>
+
+<p>使用一下这个变量s，很普通吧~</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">s</span>
+</span><span class='line'><span class="n">hao123</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">==</span><span class="s">&#39;hao123&#39;</span>
+</span><span class='line'><span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是如果想把这个变量使用pickle序列化</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">pickle</span>
+</span><span class='line'><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>报错了~</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="ne">TypeError</span><span class="p">:</span><span class="n">can</span><span class="s">&#39;t pickle _Element objects</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为什么呢？</p>
+
+<p>我们被s==&#8217;hao123&#8217;骗了，这个s并不是str类型，而是lxml.etree._ElementStrinResult类型，比str多了getparent、is_text等多个方法，pickle对这个类型不能识别，因此转换一下类型即可。</p>
+
+<p>自己写个转换类型函数</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="n">nodes</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="nb">unicode</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;text()&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以后需要使用text()的时候，改为调用这个函数了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">nodes</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;//p[@id=&quot;lk&quot;]/a[3]&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">s</span> <span class="o">=</span> <span class="n">get_text</span><span class="p">(</span><span class="n">nodes</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>总结</h2>
+
+<p>在pickle时，请谨慎使用text()</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/31/python-string-format/">Python字符串格式化小结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-31T00:00:00+08:00" pubdate data-updated="true">2011-03-31</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>将python字符串格式化方法以例子的形式表述如下：</p>
+
+<p>定义宽度</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;</span><span class="si">%*s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s">&#39;some&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="s">&#39; some&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>左对齐</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;</span><span class="si">%-*s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s">&#39;some&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="s">&#39;some &#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最小宽度为6的2位精度的浮点小数，位数不够时前补空格</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;</span><span class="si">%6.2f</span><span class="s">&#39;</span> <span class="o">%</span><span class="mf">8.123</span>    
+</span><span class='line'><span class="s">&#39;  8.12&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>字典形式，可在正数前显示加号，位数不够时前面补0</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;</span><span class="si">%(name)s</span><span class="s"> = </span><span class="si">%(num)+06.2f</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;num&#39;</span><span class="p">:</span><span class="mf">8.123</span><span class="p">}</span>
+</span><span class='line'><span class="s">&#39;a = +08.12&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在八进制数前面显示零(&#8216;0&#8217;),在十六进制前面显示&#8217;0x&#8217;或者&#8217;0X&#8217;(取决于用的是&#8217;x&#8217;还是&#8217;X&#8217;)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;dec: </span><span class="si">%d</span><span class="s">/oct: </span><span class="si">%#o</span><span class="s">/hex: </span><span class="si">%#X</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">123</span><span class="p">,</span><span class="mi">123</span><span class="p">,</span><span class="mi">123</span><span class="p">)</span>
+</span><span class='line'><span class="s">&#39;dec: 123/oct: 0173/hex: 0X7B&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>科学计数法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;</span><span class="si">%e</span><span class="s">&#39;</span> <span class="o">%</span> <span class="mf">1234.567890</span>
+</span><span class='line'><span class="s">&#39;1.234568e+03&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/31/not-professional-python-program-method/">非专业python编程方法小结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-31T00:00:00+08:00" pubdate data-updated="true">2011-03-31</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>本人是非计算机专业毕业的非专业程序员，毕业后也是在非专业软件公司从事业余编码工作，总结的这套编程方法可能会不入某些牛人的法眼，请指点~</p>
+
+<h2>1.明确需求</h2>
+
+<p>搞清楚到底想做什么，即程序最终要实现的功能。需求越简单明确越好，功能越单一越好。</p>
+
+<blockquote><p>Simple is better than complex</p></blockquote>
+
+<h2>2.功能分解</h2>
+
+<p>将目标分解出可以实现的步骤，然后将每个步骤细化为函数(function)，如果某些函数显而易见是一个性质的，可以归结到一个类中，那就没什么说的，就放到一个类中。不提前设计类，不做总体类划分。</p>
+
+<h2>3.命令行尝试相关API的用法</h2>
+
+<p>由于本人非专业程序猿，记忆力不咋地，偏偏兴趣广泛，桌面网络数据库游戏服务器算法都略懂，因此经常需要在命令行中配合API及相关文档写些脚本来尝试其用法。专家及熟手可以省略此步骤。</p>
+
+<h2>4.快速开发</h2>
+
+<p>终于可以开始写代码了，首先打开最喜欢的文本编辑器，本人是Vim，因为够轻便够好用。把第三步尝试得出的脚本填到第二步分解出来的每个函数中，有重复的坏味道出现时就抽出来函数之，有新的类冒出来时就类之。一切都是顺其自然，让代码影响程序的结构。</p>
+
+<h2>5.单元测试</h2>
+
+<p>对于辅助性质的函数，比如文字串变换或列表调整之类的，都直接在doctest里写测试，对于功能性质的函数，比如类中的各接口函数，新建个test文件测试之，之后nosetests即可。</p>
+
+<h2>6.重构！</h2>
+
+<p>由于没有类设计阶段（鄙人认为这是基本上根本不需要的，第二步功能分解实际上就是类设计阶段的简化版），代码自己随心所欲产生出来的程序往往结构上有问题，在项目越来越大，函数越来越多的时候会产生坏味道，这就是重构的好机会了。通过重构将函数归到类中，将类分到不同包中，在单元测试基础上的重构是很开心的，每次重构都是对项目又一次深入理解的机会，都是项目脱胎换骨的机会。当然，世上没有完美，在满足项目需求的前提下做到适当扩展就可以了，要适合而止。应该牢记“如无必要，勿增实体”，重构需谨慎，全靠自己把握。</p>
+
+<p>写代码应该是很自然，很美好的事情，应该没有那么多刻板的步骤，没有必要套用那么多设计模式、类的条条框框。顺其自然，随心而变就好。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/22/windows-compile-sphinx-doc/">Windows下编译开源代码中的sphinx文档</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-22T00:00:00+08:00" pubdate data-updated="true">2011-03-22</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>许多python开源代码clone下来后会发现里面附带docs，有许多是Sphinx格式的帮助文件，可以将其编译为html以便在本地查看。</p>
+
+<p>编译sphinx文档的方法很简单，首先安装Sphinx</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>easy_install Sphinx
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在docs目录下编译</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>make html
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就会在build生成html样式的帮助文档。</p>
+
+<p>在windows下如果目录中没有make.bat文件，会报错：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="err">&#39;</span>make’不是内部或外部命令，也不是可运行的程序或批处理文件。
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决方案：新建目录</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>md temp
+</span><span class='line'><span class="nb">cd </span>temp
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>生成sphinx脚手架</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sphinx-quickstart
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后将生成的make.bat复制到原来文档目录下，然后make html。</p>
+
+<p>有时候会报错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Error:Cannot find <span class="nb">source </span>directory
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这是因为配置路径有问题，按照提示进行相应配置即可。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/21/data-transfer-based-on-signature/">基于签名的数据传输</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-21T00:00:00+08:00" pubdate data-updated="true">2011-03-21</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>来自PyCon上的演讲：</p>
+
+<p><a href="http://www.slideshare.net/doughellmann/hidden-treasures-of-the-python-standard-library">Hidden Treasures of the Standard Library</a></p>
+
+<p>发送方：</p>
+
+<ul>
+<li>pickle序列化</li>
+<li>生成md5签名</li>
+<li>生成包，格式&#8221;签名\n数据长度\n数据&#8221;</li>
+</ul>
+
+
+<p><strong>数据传输</strong></p>
+
+<p>接收方：</p>
+
+<ul>
+<li>解析数据包</li>
+<li>根据解析出来的数据生成签名</li>
+<li>将新生成的签名与数据包中的签名对比，如果正确说明无篡改, 否则抛出异常</li>
+<li>pickle反序列化</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">hmac</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">pickle</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">h</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">##########send##########</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">send_buffer</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>    <span class="c">#模拟数据传输</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">StringIO</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%d</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">msg</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">send_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">msg</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">signature</span> <span class="o">=</span> <span class="n">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">send_buffer</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">##########get##########</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">parse_buffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">signature</span> <span class="o">=</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="c">#strip \n</span>
+</span><span class='line'>    <span class="n">msg_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">buffer</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+</span><span class='line'>    <span class="n">msg</span> <span class="o">=</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">msg_length</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">signature</span><span class="p">,</span> <span class="n">msg</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">check_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">new_signature</span> <span class="o">=</span> <span class="n">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">new_signature</span> <span class="o">==</span> <span class="n">signature</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">msg</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;signature error&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">buffer</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">signature</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">parse_buffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">message</span> <span class="o">=</span> <span class="n">check_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;some_message&#39;</span>
+</span><span class='line'><span class="n">key</span> <span class="o">=</span> <span class="s">&#39;some_key&#39;</span>
+</span><span class='line'><span class="nb">buffer</span> <span class="o">=</span> <span class="n">send_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="n">get_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">buffer</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/18/hidden-features-in-python/">你可能所不知道的python中有用的特性</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-18T00:00:00+08:00" pubdate data-updated="true">2011-03-18</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>来自stackoverflow中python标签下按投票数排列第一位的问题：
+<a href="http://stackoverflow.com/questions/101268/hidden-features-of-python?tab=votes#tab-top">Hidden features of Python</a></p>
+
+<blockquote><p>题记：我们没有黑魔法，我们是可读的。</p>
+
+<p>Python is a dynamically and strongly typed programming language that encourages readability.</p></blockquote>
+
+<h2>1.链式操作符，要注意执行顺序问题，方法是加括号。</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="mi">10</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">20</span>
+</span><span class='line'><span class="bp">False</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">&lt;</span> <span class="n">x</span><span class="o">*</span><span class="mi">10</span> <span class="o">&lt;</span> <span class="mi">100</span>
+</span><span class='line'><span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>2.debug regex</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="s"> ^              # start of a line</span>
+</span><span class='line'><span class="s"> \[font         # the font tag</span>
+</span><span class='line'><span class="s"> (?:=(?P&lt;size&gt;  # optional [font=+size]</span>
+</span><span class='line'><span class="s"> [-+][0-9]{1,2} # size specification</span>
+</span><span class='line'><span class="s"> ))?</span>
+</span><span class='line'><span class="s"> \]             # end of tag</span>
+</span><span class='line'><span class="s"> (.*?)          # text between the tags</span>
+</span><span class='line'><span class="s"> \[/font\]      # end of the tag</span>
+</span><span class='line'><span class="s"> &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DEBUG</span><span class="o">|</span><span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="o">|</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另附name match：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;(?P&lt;word&gt;\b\w+\b)&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">search</span><span class="p">(</span> <span class="s">&#39;(((( Lots of punctuation )))&#39;</span> <span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&#39;word&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="s">&#39;Lots&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>3.generator object</h2>
+
+<p>可以节省内存，但是只能使用一次</p>
+
+<h2>4.同时yield列表中的项和序号。</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">,</span> <span class="s">&#39;e&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">a</span><span class="p">):</span> <span class="k">print</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>5.iter() can take a callable argument</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">seek_next_line</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>6.Decorators</h2>
+
+<p>下面的评论中有人说这已经不算太hidden了</p>
+
+<h2>7.yield中send的使用</h2>
+
+<h2>8.</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>  <span class="c"># iterate over the whole list in 2-increments</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>反转</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对比</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span><span class="c">#这种方法返回的是iterator</span>
+</span><span class='line'><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>9.默认参数可能会变</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[]):</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="o">...</span>     <span class="k">print</span> <span class="n">x</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Instead, you should use a sentinel value denoting &#8220;not given&#8221; and replace with the mutable you&#8217;d like as default:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</span><span class='line'><span class="o">...</span>     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>         <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="o">...</span>     <span class="k">print</span> <span class="n">x</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>默认参数不过是函数的一个属性foo.func_defaults而已，因此对于list类型的可能会变动</p>
+
+<h2>10.defaultdict可以增强dict</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;yellow&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;yellow&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span class='line'><span class="p">[(</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s">&#39;yellow&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>相当于</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">d</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对于列表中的每个key，如果该defaultdict中不存在，会使用default_factory来创建该值</p>
+
+<h2>11.for..else</h2>
+
+<p>对于丑陋的代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">foo</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>        <span class="k">break</span>
+</span><span class='line'><span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;i was never 0&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以使用下面代码来替代</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">foo</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">break</span>
+</span><span class='line'><span class="k">else</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;i was never 0&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>else在for循环从来没有break时调用，有人提议这个关键字else实际上用finally更合适。</p>
+
+<h2>12.值替换，“，”隐含的构成了一个tuple</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+</span><span class='line'><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+</span><span class='line'><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/07/make-electronic-stamp/">菜鸟制作电子印章经验小结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-07T00:00:00+08:00" pubdate data-updated="true">2011-03-07</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>在这个神奇的国度，有时候需要制作电子印章来应急。
+本人是PS菜鸟，现学现卖，将电子印章的制作方案总结如下。</p>
+
+<blockquote><p>特别注明:本文仅用于研究和学习，禁止用于非法用途或其他目的,本人对此不负任何法律责任,一切违法后果与本人无关。</p></blockquote>
+
+<h2>1.软件印章大师制作印章</h2>
+
+<p>新建一个圆形章，根据要制作的印章样式调整文字大小和位置，颜色选红色，默认生成的是蓝色印章。导出为bmp文件。</p>
+
+<h2>2.Photoshop做旧</h2>
+
+<ul>
+<li>打开之前的bmp文件</li>
+<li>alt+鼠标滚轮可以缩放图片</li>
+<li>用“魔棒”工具选中文字和印章部分，按住shift可以多选。</li>
+<li>滤镜-画笔描边-喷溅，增加边缘的毛刺,夸张点即可，缩小后才能显示出效果来</li>
+<li>滤镜-模糊-高斯模糊，明显减淡颜色</li>
+</ul>
+
+
+<p>其余技巧：</p>
+
+<ul>
+<li>油漆桶，填充比较暗比较浅的红色，显示做旧的效果。</li>
+<li>滤镜-纹理-颗粒-柔和，适当加点小点</li>
+<li>滤镜-锐化-智能锐化，适当加点小白点</li>
+<li>如果觉得白点太均匀了，用铅笔自己描写点</li>
+<li>减淡工具，减淡半边</li>
+</ul>
+
+
+<h2>3.导出gif白色为透明</h2>
+
+<p>文件-存储为Web和设备所用格式-GIF-选中透明度-选中颜色表右下角的白色小块-将选中的颜色映射为透明-存储</p>
+
+<h2>4.word中插入改图片</h2>
+
+<p>插入图片-文字环绕-衬于文字下方，将图片大小设为4.2厘米，适当旋转，放到合适的文档位置。</p>
+
+<p>制作电子印章和一般的作图不一样，印章越旧、越模糊，显得越真实。</p>
+
+<p><img src="/images/blog/stamp.png" alt="" /></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/04/python-invoke-vba/">python调用VBA心得</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-04T00:00:00+08:00" pubdate data-updated="true">2011-03-04</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>接上篇，在继续优化过程中发现几个问题，记述如下：</p>
+
+<h3>更改表格某行的字体，如果此表格中有合并单元格，会报错：</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"无法访问此集合中单独的行，因为表格有纵向合并的单元格。"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>经研究，不能使用如下语句</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决方案：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SelectRow</span><span class="p">()</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selectin</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">Size</span><span class="o">=</span><span class="mi">18</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很多操作都可以用“先选择再操作”的方法来间接实现。</p>
+
+<p>但是要注意，使用Select前后一定要保存好鼠标的位置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">pos</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Start</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在操作完后要恢复鼠标。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SetRange</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>如果想使用constants里的word常量，应该使用makepy</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">gencache</span><span class="o">.</span><span class="n">EnsureDispatch</span><span class="p">(</span><span class="s">&#39;Word.Application&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后就可以像这样调用了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">InsertBreak</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">wdPageBreak</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://oreilly.com/catalog/pythonwin32/chapter/ch12.html">这里有篇讲COM高级用法的文章</a>，值得一看</p>
+
+<h3>Selection返回的貌似是刚操作的元素</h3>
+
+<h3>Tables(1)和Tables[ 0]是一样的</h3>
+
+<h3>对于大的文件，会在执行VBA的过程中显示“拼写或语法错误太多”这样的对话框，这会影响脚本的正常运行，解决方法是在打开文件后</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">GrammarChecked</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">SpellingChecked</span> <span class="o">=</span> <span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>性能优化</h3>
+
+<p>在文档很大的情况下，word的自动分页等可视化步骤会极大地减慢速度，因此需要将不必要的功能暂时去掉。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">View</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">wdNormalView</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">Options</span><span class="o">.</span><span class="n">Pagination</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="bp">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原来完整格式化一段表格需要100多s，现在只需58s了，有意思的是，如果将word的Visible设为False，速度反而有所下降。估计是操作系统自动将后台操作程序的CPU和内存使用优先级下调的缘故。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/02/25/many-excel-to-one-word/">多Excel文件导入到一个word</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-25T00:00:00+08:00" pubdate data-updated="true">2011-02-25</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><h2>需求</h2>
+
+<p>多个Excel分布在不同文件夹下，每个Excel又有多个sheet表，现在需要把这些Excel一起汇总到一个word里。</p>
+
+<h2>探索</h2>
+
+<p>直接复制粘贴既麻烦又无聊，上网搜所相关方法竟然没有，难道我这个需求很少见吗？找到一个国外软件<a href="http://www.coolutils.com/totalexcelconverter">ExcelConverter</a>（售价$49.9）,发现转换后货币格式的文字完全变成乱码。还是自己写吧，编码测试花了两个小时搞定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;covert many excel files to one word file</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">win32com.client</span> <span class="kn">import</span> <span class="n">Dispatch</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">wdPageBreak</span> <span class="o">=</span> <span class="mi">7</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">isExcelFile</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;.xls&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">filesInDir</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+</span><span class='line'>    <span class="c">#generate absolute paths of files in a directory</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">findExcels</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">isExcelFile</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">yield</span> <span class="n">name</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filesInDir</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">isExcelFile</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+</span><span class='line'>                    <span class="k">yield</span> <span class="nb">file</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">ExcelToWord</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excelNames</span><span class="p">,</span> <span class="n">wordName</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_createExcel</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excelNames</span> <span class="o">=</span> <span class="n">findExcels</span><span class="p">(</span><span class="n">excelNames</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_createWord</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Documents</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">wordName</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_createExcel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">(</span><span class="s">&#39;Excel.Application&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="c">#self.excel.Visible = True</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">DisplayAlerts</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_createWord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">(</span><span class="s">&#39;Word.Application&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Visible</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">DisplayAlerts</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">excelName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">excelNames</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">print</span> <span class="s">&#39;coverting&#39;</span><span class="p">,</span> <span class="n">excelName</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Workbooks</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">excelName</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Worksheets</span><span class="o">.</span><span class="n">count</span><span class="p">):</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Worksheets</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span><span class="c">#start from 1</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">_paste</span><span class="p">()</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Workbooks</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Quit</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;covert is over&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="c"># select all contents in one sheet and copy</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Cells</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Copy</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="c">#paste to one word file and add a page break</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Paste</span><span class="p">()</span>
+</span><span class='line'>        <span class="c">#self.word.Selection.TypeParagraph()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">InsertBreak</span><span class="p">(</span><span class="n">wdPageBreak</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">excelNames</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>                <span class="s">u&#39;c:</span><span class="se">\\</span><span class="s">users</span><span class="se">\\</span><span class="s">lxd</span><span class="se">\\</span><span class="s">desktop</span><span class="se">\\</span><span class="s">文档&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s">u&#39;c:</span><span class="se">\\</span><span class="s">users</span><span class="se">\\</span><span class="s">lxd</span><span class="se">\\</span><span class="s">desktop</span><span class="se">\\</span><span class="s">汇总.xls&#39;</span><span class="p">,]</span>
+</span><span class='line'>    <span class="n">wordName</span> <span class="o">=</span> <span class="s">r&#39;c:\users\lxd\desktop\1.doc&#39;</span>
+</span><span class='line'>    <span class="n">e</span> <span class="o">=</span> <span class="n">ExcelToWord</span><span class="p">(</span><span class="n">excelNames</span><span class="p">,</span> <span class="n">wordName</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">e</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+	<h1>Who&#8217;s stonelee</h1>
+	<a href="/about"><img src="/images/stonelee.jpg"/></a>
+	<p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
+	<p>
+		<a href="http://www.douban.com/people/istonelee/">豆瓣</a>
+		<a href="http://www.renren.com/profile.do?id=72210924">人人</a>
+		<a target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
+			<img border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
+		</a>
+	</p>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<!-- JiaThis Button BEGIN -->
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jiathis_r.js?move=0&amp;uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

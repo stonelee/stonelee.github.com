@@ -1,0 +1,1746 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+<meta name="ujianVerification" content="5372635df695f3c8ff259dfdc1d8dd96" />
+  <title>Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="如何在python应用程序中嵌入浏览器？google半天之后发现 wxWebKit 是一个相对给力的webkit封装，虽然也有相当多的不足之处，但是对于简单的html渲染是没用问题的，直接给出代码。 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.info/blog/page/5">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.info" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/08/wxwebkit-simple-web-browser/">基于wxwebkit实现简单的浏览器</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-08T00:00:00+08:00" pubdate data-updated="true">2010-12-08</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>如何在python应用程序中嵌入浏览器？google半天之后发现 <a href="http://wxwebkit.wxcommunity.com/">wxWebKit</a> 是一个相对给力的webkit封装，虽然也有相当多的不足之处，但是对于简单的html渲染是没用问题的，直接给出代码。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">wx</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">wx.webview</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">webview</span><span class="o">.</span><span class="n">WebView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">btnLoad</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">u&#39;进入&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnLoadClick</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">btnLoad</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Center</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">setupBox</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">u&#39;基本设置&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">setupSizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBoxSizer</span><span class="p">(</span><span class="n">setupBox</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">setupSizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">setupSizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnLoad</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">mainSizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">mainSizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">setupSizer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">mainSizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">html</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">mainSizer</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">OnLoadClick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">LoadURL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">GetValue</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">PySimpleApp</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">main</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">main</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输入www.baidu.com没有问题，如果登录的话就杯具了&#8230;还有很多工作要做&#8230;貌似没有flash，没有cookie&#8230;希望有人能在这个基础上继续完善。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/11/17/use-cscope-in-vim-to-query-python-project/">Windows使用vim插件cscope查询python项目</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-11-17T00:00:00+08:00" pubdate data-updated="true">2010-11-17</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>cscope可以方便的查找函数在哪里被调用，或者标签在哪些地方出现过，vim可以对其进行很好的集成。</p>
+
+<ol>
+<li>首先确保vim支持cscope，否则需要重新编译一下。</li>
+<li>下载cscope的windows版本，将其解压缩，然后设置到环境变量里。</li>
+<li>下载vim插件 <a href="http://cscope.sourceforge.net/cscope_maps.vim">cscope_maps</a> ，放到plugin里。</li>
+<li>生成索引数据库文件。默认情况下cscope只认识c文件，为了保证我可爱的python使用，需要自己生成files文件来告诉cscope。windows下没有好用的find命令，所以自己写个，代码如下：</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="sd">&#39;&#39;&#39;生成cscope.files并生成out文件</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">PATH</span><span class="o">=</span> <span class="s">r&#39;C:\Users\lxd\Desktop\register&#39;</span>
+</span><span class='line'><span class="n">FILE_TYPE_LIST</span><span class="o">=</span> <span class="p">[</span><span class="s">&#39;py&#39;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'>    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;cscope.files&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">root</span><span class="p">,</span><span class="n">dirs</span><span class="p">,</span><span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">PATH</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">FILE_TYPE_LIST</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">file_type</span><span class="p">:</span>
+</span><span class='line'>                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="nb">file</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;cscope -bk&#39;</span>
+</span><span class='line'>    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用时需要将这个文件放到项目目录下，然后更改PATH路径，程序会自动生成cscope.files文件和cscope.out文件，其中cscope.out就是要使用的索引了。</p>
+
+<p>5.打开vim，</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">:</span><span class="n">cscope</span> <span class="n">add</span> <span class="n">cscope</span><span class="o">.</span><span class="n">out</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>数据库就成功添加了。</p>
+
+<p>@现在在函数名上ctrl+\ 然后s@<br/>
+函数调用都出来了吧&#8230;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/11/02/python-project-pack-in-windows/">Windows下python打包完整解决方案</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-11-02T00:00:00+08:00" pubdate data-updated="true">2010-11-02</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>最近想把写的python代码打包，以供没用安装python环境的同事使用，需求如下：</p>
+
+<ul>
+<li>无python环境也可执行</li>
+<li>文件尽量少，不要太乱</li>
+<li>程序体积尽量小</li>
+<li>如果需要更新的话重复类库不用更新</li>
+</ul>
+
+
+<p>采用方案如下：</p>
+
+<ol>
+<li>使用py2exe自动导入类库</li>
+<li>使用7-ZIP压缩library</li>
+<li>upx压缩dll等文件</li>
+<li>nsis生成安装文件</li>
+<li>采用md5验证的方式判别不用更新的类库</li>
+</ol>
+
+
+<h2>使用py2exe自动导入类库</h2>
+
+<p>建立文件bin_setup.py</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">distutils.core</span> <span class="kn">import</span> <span class="n">setup</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">py2exe</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># If run without args, build executables, in quiet mode.</span>
+</span><span class='line'><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;py2exe&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;-q&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">INCLUDES</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">MANIFEST_TEMPLATE</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="s">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span>
+</span><span class='line'><span class="s">&lt;assembly xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot; manifestVersion=&quot;1.0&quot;&gt;</span>
+</span><span class='line'><span class="s">  &lt;assemblyIdentity</span>
+</span><span class='line'><span class="s">    version=&quot;5.0.0.0&quot;</span>
+</span><span class='line'><span class="s">    processorArchitecture=&quot;x86&quot;</span>
+</span><span class='line'><span class="s">    name=&quot;</span><span class="si">%(prog)s</span><span class="s">&quot;</span>
+</span><span class='line'><span class="s">    type=&quot;win32&quot;</span>
+</span><span class='line'><span class="s">  /&gt;</span>
+</span><span class='line'><span class="s">  &lt;description&gt;</span><span class="si">%(prog)s</span><span class="s">&lt;/description&gt;</span>
+</span><span class='line'><span class="s">  &lt;trustInfo xmlns=&quot;urn:schemas-microsoft-com:asm.v3&quot;&gt;</span>
+</span><span class='line'><span class="s">    &lt;security&gt;</span>
+</span><span class='line'><span class="s">      &lt;requestedPrivileges&gt;</span>
+</span><span class='line'><span class="s">        &lt;requestedExecutionLevel</span>
+</span><span class='line'><span class="s">            level=&quot;asInvoker&quot;</span>
+</span><span class='line'><span class="s">            uiAccess=&quot;false&quot;&gt;</span>
+</span><span class='line'><span class="s">        &lt;/requestedExecutionLevel&gt;</span>
+</span><span class='line'><span class="s">      &lt;/requestedPrivileges&gt;</span>
+</span><span class='line'><span class="s">    &lt;/security&gt;</span>
+</span><span class='line'><span class="s">  &lt;/trustInfo&gt;</span>
+</span><span class='line'><span class="s">  &lt;dependency&gt;</span>
+</span><span class='line'><span class="s">    &lt;dependentAssembly&gt;</span>
+</span><span class='line'><span class="s">      &lt;assemblyIdentity</span>
+</span><span class='line'><span class="s">            type=&quot;win32&quot;</span>
+</span><span class='line'><span class="s">            name=&quot;Microsoft.VC90.CRT&quot;</span>
+</span><span class='line'><span class="s">            version=&quot;9.0.21022.8&quot;</span>
+</span><span class='line'><span class="s">            processorArchitecture=&quot;x86&quot;</span>
+</span><span class='line'><span class="s">            publicKeyToken=&quot;1fc8b3b9a1e18e3b&quot;&gt;</span>
+</span><span class='line'><span class="s">      &lt;/assemblyIdentity&gt;</span>
+</span><span class='line'><span class="s">    &lt;/dependentAssembly&gt;</span>
+</span><span class='line'><span class="s">  &lt;/dependency&gt;</span>
+</span><span class='line'><span class="s">  &lt;dependency&gt;</span>
+</span><span class='line'><span class="s">    &lt;dependentAssembly&gt;</span>
+</span><span class='line'><span class="s">        &lt;assemblyIdentity</span>
+</span><span class='line'><span class="s">            type=&quot;win32&quot;</span>
+</span><span class='line'><span class="s">            name=&quot;Microsoft.Windows.Common-Controls&quot;</span>
+</span><span class='line'><span class="s">            version=&quot;6.0.0.0&quot;</span>
+</span><span class='line'><span class="s">            processorArchitecture=&quot;X86&quot;</span>
+</span><span class='line'><span class="s">            publicKeyToken=&quot;6595b64144ccf1df&quot;</span>
+</span><span class='line'><span class="s">            language=&quot;*&quot;</span>
+</span><span class='line'><span class="s">        /&gt;</span>
+</span><span class='line'><span class="s">    &lt;/dependentAssembly&gt;</span>
+</span><span class='line'><span class="s">  &lt;/dependency&gt;</span>
+</span><span class='line'><span class="s">&lt;/assembly&gt;</span>
+</span><span class='line'><span class="s">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="n">RT_MANIFEST</span> <span class="o">=</span> <span class="mi">24</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;py2exe&quot;</span> <span class="p">:</span>
+</span><span class='line'>    <span class="p">{</span><span class="s">&quot;compressed&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>     <span class="s">&quot;optimize&quot;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>     <span class="s">&quot;bundle_files&quot;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>     <span class="s">&quot;includes&quot;</span> <span class="p">:</span> <span class="n">INCLUDES</span><span class="p">,</span>
+</span><span class='line'>     <span class="s">&quot;excludes&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s">&quot;Tkinter&quot;</span><span class="p">,],</span>
+</span><span class='line'>     <span class="s">&quot;dll_excludes&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;MSVCP90.dll&quot;</span><span class="p">,</span> <span class="s">&quot;mswsock.dll&quot;</span><span class="p">,</span> <span class="s">&quot;powrprof.dll&quot;</span><span class="p">]</span> <span class="p">}}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">windows</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&quot;script&quot;</span><span class="p">:</span> <span class="s">&quot;bin.py&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s">&quot;icon_resources&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;bin.ico&quot;</span><span class="p">)],</span>
+</span><span class='line'>      <span class="s">&quot;other_resources&quot;</span> <span class="p">:</span> <span class="p">[(</span><span class="n">RT_MANIFEST</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">MANIFEST_TEMPLATE</span> <span class="o">%</span> <span class="nb">dict</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&quot;MyAppName&quot;</span><span class="p">))],</span>
+</span><span class='line'>      <span class="p">}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">setup</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;MyApp&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">version</span> <span class="o">=</span> <span class="s">&quot;1.0&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Description of the app&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">author</span> <span class="o">=</span> <span class="s">&quot;Author Name&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">author_email</span> <span class="o">=</span><span class="s">&quot;author@project.com&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">maintainer</span> <span class="o">=</span> <span class="s">&quot;Maintainer Name&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">maintainer_email</span> <span class="o">=</span> <span class="s">&quot;you@project.com&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">license</span> <span class="o">=</span> <span class="s">&quot;wxWindows Licence&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">url</span> <span class="o">=</span> <span class="s">&quot;http://projecthomepage.com&quot;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">data_files</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;MSVCR90.dll&quot;</span><span class="p">,</span> <span class="s">&quot;gdiplus.dll&quot;</span><span class="p">],</span>
+</span><span class='line'>      <span class="c">#data_files=[(&quot;img&quot;,[r&quot;d:\test\1.gif&quot;,r&quot;d:\test\2.gif&quot;]),(&quot;xml&quot;,[r&quot;d:\test\1.xml&quot;,r&quot;d:\test\2.xml&quot;])])</span>
+</span><span class='line'>      <span class="c">#zipfile=None,</span>
+</span><span class='line'>      <span class="n">options</span> <span class="o">=</span> <span class="n">options</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">windows</span> <span class="o">=</span> <span class="n">windows</span><span class="p">,</span>
+</span><span class='line'>      <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用7-ZIP压缩library,使用upx压缩dll等文件</h2>
+
+<p>建立脚本bin.cmd</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">off</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">::Set personal Path to the Apps:</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">PythonEXE</span><span class="o">=</span>D:\Python<span class="m">26</span>\python.exe
+</span><span class='line'><span class="k">set</span> <span class="nv">SevenZipEXE</span><span class="o">=</span><span class="s2">&quot;D:\Program Files\7-ZIP\7z.exe&quot;</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">UpxEXE</span><span class="o">=</span><span class="s2">&quot;D:\Program Files\upx\upx.exe&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">:: Compress=1 - Use CompressFiles</span>
+</span><span class='line'><span class="c">:: Compress=0 - Don&#39;t CompressFiles</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">Compress</span><span class="o">=</span><span class="m">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> not <span class="k">exist</span> <span class="nv">%~dpn0</span>.py          <span class="k">call</span> <span class="nl">:FileNotFound</span> <span class="nv">%~dpn0</span>.py
+</span><span class='line'><span class="k">if</span> not <span class="k">exist</span> <span class="nv">%PythonEXE%</span>        <span class="k">call</span> <span class="nl">:FileNotFound</span> <span class="nv">%PythonEXE%</span>
+</span><span class='line'><span class="k">if</span> not <span class="k">exist</span> <span class="nv">%SevenZipEXE%</span>      <span class="k">call</span> <span class="nl">:FileNotFound</span> <span class="nv">%SevenZipEXE%</span>
+</span><span class='line'><span class="k">if</span> not <span class="k">exist</span> <span class="nv">%UpxEXE%</span>           <span class="k">call</span> <span class="nl">:FileNotFound</span> <span class="nv">%UpxEXE%</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">::Compile the Python-Script</span>
+</span><span class='line'><span class="nv">%PythonEXE%</span> <span class="s2">&quot;%~dpn0_setup.py&quot;</span> py<span class="m">2</span>exe
+</span><span class='line'><span class="k">if</span> not <span class="s2">&quot;%errorlevel%&quot;</span><span class="o">==</span><span class="s2">&quot;0&quot;</span> (
+</span><span class='line'>        <span class="k">echo</span> Py<span class="m">2</span>EXE Error!
+</span><span class='line'>        <span class="k">pause</span>
+</span><span class='line'>        <span class="k">goto</span><span class="nl">:eof</span>
+</span><span class='line'>)
+</span><span class='line'>
+</span><span class='line'><span class="c">:: Copy the Py2EXE Results to the SubDirectory and Clean Py2EXE-Results</span>
+</span><span class='line'>rd build <span class="n">/s</span> <span class="n">/q</span>
+</span><span class='line'>xcopy dist\*.* <span class="s2">&quot;%~dpn0_EXE\&quot;</span> <span class="n">/d</span> <span class="n">/y</span>
+</span><span class='line'><span class="c">:: I use xcopy dist\*.* &quot;%~dpn0_EXE\&quot; /s /d /y</span>
+</span><span class='line'><span class="c">:: This is necessary when you have subdirectories - like when you use Tkinter</span>
+</span><span class='line'>rd dist <span class="n">/s</span> <span class="n">/q</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="s2">&quot;%Compress%&quot;</span><span class="o">==</span><span class="s2">&quot;1&quot;</span> <span class="k">call</span><span class="nl">:CompressFiles</span>
+</span><span class='line'><span class="k">echo</span>.
+</span><span class='line'><span class="k">echo</span>.
+</span><span class='line'><span class="k">echo</span> Done: <span class="s2">&quot;%~dpn0_EXE\&quot;</span>
+</span><span class='line'><span class="k">echo</span>.
+</span><span class='line'><span class="k">pause</span>
+</span><span class='line'><span class="k">goto</span><span class="nl">:eof</span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">:CompressFiles</span>
+</span><span class='line'>        <span class="nv">%SevenZipEXE%</span> -aoa x <span class="s2">&quot;%~dpn0_EXE\library.zip&quot;</span> -o<span class="s2">&quot;%~dpn0_EXE\library\&quot;</span>
+</span><span class='line'>        <span class="k">del</span> <span class="s2">&quot;%~dpn0_EXE\library.zip&quot;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">cd</span> <span class="nv">%~dpn0_EXE</span>\library\
+</span><span class='line'>        <span class="nv">%SevenZipEXE%</span> a -tzip -mx<span class="m">9</span> <span class="s2">&quot;..\library.zip&quot;</span> -r
+</span><span class='line'>        <span class="k">cd</span>..
+</span><span class='line'>        rd <span class="s2">&quot;%~dpn0_EXE\library&quot;</span> <span class="n">/s</span> <span class="n">/q</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">cd</span> <span class="nv">%~dpn0_EXE</span>\
+</span><span class='line'>        <span class="nv">%UpxEXE%</span> --best *.*
+</span><span class='line'><span class="k">goto</span><span class="nl">:eof</span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">:FileNotFound</span>
+</span><span class='line'>        <span class="k">echo</span>.
+</span><span class='line'>        <span class="k">echo</span> Error<span class="p">,</span> File not found:
+</span><span class='line'>        <span class="k">echo</span> [<span class="nv">%1</span>]
+</span><span class='line'>        <span class="k">echo</span>.
+</span><span class='line'>        <span class="k">echo</span> Check Path in <span class="nv">%~nx0</span>???
+</span><span class='line'>        <span class="k">echo</span>.
+</span><span class='line'>        <span class="k">pause</span>
+</span><span class='line'>        exit
+</span><span class='line'><span class="k">goto</span><span class="nl">:eof</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用方法</h2>
+
+<p>直接运行bin.cmd，程序会自动调用bin_setup.py来查找需要的类库，然后对类库文件进行压缩，生成的可执行文件在bin_EXE里。</p>
+
+<h2>问题</h2>
+
+<p>我在打包的时候，出现错误“ImportError: MemoryLoadLibrary failed loading win32api.pyd”，用depends.exe查看其引用，然后多方搜索得知，其原因是py2exe错误的加载了mswsock.dll，powrprof.dll这两个文件，因此将它们排除即可。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="s">&quot;dll_excludes&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s">&quot;MSVCP90.dll&quot;</span><span class="p">,</span> <span class="s">&quot;mswsock.dll&quot;</span><span class="p">,</span> <span class="s">&quot;powrprof.dll&quot;</span><span class="p">]</span> <span class="p">}}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>nsis生成安装文件</h2>
+
+<p>待续。。。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/10/24/closure-bug-in-python/">Python闭包实现的所谓bug</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-24T00:00:00+08:00" pubdate data-updated="true">2010-10-24</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>思路来自 <a href="http://groups.google.com/group/python-cn/browse_thread/thread/895f25d6303de2ec?hl=zh-CN#">http://groups.google.com/group/python-cn/browse_thread/thread/895f25d6303de2ec?hl=zh-CN#</a>
+整理记录下来，让墙内的人也看看。</p>
+
+<h2>问题描述</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">fs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span>
+</span><span class='line'>    <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+</span><span class='line'><span class="k">print</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>结果为：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">145743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">,</span> <span class="mi">14</span>
+</span><span class='line'><span class="mi">5743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">,</span> <span class="mi">145743064</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很奇怪的结果吧。
+问题所在：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">fs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="nb">locals</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;i&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span>
+</span><span class='line'>    <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+</span><span class='line'><span class="k">print</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>结果为</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">locals</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;n&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+</span><span class='line'><span class="n">i</span> <span class="ow">in</span> <span class="nb">globals</span> <span class="ow">is</span><span class="p">:</span> <span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到i根本就没有封闭在f()里，而是个全局变量，因此出现上面的结果也就不奇怪了。
+解决方案：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">fs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span>
+</span><span class='line'>    <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+</span><span class='line'><span class="k">print</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>将全局变量i引入f中，这下结果正确了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">143334724</span><span class="p">,</span> <span class="mi">143334712</span><span class="p">,</span> <span class="mi">143334700</span><span class="p">,</span> <span class="mi">143334688</span><span class="p">,</span> <span class="mi">143334676</span><span class="p">,</span> <span class="mi">143334664</span><span class="p">,</span> <span class="mi">143334652</span><span class="p">,</span> <span class="mi">14</span>
+</span><span class='line'><span class="mi">3334640</span><span class="p">,</span> <span class="mi">143334628</span><span class="p">,</span> <span class="mi">143334616</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/10/18/compile-vim73-in-ubuntu1004/">在ubuntu 10.0.4上编译vim7.3</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-18T00:00:00+08:00" pubdate data-updated="true">2010-10-18</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><h2>编译前准备</h2>
+
+<p>如果要编译GVIM，需要先安装必要的库，否则可能会报各种编译错误</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install libncurses5-dev libgnome2-dev libgnomeui-dev libgtk2.0-dev libatk1.0-dev libbonoboui2-dev libcairo2-dev libx11-dev libxpm-dev libxt-dev
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要添加python支持， 另外还需要python2.6-dev</p>
+
+<h2>开始编译</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>src
+</span><span class='line'><span class="nv">$ </span>make distclean  <span class="c">#防止缓存</span>
+</span><span class='line'><span class="nv">$ </span>./configure --with-features<span class="o">=</span>huge --enable-gui<span class="o">=</span>gnome2 --enable-cscope  --enable-fontset --enable-multibyte --enable-pythoninterp --with-python-config-dir<span class="o">=</span>/usr/lib/python2.6/config
+</span><span class='line'><span class="nv">$ </span>make
+</span><span class='line'><span class="nv">$ </span>sudo make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>查看特性添加与否</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>version
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/10/12/hotkey-control-python-program/">使用热键控制python程序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-12T00:00:00+08:00" pubdate data-updated="true">2010-10-12</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><h2>需求</h2>
+
+<p>按一个热键，程序开始循环执行某项操作，按另一个热键，操作终止；可以如此反复。此需求广泛应用于自动脚本执行等工作。</p>
+
+<h2>技术点</h2>
+
+<ul>
+<li>全局热键的绑定</li>
+<li>热键的阻塞问题</li>
+</ul>
+
+
+<p>绑定多个全局热键时，如果一个热键执行的操作未停止，程序不会响应其他热键，因此我采用另外开启线程的方法解决。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#coding=utf-8</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="sd">Created on 2010-10-12</span>
+</span><span class='line'><span class="sd">@author: lxd</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">wx</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">win32con</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">WorkThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">isSet</span><span class="p">():</span>
+</span><span class='line'>                <span class="k">print</span> <span class="s">&#39;work&#39;</span>
+</span><span class='line'>                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">break</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">FrameWithHotKey</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">regHotKey</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyStart</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyEnd</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyQuit</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">regHotKey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F1</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span> <span class="o">=</span> <span class="mi">101</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F2</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span> <span class="o">=</span> <span class="mi">102</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="n">WorkThread</span><span class="p">()</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyQuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+</span><span class='line'>        <span class="nb">exit</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">()</span>
+</span><span class='line'><span class="n">FrameWithHotKey</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+</span><span class='line'><span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>程序运行后，按Alt+F1会重复打印‘work’，按Alt+F2停止打印，按Alt+F3结束程序。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/10/10/matpoltlib-draw-love-equation/">Matpoltlib绘制爱的方程式</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-10T00:00:00+08:00" pubdate data-updated="true">2010-10-10</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>灵感来自 <a href="http://www.matrix67.com/blog/archives/85">http://www.matrix67.com/blog/archives/85</a></p>
+
+<p>使用matplotlib绘制二维图形，使用contour来绘制方程，省去了手工计算的麻烦，解决思路参见
+<a href="http://stackoverflow.com/questions/2484527/is-it-possible-to-plot-implicit-equations-using-matplotlib">http://stackoverflow.com/questions/2484527/is-it-possible-to-plot-implicit-equations-using-matplotlib</a></p>
+
+<p>效果：</p>
+
+<p><img src="/images/blog/love_equation.jpg" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+</span><span class='line'><span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+</span><span class='line'><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+</span><span class='line'><span class="n">f</span> <span class="o">=</span> <span class="mi">17</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">17</span> <span class="o">*</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">225</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span><span class='line'><span class="n">CS</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$17x^2-16|x|y+17y^2=255$&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是对于3D版 <a href="http://www.matrix67.com/blog/archives/223">http://www.matrix67.com/blog/archives/223</a> ，小弟还没有找到优雅的求解方法，期待牛人的解答。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/09/29/use-rlock-to-achieve-multithread-synchronization/">RLock来实现多线程同步</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-09-29T00:00:00+08:00" pubdate data-updated="true">2010-09-29</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><h2>问题场景</h2>
+
+<p>有多个线程，分别负责建造房子，种树，养花之类的工作，这些工作都需要一定的等待时间，在等待过程中需要与服务端通信来保持连接。连接的提交不能太过频繁，最好2-3秒一次。</p>
+
+<p>对于这种多线程之间的同步问题可以利用RLock来实现锁机制。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#coding=utf-8</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="sd">Created on 2010-9-14</span>
+</span><span class='line'><span class="sd">@author: stonelee</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">random</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="n">p_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+</span><span class='line'><span class="n">s_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">my_post</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">p_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">print</span> <span class="nb">str</span>
+</span><span class='line'>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">p_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">my_sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">s_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">s_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">my_wait</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">last_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">last_seconds</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="n">last_seconds</span> <span class="o">&lt;</span> <span class="n">seconds</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">my_post</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">name</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">my_sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">last_seconds</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">last_time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">ThreadA</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">my_post</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:==================build house&#39;</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+</span><span class='line'>            <span class="n">my_wait</span><span class="p">(</span><span class="s">&#39;a wait&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">ThreadB</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">my_post</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:=================plant tree&#39;</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+</span><span class='line'>            <span class="n">my_wait</span><span class="p">(</span><span class="s">&#39;b wait&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">threadA</span> <span class="o">=</span> <span class="n">ThreadA</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadA</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'><span class="n">threadB</span> <span class="o">=</span> <span class="n">ThreadB</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadB</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">threadA</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadB</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadA</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadB</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/08/14/use-inter-process-communicate-develop-inkscape-plugin/">使用进程间通信开发Inkscape插件</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-08-14T00:00:00+08:00" pubdate data-updated="true">2010-08-14</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>Inkscape是一款功能强大的svg图形绘制软件,开源免费，而且可以用python写扩展。</p>
+
+<p>正好项目需要借助Inkscape来绘制图形，需要开发相应的插件，翻遍Inkscape的插件系统，觉得它的实现比较弱，尤其是界面控件，仅仅提供了基本的文本、下拉框几种，不给力啊~</p>
+
+<p>在与同事谈论许久之后，给出以下方案：</p>
+
+<p>1.Extensions调用子进程，传递参数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">subprocess</span>
+</span><span class='line'><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;lxd/error.txt&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">subproc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&#39;python&#39;</span><span class="p">,</span> <span class="s">&#39;lxd/lxd.py&#39;</span><span class="p">],</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+</span><span class='line'><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'><span class="n">r</span> <span class="o">=</span> <span class="n">subproc</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="s">&#39;inkscape&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="c">#传递参数，返回子进程的stdout</span>
+</span><span class='line'><span class="n">draw_sth</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span><span class="c">#Inkscape画图</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2.子进程中进行实际功能开发。此段略过~可以借助强大丰富的python库实现理想的效果。</p>
+
+<p>3.子进程与Extensions进程间通信，返回参数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class='line'><span class="n">s</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="c">#获取主进程Extensions传递的参数</span>
+</span><span class='line'><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s">&#39;123&#39;</span><span class="p">)</span><span class="c">#向主进程Extensions传递参数</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/08/02/paper-material-to-digital/">纸质材料数字化方法总结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-08-02T00:00:00+08:00" pubdate data-updated="true">2010-08-02</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>如何将纸质材料转为word文档？</p>
+
+<h2>通过扫描仪将纸质材料扫描成图片格式。</h2>
+
+<p>首先安装扫描仪驱动，连接好扫描仪。
+我用的是汉王OCR 6.0，打开软件后，先选择好相应的扫描仪，点击“扫描”。
+模式我选的是“黑白图片”，经试验对于本来就比较清晰的文本这种格式的识别率最高，而且扫描速度也快。
+对于不太清楚的文本可以使用自定义设置，多试验几个选项来加强识别率。
+然后就要一页一页的将材料扫描为图片了，图片会自动保存到image目录下。</p>
+
+<h2>文字识别</h2>
+
+<p>点击“选择所有文字”，再点击“开始识别”，将保存的所有图片扫描为文本格式，这时会发现原来的图片文字会自动被识别保存到相应的文本文件里。
+识别过程中发现对于某些情况汉王识别率可以迅速降为0，比如扫描文字右侧文字偏小时，有黑道时。这时可以借助另一款识别软件 <a href="http://tjcnc1.skycn.com/down/OCR75.zip">清华紫光OCR</a> 来进行识别。</p>
+
+<h2>文字修改</h2>
+
+<p>借助汉王强大的识别对照功能，可以轻松实现文字的修改。</p>
+
+<p><img src="/images/blog/hanwang.jpg" alt="" /></p>
+
+<p>在上面的编辑区中，如果发现识别错误的地方，只需要将光标移过去，上方就会出现原来文字对照和文字提示，修改起来很方便。美中不足之处就是不能用鼠标滚轮移动页面，需要借助键盘上的上下箭头。另外“施”这个字无法修改，不知道什么原因&#8230;.修改好一页后，只需要在左侧导航栏里点击下一幅图片就可以了，系统会自动保存。也幸亏有这个功能，汉王一高兴了就死掉，不知道为何原因。。。</p>
+
+<h2>文件整理到word中</h2>
+
+<p>编程实现各文本文件汇总到一个单一文件中。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">fdoc</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;doc.txt&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;txt&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">wholeFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">wholeFile</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">fdoc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span><span class='line'>                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>                <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is over&#39;</span> <span class="o">%</span> <span class="nb">file</span>
+</span><span class='line'>        <span class="n">fdoc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;all over&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">pathname</span> <span class="o">=</span> <span class="s">ur&#39;D:\Program Files\HWOCR60\IMAGE&#39;</span>
+</span><span class='line'>    <span class="n">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在word中将全部空格，回车符替换为空，然后分段，然后整体修改，搜索“设旋”、“设旌”改为“设施”&#8230;
+完善格式&#8230;</p>
+
+<h2>ps</h2>
+
+<p>Microsoft Office 工具里的Microsoft Office Document Imaging也可以实现识别功能，看它的版权页发现使用的是清华紫光的TH-OCR技术，不过是2002版本的，比起网上下载的99版TH-OCR好多了。可以考虑应用VBA做一些批处理操作。</p>
+
+<p>另外下载了据称是世界上最先进的识别软件ABBYY FineReader，试用版可以使用15天，识别50页，试用了下效果还可以。注册的话需要$200。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/6/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/4/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+	<h1>Who&#8217;s stonelee</h1>
+	<a href="/about"><img src="/images/stonelee.jpg"/></a>
+	<p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
+	<p>
+		<a href="http://www.douban.com/people/istonelee/">豆瓣</a>
+		<a href="http://www.renren.com/profile.do?id=72210924">人人</a>
+		<a target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
+			<img border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
+		</a>
+	</p>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<!-- JiaThis Button BEGIN -->
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jiathis_r.js?move=0&amp;uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

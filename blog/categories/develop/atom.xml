@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: develop | Stonelee's Blog]]></title>
+  <link href="http://stonelee.info/blog/categories/develop/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-20T00:55:02+08:00</updated>
+  <id>http://stonelee.info/</id>
+  <author>
+    <name><![CDATA[stonelee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[非专业python编程方法小结]]></title>
+    <link href="http://stonelee.info/blog/2011/03/31/not-professional-python-program-method/"/>
+    <updated>2011-03-31T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/03/31/not-professional-python-program-method</id>
+    <content type="html"><![CDATA[<p>本人是非计算机专业毕业的非专业程序员，毕业后也是在非专业软件公司从事业余编码工作，总结的这套编程方法可能会不入某些牛人的法眼，请指点~</p>
+
+<h2>1.明确需求</h2>
+
+<p>搞清楚到底想做什么，即程序最终要实现的功能。需求越简单明确越好，功能越单一越好。</p>
+
+<blockquote><p>Simple is better than complex</p></blockquote>
+
+<h2>2.功能分解</h2>
+
+<p>将目标分解出可以实现的步骤，然后将每个步骤细化为函数(function)，如果某些函数显而易见是一个性质的，可以归结到一个类中，那就没什么说的，就放到一个类中。不提前设计类，不做总体类划分。</p>
+
+<h2>3.命令行尝试相关API的用法</h2>
+
+<p>由于本人非专业程序猿，记忆力不咋地，偏偏兴趣广泛，桌面网络数据库游戏服务器算法都略懂，因此经常需要在命令行中配合API及相关文档写些脚本来尝试其用法。专家及熟手可以省略此步骤。</p>
+
+<h2>4.快速开发</h2>
+
+<p>终于可以开始写代码了，首先打开最喜欢的文本编辑器，本人是Vim，因为够轻便够好用。把第三步尝试得出的脚本填到第二步分解出来的每个函数中，有重复的坏味道出现时就抽出来函数之，有新的类冒出来时就类之。一切都是顺其自然，让代码影响程序的结构。</p>
+
+<h2>5.单元测试</h2>
+
+<p>对于辅助性质的函数，比如文字串变换或列表调整之类的，都直接在doctest里写测试，对于功能性质的函数，比如类中的各接口函数，新建个test文件测试之，之后nosetests即可。</p>
+
+<h2>6.重构！</h2>
+
+<p>由于没有类设计阶段（鄙人认为这是基本上根本不需要的，第二步功能分解实际上就是类设计阶段的简化版），代码自己随心所欲产生出来的程序往往结构上有问题，在项目越来越大，函数越来越多的时候会产生坏味道，这就是重构的好机会了。通过重构将函数归到类中，将类分到不同包中，在单元测试基础上的重构是很开心的，每次重构都是对项目又一次深入理解的机会，都是项目脱胎换骨的机会。当然，世上没有完美，在满足项目需求的前提下做到适当扩展就可以了，要适合而止。应该牢记“如无必要，勿增实体”，重构需谨慎，全靠自己把握。</p>
+
+<p>写代码应该是很自然，很美好的事情，应该没有那么多刻板的步骤，没有必要套用那么多设计模式、类的条条框框。顺其自然，随心而变就好。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[hg版本管理最优实践]]></title>
+    <link href="http://stonelee.info/blog/2011/01/19/hg-optimal-practice/"/>
+    <updated>2011-01-19T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2011/01/19/hg-optimal-practice</id>
+    <content type="html"><![CDATA[<p>使用hg不短时间了，但是一直作为个备份工具来用，今天看到几位牛人的hg实践，很受启发，总结如下</p>
+
+<p><img src="/images/blog/hg.png" alt="" /></p>
+
+<p>上图来源于 <a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a>，利用git来实践基于branch/merge版本管理。</p>
+
+<p>首先整个项目要有两个主分支：master和develop，其中master是产品发布的主分支，要做到足够稳定，不能轻易修改；而develop是程序员用的开发分支，每日构建要在这个分支上做，也要做到稳定。开发完成后merge到master上并打上版本号tag。</p>
+
+<p>三个辅助分支：release、feature和hotfix。</p>
+
+<p>一个新的功能就是一个新的feature分支。</p>
+
+<ul>
+<li>May branch off from: develop</li>
+<li>Must merge back into: develop</li>
+<li>Branch naming convention: anything except master, develop, release-*, or hotfix-*</li>
+</ul>
+
+
+<p>功能完成，准备发布，这时启用release分支，来修改小bug，为发布做准备</p>
+
+<ul>
+<li>May branch off from: develop</li>
+<li>Must merge back into: develop and master</li>
+<li>Branch naming convention: release-*</li>
+</ul>
+
+
+<p>已上线的产品修改bug，启用hotfix分支</p>
+
+<ul>
+<li>May branch off from: master</li>
+<li>Must merge back into: develop and master</li>
+<li>Branch naming convention: hotfix-*</li>
+</ul>
+
+
+<p>应该说整个流程还是比较繁琐的，该文档是基于git的，<a href="https://github.com/nvie/gitflow">git flow</a>是一个比较靠谱的简化流程工具，推荐使用。</p>
+
+<p>我用的是hg，发现也有一个类似的简化工具：<a href="https://bitbucket.org/yinwm/hgflow/wiki/Home">hg flow</a>，试用了一下感觉不错~</p>
+
+<p>使用方法：
+在没有版本管理的工程中</p>
+
+<p><code>bash
+hg init#建立hg仓库
+hg flow init#初始化hg flow，自动生成default(master)和develop分支
+</code></p>
+
+<p>要新增功能的时候，name随意</p>
+
+<p><code>bash
+hg flow feature start &lt;name&gt;#新建功能分支，会自动切换到该分支上
+</code></p>
+
+<p>新增功能</p>
+
+<p>使用TortoiseHg的 Repository Explorer查看目前所处分支状况,
+使用TortoiseHg的commit提交功能</p>
+
+<p>功能完成的时候</p>
+
+<p><code>bash
+hg flow feature finish &lt;name&gt;#功能完成后使用，会自动merge到develop分支上
+</code></p>
+
+<p>如果要添加新的功能：重复上两个步骤</p>
+
+<p>如果同时开了多个功能，切换不同功能开发的时候要先切换到该功能的分支</p>
+
+<p><code>bash
+hg flow feature change &lt;name&gt;#切换当前分支
+</code></p>
+
+<p>到达预定的功能发布点，name：release-版本号</p>
+
+<p><code>bash
+hg flow release start &lt;name&gt;
+hg flow release finish &lt;name&gt;
+</code></p>
+
+<p>只在修改小型bug时使用，如果在hotfix上新建feature的话会导致直接从develop上开分支，hotfix的更改会暂时隐藏，只有在hotfix finish的时候才能merge。
+name：hotfix-版本号.hotfix号</p>
+
+<p><code>bash
+hg flow hotfix start &lt;name&gt;
+hg flow hotfix finish &lt;name&gt;
+</code></p>
+
+<p>feature和release要一块使用
+hotfix自己单独使用，不需要再release了</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[为tortoisehg出把力]]></title>
+    <link href="http://stonelee.info/blog/2010/12/17/help-tortoisehg/"/>
+    <updated>2010-12-17T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2010/12/17/help-tortoisehg</id>
+    <content type="html"><![CDATA[<p><a href="https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484">https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484</a></p>
+
+<p>开源项目：tortoisehg</p>
+
+<p>bug内容：</p>
+
+<p>```</p>
+
+<h1>936 ImportError: MemoryLoadLibrary failed loading win32api.pyd</h1>
+
+<p>Reported by Dmitry Zanozin / dmitryzan, created 10 months ago.
+I've received error message on startup of my WinXP after reboot just after install of the latest nightly build tortoisehg-unstable-0.9.35067-hg-1.4.3+67-07bd7608a0ea.exe
+There was a suggestion to examine thgtaskbar.exe.log file:
+thgtaskbar.exe.log
+Traceback (most recent call last):
+File "thgtaskbar.py", line 13, in <module>
+File "zipextimporter.pyo", line 98, in load_module
+ImportError: MemoryLoadLibrary failed loading win32api.pyd
+```</p>
+
+<p>偶的解决方案：</p>
+
+<p><code>
+istonelee
+written about a month ago
+when I use py2exe to create my project,I receive the same error.I analyse the depends of this dll,and found that py2exe makes some mistakes that include mswsock.dll and powrprof.dll into the library. and my solution is modify the setup.py
+'dll_excludes': [ "mswsock.dll", "powrprof.dll" ]
+hope my experience could be any useful :)
+</code></p>
+
+<p>被作者采纳了：</p>
+
+<p><code>
+Steve Borho / sborho
+written about a month ago
+That is interesting that it causes the same error for you. I've added those two and several more DLLs to the dll_excludes list in the setup.cfg file. setup.cfg hasn't changed in 9 months, since 1.0 was released.
+http://bitbucket.org/tortoisehg/thg-winbuild/src/tip/misc/setup.cfg
+</code></p>
+
+<p>So Happy~</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: extjs | Stonelee's Blog]]></title>
+  <link href="http://stonelee.info/blog/categories/extjs/atom.xml" rel="self"/>
+  <link href="http://stonelee.info/"/>
+  <updated>2012-05-20T00:55:02+08:00</updated>
+  <id>http://stonelee.info/</id>
+  <author>
+    <name><![CDATA[stonelee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ExtJS 4 mvc架构演化]]></title>
+    <link href="http://stonelee.info/blog/2012/04/26/new-extjs-mvc/"/>
+    <updated>2012-04-26T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/04/26/new-extjs-mvc</id>
+    <content type="html"><![CDATA[<p>从年前技术选型开始算起，使用Extjs 4已经四五个月时间了。对比之前的3.x版本，Extjs 4给了我们太多的惊喜：全新的mvc架构、强大的class体系、灵活的js加载方式、纯div布局页面。因此，项目组毫不犹豫地选择其作为前端架构进行新项目的开发。</p>
+
+<p>项目初始时，我们一直遵循推荐的MVC架构：在view中配置页面控件，controller中编写业务逻辑。但随着项目的推进，模块代码越来越多，加之由于种种原因开发时间严重缩短，没有时间进行代码评审，controller中的代码灵活性过强，调用页面控件方式相对繁琐等问题逐渐暴露出来，页面基本无法复用，controller一片狼藉。</p>
+
+<h2>第一次重构</h2>
+
+<p>在用户桌面widget开发时，发现新widget与原模块中的view很像，但是在store,pagingtoolbar等方面略有差别，而controller中的逻辑非常杂乱，一个文件包含了整个模块的业务逻辑，维护和复用都相当困难。</p>
+
+<p>重构结果总结如下:</p>
+
+<ul>
+<li>将controller中的业务逻辑尽量移到view中，采用js闭包实现逻辑的相对隔离，跨多view的逻辑依然放在controller中，达到维护容易和代码复用的目的。</li>
+<li>采用extend的方式简化view开发</li>
+<li>操作按钮尽量使用inline方式，便于用户使用，也有利于集成到其他view中。</li>
+<li>add和edit两个界面合为一个，简化开发和维护工作量</li>
+<li>store.sync后回传的数据可能与grid中的column不符，这时无法享用自动load的好处，因此应该使用model来save。grid同时使用pagingtoolbar时必须用model来save，然后load，否则pagingtoolbar不能更新。</li>
+</ul>
+
+
+<h2>第二次重构</h2>
+
+<p>业务逻辑移到view中，满足了页面间高内聚、低耦合的设计要求，但是view之间相对独立的特点导致了无法实现逻辑代码复用的问题。</p>
+
+<p>经研究，可以使用mixin来实现逻辑的复用。</p>
+
+<p>例如Grid可以拆分为Columns（基本列）,Crud（增删改）,Operate（操作）,filter（筛选）等minin类,这几个类都包含了控件和业务逻辑,可以灵活配置在各个view中。</p>
+
+<p><img src="/images/blog/Extjs-New-MVC.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ExtJS 4打包工具]]></title>
+    <link href="http://stonelee.info/blog/2012/02/16/extjs-4-build-tool/"/>
+    <updated>2012-02-16T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/02/16/extjs-4-build-tool</id>
+    <content type="html"><![CDATA[<p>ExtJS 4采用新的MVC思路进行开发。 在项目开发阶段这种分散式的代码组织方式是很爽的，但是应用到生产环境中时为了减少服务端压力，需要对js文件进行压缩打包。 为解决这一问题，官方提供了打包工具<a href="http://www.sencha.com/products/jsbuilder">JSBuilder</a>, 使用方法如下：</p>
+
+<p><code>bash
+创建jsb文件：$sencha create jsb -a http://localhost/helloext/index.html -p app.jsb3
+构建：$sencha build -p app.jsb3 -d .
+</code></p>
+
+<p>但在实际使用时发现，不知道是因为水土不服还是我们的项目结构不合sencha的胃口。在构建jsb3文件的时候不是完全找不到任何路径，就是缺少大量项目文件，可以说是相当鸡肋。</p>
+
+<p>不如自己来吧！</p>
+
+<p>经测试发现，只要按照依赖顺序，将所有文件归置到一个文件中，然后压缩，项目即可正常调用。</p>
+
+<p>打包工具已经放到github上:<a href="https://github.com/stonelee/extjs4-build-tool">https://github.com/stonelee/extjs4-build-tool</a></p>
+
+<h2>思路</h2>
+
+<p>将app下的js文件按照model, store, view, controller的顺序来创建jsb3。</p>
+
+<p>如果view中使用requires加载其它view，则按照依赖顺序先行加载。</p>
+
+<p>然后针对项目需求做了点修改，将app.js按Ext.application分成两部分，分别加载到最后生成的文件中。</p>
+
+<h2>技术点</h2>
+
+<ul>
+<li>按照依赖加载关系进行排列<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/sort.py">sort.py</a></li>
+<li>文本解析<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/parse.py">parse.py</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<p>本工具仅仅将项目开发中自己创建的位于app文件夹中的model, store, view, controller以及用于项目整合的app.js打包成一个文件。
+其它ExtJS或者ux文件还需要自己打包。
+将build-tool放到app同级目录下，项目文档结构如下：</p>
+
+<p><code>
+|app
+|--controller
+|--model
+|--store
+|--view
+|build-tool
+|all.js
+</code></p>
+
+<p>最终生成文件：</p>
+
+<ul>
+<li>app.jsb3 压缩文件路径信息</li>
+<li>all-debug.js 未压缩的打包文件,供调试使用</li>
+<li>all.js 压缩打包文件,生产环境使用</li>
+</ul>
+
+
+<p>ps:</p>
+
+<p>从开始研究Ext打包，形成思路，到最终完成完整的打包工具并应用到项目中一共用了两天时间，其中纯python编码时间也就半天时间，看来经过这半年的js编码之后，我的python还没太手生嘛哈哈。动态语言之间的学习可以互相促进？待验证~</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ext Core设计模式]]></title>
+    <link href="http://stonelee.info/blog/2012/02/01/ext-core-design-pattern/"/>
+    <updated>2012-02-01T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/02/01/ext-core-design-pattern</id>
+    <content type="html"><![CDATA[<p>参考:
+<a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
+
+<h2>Singletons 单例模式</h2>
+
+<p>适用于只有static method或者只需要实例化一次的类，例如应用入口类。可以隐藏私有variables和methods</p>
+
+<p>```js
+MyApp = function() {</p>
+
+<pre><code>var data; //data is private and can't be accessed from outside.
+return {
+    init: function() {
+        console.log('init');
+        //Initialize application here
+    },
+
+    getData: function() {
+        return data;
+    }
+};
+</code></pre>
+
+<p>} ();
+Ext.onReady(MyApp.init, MyApp);
+```</p>
+
+<h2>Observable观察者模式</h2>
+
+<p>Ext.util.Observable使用events实现在多个objects之间解耦</p>
+
+<p>事件触发流程：state changes -> fire event -> notified</p>
+
+<p>```js
+var MyClass = Ext.extend(Ext.util.Observable, {</p>
+
+<pre><code>constructor: function(config) {
+    this.addEvents('datachanged'); //specify the events we're going to fire
+},
+
+update: function() {
+    this.fireEvent('datachanged', this, arguments.length);
+}
+</code></pre>
+
+<p>});</p>
+
+<p>// To subscribe to an event
+var c = new MyClass();
+c.on('datachanged', function(obj, num) {</p>
+
+<pre><code>console.log(num);
+</code></pre>
+
+<p>});
+c.update(2, 8, 'some'); //3
+```</p>
+
+<h2>Composite 组合模式</h2>
+
+<p>将对象组与单一对象作统一处理，方便用户调用</p>
+
+<p>例如使用select取得的Ext.CompositeElement跟Ext.Element具有同样的调用接口</p>
+
+<h2>Flyweight 享元模式</h2>
+
+<p>使用共有的object，避免创建额外对象，减少内存占用，适用于单行原子操作。</p>
+
+<ul>
+<li>使用Ext.fly来以享元的方式获取Element,只能一次性使用</li>
+<li>Ext.get可以获取Element，然后保存以供未来使用</li>
+<li>Ext.getDom获取dom node</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ext Core学习笔记]]></title>
+    <link href="http://stonelee.info/blog/2012/01/30/ext-core-record/"/>
+    <updated>2012-01-30T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/01/30/ext-core-record</id>
+    <content type="html"><![CDATA[<p>Ext Core与jQuery类似，提供了跨浏览器的js封装。
+主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
+作为类库它提供了更高层次的抽象，方便具体问题的解决
+参考: <a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
+
+<p>```js
+Ext.onReady(function() {</p>
+
+<pre><code>Ext.DomHelper.append(document.body, {tag: 'p', cls: 'some-class'});
+Ext.select('p.some-class').update('Ext Core successfully injected');
+</code></pre>
+
+<p>});
+```</p>
+
+<h2>Class System</h2>
+
+<ul>
+<li>Ext.extend 创建新class，将新的properties/functions添加到prototype中,使用superclass引用父类</li>
+<li>Ext.override 用来更改原来的class</li>
+</ul>
+
+
+<p>```js
+Person = Ext.extend(Object, {</p>
+
+<pre><code>constructor: function(first, last) {
+    this.firstName = first; //property
+    this.lastName = last;
+},
+
+getName: function() {
+    return this.firstName + ' ' + this.lastName;
+}
+</code></pre>
+
+<p>});</p>
+
+<p>Developer = Ext.extend(Person, {</p>
+
+<pre><code>getName: function() {
+    if (this.isCoding) {
+        return 'Go Away!';
+    } else {
+        // Access the superclass getName method
+        return Developer.superclass.getName.call(this);
+    }
+}
+</code></pre>
+
+<p>});</p>
+
+<p>var p = new Developer('John', 'Smith');
+console.log(p.getName()); //John Smith
+p.isCoding = true;
+console.log(p.getName()); //Go Away!
+```</p>
+
+<p>prototype中的会被share，特别要注意{}会被多个子类共享修改，小心！！</p>
+
+<p>```js
+MyClass = Ext.extend(Object, {</p>
+
+<pre><code>// This object literal is now shared between all instances of MyClass.
+baseParams: {},
+
+foo: function() {
+    this.baseParams.bar = 'baz';
+}
+</code></pre>
+
+<p>});</p>
+
+<p>Ext.onReady(function() {</p>
+
+<pre><code>var a = new MyClass();
+var b = new MyClass();
+
+a.foo();
+// Modifying baseParams in a affects baseParams in b.
+console.log(b.baseParams);
+</code></pre>
+
+<p>});
+```</p>
+
+<ul>
+<li>apply 复制所有property</li>
+<li>applyIf 对于重复的property则不复制</li>
+</ul>
+
+
+<p>```js
+var person = {</p>
+
+<pre><code>name: 'John Smith',
+age: 30,
+hobby: 'Rock Band'
+</code></pre>
+
+<p>};</p>
+
+<p>Ext.applyIf(person, {</p>
+
+<pre><code>hobby: 'Coding',
+city: 'London'
+</code></pre>
+
+<p>}); // hobby is not copied over
+```</p>
+
+<h2>函数</h2>
+
+<p>函数式编程：</p>
+
+<p>```js
+var sayHello = function(firstName, lastName) {</p>
+
+<pre><code>alert('Hello ' + firstName + ' ' + lastName);
+</code></pre>
+
+<p>};
+Ext.get('myButton').on('click', sayHello.createCallback('John', 'Smith'));
+等价于
+Ext.get('myButton').on('click', function() {</p>
+
+<pre><code>sayHello('John', 'Smith');
+</code></pre>
+
+<p>});
+```</p>
+
+<p>TaskRunner用来固定时间间隔执行函数，例如每隔5s进行ajax请求，TaskMgr是TaskRunner的单例，用起来更方便</p>
+
+<p>```js
+var stop = false;
+var task = {</p>
+
+<pre><code>run: function() {
+    if (!stop) {
+        console.log(new Date());
+    } else {
+        runner.stop(task); // we can stop the task here if we need to.
+    }
+},
+interval: 1000 // every 1 seconds
+</code></pre>
+
+<p>};
+var runner = new Ext.util.TaskRunner();
+runner.start(task);
+```</p>
+
+<p>```js
+var stop = false;
+Ext.TaskMgr.start({</p>
+
+<pre><code>run: function() {
+    if (!stop) {
+        console.log(new Date());
+    }
+},
+interval: 1000
+</code></pre>
+
+<p>});
+```</p>
+
+<p>DelayedTask 延时触发事件，如果在延时时间内触发两次事件，则后一次事件会覆盖前一次的触发</p>
+
+<p>```js
+var task = new Ext.util.DelayedTask(function() {</p>
+
+<pre><code>console.log(Ext.getDom('myInputField').value.length);
+</code></pre>
+
+<p>});
+// Wait 500ms before calling our function. If the user presses another key
+// during that 500ms, it will be cancelled and we'll wait another 500ms.
+Ext.get('myInputField').on('keypress', function() {</p>
+
+<pre><code>task.delay(500);
+</code></pre>
+
+<p>});
+```</p>
+
+<p>延时函数：</p>
+
+<p>```js
+var task = new Ext.util.DelayedTask(function() {</p>
+
+<pre><code>console.log(Ext.getDom('myInputField').value.length);
+</code></pre>
+
+<p>});
+// Wait 500ms before calling our function. If the user presses another key
+// during that 500ms, it will be cancelled and we'll wait another 500ms.
+Ext.get('myInputField').on('keypress', function() {</p>
+
+<pre><code>task.delay(500);
+</code></pre>
+
+<p>});
+```</p>
+
+<p>```js
+var whatsTheTime = function(){</p>
+
+<pre><code>alert(new Date());
+</code></pre>
+
+<p>};
+whatsTheTime.defer(3000); //Wait 3 seconds before executing.
+```</p>
+
+<h2>格式</h2>
+
+<p>urlEncode、urlDecode将object-literal与GET request parameter（key1=value1&amp;key2=value2）互相转化</p>
+
+<p>```js
+var params = {</p>
+
+<pre><code>foo: 'value1',
+bar: 100
+</code></pre>
+
+<p>};
+var s = Ext.encode(params); // s is now foo=value1&amp;bar=100
+```</p>
+
+<p>encode、decode将object与json互相转换</p>
+
+<p>```js
+var s = Ext.encode({</p>
+
+<pre><code>foo: 1,
+bar: 2
+</code></pre>
+
+<p>}); //"{"foo":1,"bar":2}"
+```</p>
+
+<p>字符串格式化：</p>
+
+<p><code>js
+var s = String.format(
+   'Hey {0} {1}', how are you?',
+   'John',
+   'Smith'
+);
+</code></p>
+
+<h2>DOM</h2>
+
+<p>DomQuery提供了高性能的selector/xpath处理，可以应用于html和xml，主要使用select函数，可以使用get预先获取Root来进一步提升性能</p>
+
+<ul>
+<li>多重选择 Ext.select('div.foo, span.bar');</li>
+<li>链式选择 Ext.select('div.foo[title=bar]:first');</li>
+<li>子选择 Ext.select('div span');</li>
+<li>直接子选择 Ext.select('ul > li');</li>
+<li>属性选择 Ext.select('a[href=http://extjs.com]');</li>
+<li>有alt tag Ext.select('img[alt]');</li>
+<li>伪类 Ext.select('div:next(span.header));</li>
+<li>css值选择 E{display<sup>=none}</sup> //css value "display" that starts with "none"</li>
+</ul>
+
+
+<p>DomHelper动态生成html片段：</p>
+
+<p>```js
+Ext.DomHelper.append(document.body, {</p>
+
+<pre><code>id: 'my-div',
+cn: [{
+    tag: 'a', 
+    href: 'http://www.yahoo.com/', 
+    html: 'My Link', 
+    target: '_blank'
+}]
+</code></pre>
+
+<p>});
+```</p>
+
+<h2>Ext.Element</h2>
+
+<p>浏览器加载页面时，将每个tag解析为HTMLElement，建立DOM，保存到全局变量document里。使用getElementById来获取每个HTMLElement
+Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
+
+<h3>CSS &amp; Styling(setStyle, addClass)</h3>
+
+<ul>
+<li>radioClass实现单选效果，同类中有同样class则remove，否则add</li>
+<li>toggleClass切换</li>
+</ul>
+
+
+<h3>Dom Querying or Traversal(query, select, findParent)</h3>
+
+<p>is 测试element是否符合selector</p>
+
+<p>```js
+//向上找parent:
+Ext.fly('elId').findParent('div'); //returns a dom node
+Ext.fly('elId').up('div'); //返回Ext.Element</p>
+
+<p>//查找
+Ext.fly('elId').select('div:nth-child(2)'); //返回CompositeElement
+Ext.fly('elId').select('div:nth-child(2)', true); //返回Array of elements
+Ext.query('div:nth-child(2)'); //返回Array of dom nodes</p>
+
+<p>//返回Ext.Element，第二参数为true则返回dom node
+Ext.fly('elId').child('p.highlight'); //任意深度的single child
+Ext.fly('elId').down('span');  //直接single child
+```</p>
+
+<p>还有parent()，next()，prev()，first()，last()</p>
+
+<h3>Dom Manipulation(createChild, remove)</h3>
+
+<p>使用id或Ext.Element或dom node或selectors或CompositeElement</p>
+
+<p><code>js
+Ext.fly('elId').appendTo('elId2');
+</code></p>
+
+<p>使用DomHelper config</p>
+
+<p>```js
+Ext.fly('elId').insertFirst({</p>
+
+<pre><code>tag: 'p',
+html: 'Hi I am the new first child'
+</code></pre>
+
+<p>});
+```</p>
+
+<p>使用Html Fragments</p>
+
+<p><code>js
+Ext.fly('elId').insertHtml('beforeBegin', '&lt;p&gt;Hi&lt;/p&gt;')
+</code></p>
+
+<p>包括beforeBegin, beforeEnd, afterBegin, afterEnd</p>
+
+<h3>Event Handling</h3>
+
+<p>Ext.EventObject提供了跨浏览器的event实现，例如按键判断，event-propagation ，preventDefault()</p>
+
+<p>```js
+el.on('click', function(e,t) {</p>
+
+<pre><code>// e is a normalized event object (Ext.EventObject)
+// t the target that was clicked, this is an Ext.Element.       
+</code></pre>
+
+<p>});
+el.un('click', this.handlerFn);
+```</p>
+
+<p>Event delegation是利用冒泡机制在container中注册event，而不是在每个元素中注册，这样可以减少内存消耗，防止内存泄漏，更好地集中管理event</p>
+
+<p>```js
+Ext.fly('actions').on('click, function(e,t) {</p>
+
+<pre><code>switch(t.id) {
+    case ''btn-edit':
+    // handle the event
+    break;
+    case 'btn-delete':
+    // handle the event
+    break;
+}
+</code></pre>
+
+<p>});
+```</p>
+
+<p>configuration option:</p>
+
+<p>```js
+el.on('click', function(e,t) {</p>
+
+<pre><code>// handle click
+</code></pre>
+
+<p>}, this, {</p>
+
+<pre><code>delegate: '.clickable',// will filter target to be a descendant with the class 'clickable'
+single: true, // 只响应一次，然后自动删除
+buffer: 1000, // 延时1s，如果在时间间隔内多次触发会覆盖
+delay: 1000, // 延时1s，不会覆盖
+target: el.up('div') // only handles the event when it has bubbled up to the first 'div'.
+</code></pre>
+
+<p>});
+```</p>
+
+<p>hover</p>
+
+<p>```js
+function over(e,t){</p>
+
+<pre><code>Ext.get(t).toggleClass('red');
+</code></pre>
+
+<p>}
+function out(e,t){</p>
+
+<pre><code>Ext.get(t).toggleClass('red');
+</code></pre>
+
+<p>}
+Ext.fly('myButton').hover(over, out);
+```</p>
+
+<h3>Dimensions(getHeight, getWidth)</h3>
+
+<p>可以添加动画configure或直接true</p>
+
+<p>```js
+// changes the height to 200px and animates with default configuration
+Ext.fly('elId').setHeight(200, true);</p>
+
+<p>// changes the height to 150px and animates with a custom configuration
+Ext.fly('elId').setHeight(150, {</p>
+
+<pre><code>duration : .5, // animation will have a duration of .5 seconds
+// will change the content to "finished"
+callback: function(){ this.update("finished"); } 
+</code></pre>
+
+<p>});
+```</p>
+
+<p>```js
+getPadding('lrtb');//返回四个方向padding之和</p>
+
+<p>//同时得到x,y坐标
+var elXY = Ext.fly('elId').getXY() //elXY is an array
+Ext.fly('elId').setXY([20,10])</p>
+
+<p>//得到相对位置
+var elOffsets = Ext.fly('elId').getOffsetsTo(anotherEl);</p>
+
+<p>//设置位置
+setLocation(15,32)
+```</p>
+
+<p>clearPositioning，getPositioning，setPositioning用来存储恢复position</p>
+
+<h3>Animations</h3>
+
+<p>```js
+//共八个方向，'r'表示朝右边滑动
+Ext.fly('slideEl').slideOut('r', {</p>
+
+<pre><code>callback : function(){
+    alert('Finished sliding the element out');
+}
+</code></pre>
+
+<p>});
+```</p>
+]]></content>
+  </entry>
+  
+</feed>
