@@ -1,237 +1,243 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://stonelee.info/blog/2010/07/13/dwg-to-svg/</loc>
+        <loc>http://lixudong.github.com/blog/2010/07/13/dwg-to-svg/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/07/16/python-mixin/</loc>
-        <lastmod>2012-05-20T00:43:49+08:00</lastmod>
-    </url>
-    <url>
-        <loc>
-            http://stonelee.info/blog/2010/08/01/difference-in-static-method-and-class-method-in-python/
-        </loc>
-        <lastmod>2012-05-20T00:43:49+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://stonelee.info/blog/2010/08/02/paper-material-to-digital/</loc>
+        <loc>http://lixudong.github.com/blog/2010/07/16/python-mixin/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://stonelee.info/blog/2010/08/14/use-inter-process-communicate-develop-inkscape-plugin/
+            http://lixudong.github.com/blog/2010/08/01/difference-in-static-method-and-class-method-in-python/
+        </loc>
+        <lastmod>2012-05-20T00:43:49+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lixudong.github.com/blog/2010/08/02/paper-material-to-digital/</loc>
+        <lastmod>2012-05-20T00:43:49+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://lixudong.github.com/blog/2010/08/14/use-inter-process-communicate-develop-inkscape-plugin/
         </loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
         <loc>
-            http://stonelee.info/blog/2010/09/29/use-rlock-to-achieve-multithread-synchronization/
+            http://lixudong.github.com/blog/2010/09/29/use-rlock-to-achieve-multithread-synchronization/
         </loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/10/10/matpoltlib-draw-love-equation/</loc>
+        <loc>http://lixudong.github.com/blog/2010/10/10/matpoltlib-draw-love-equation/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/10/12/hotkey-control-python-program/</loc>
+        <loc>http://lixudong.github.com/blog/2010/10/12/hotkey-control-python-program/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/10/18/compile-vim73-in-ubuntu1004/</loc>
+        <loc>http://lixudong.github.com/blog/2010/10/18/compile-vim73-in-ubuntu1004/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/10/24/closure-bug-in-python/</loc>
+        <loc>http://lixudong.github.com/blog/2010/10/24/closure-bug-in-python/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/11/02/python-project-pack-in-windows/</loc>
+        <loc>http://lixudong.github.com/blog/2010/11/02/python-project-pack-in-windows/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/11/17/use-cscope-in-vim-to-query-python-project/</loc>
+        <loc>
+            http://lixudong.github.com/blog/2010/11/17/use-cscope-in-vim-to-query-python-project/
+        </loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/12/08/wxwebkit-simple-web-browser/</loc>
+        <loc>http://lixudong.github.com/blog/2010/12/08/wxwebkit-simple-web-browser/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/12/17/help-tortoisehg/</loc>
+        <loc>http://lixudong.github.com/blog/2010/12/17/help-tortoisehg/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/12/17/python-embed-web-browser/</loc>
+        <loc>http://lixudong.github.com/blog/2010/12/17/python-embed-web-browser/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/12/24/draw-algorithm/</loc>
+        <loc>http://lixudong.github.com/blog/2010/12/24/draw-algorithm/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2010/12/24/mark-time-to-plant-and-build/</loc>
+        <loc>http://lixudong.github.com/blog/2010/12/24/mark-time-to-plant-and-build/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/01/09/vim-plugin/</loc>
+        <loc>http://lixudong.github.com/blog/2011/01/09/vim-plugin/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/01/14/orbited-not-use-demjson/</loc>
+        <loc>http://lixudong.github.com/blog/2011/01/14/orbited-not-use-demjson/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/01/19/hg-optimal-practice/</loc>
+        <loc>http://lixudong.github.com/blog/2011/01/19/hg-optimal-practice/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/01/21/twisted-ssl-server/</loc>
+        <loc>http://lixudong.github.com/blog/2011/01/21/twisted-ssl-server/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/02/06/gae-filter-truncate/</loc>
+        <loc>http://lixudong.github.com/blog/2011/02/06/gae-filter-truncate/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/02/23/python-yield-usage/</loc>
+        <loc>http://lixudong.github.com/blog/2011/02/23/python-yield-usage/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/02/25/many-excel-to-one-word/</loc>
+        <loc>http://lixudong.github.com/blog/2011/02/25/many-excel-to-one-word/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/03/04/python-invoke-vba/</loc>
+        <loc>http://lixudong.github.com/blog/2011/03/04/python-invoke-vba/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/03/07/make-electronic-stamp/</loc>
+        <loc>http://lixudong.github.com/blog/2011/03/07/make-electronic-stamp/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/03/18/hidden-features-in-python/</loc>
+        <loc>http://lixudong.github.com/blog/2011/03/18/hidden-features-in-python/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/03/21/data-transfer-based-on-signature/</loc>
+        <loc>http://lixudong.github.com/blog/2011/03/21/data-transfer-based-on-signature/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/03/22/windows-compile-sphinx-doc/</loc>
+        <loc>http://lixudong.github.com/blog/2011/03/22/windows-compile-sphinx-doc/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/03/31/not-professional-python-program-method/</loc>
+        <loc>
+            http://lixudong.github.com/blog/2011/03/31/not-professional-python-program-method/
+        </loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/03/31/python-string-format/</loc>
+        <loc>http://lixudong.github.com/blog/2011/03/31/python-string-format/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/04/01/lxml-xpath-text-trap/</loc>
+        <loc>http://lixudong.github.com/blog/2011/04/01/lxml-xpath-text-trap/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/04/08/analysis-complicated-cell-of-word/</loc>
+        <loc>http://lixudong.github.com/blog/2011/04/08/analysis-complicated-cell-of-word/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis/</loc>
+        <loc>http://lixudong.github.com/blog/2011/04/08/data-scratch-and-analysis/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/06/27/linq-score-collect/</loc>
+        <loc>http://lixudong.github.com/blog/2011/06/27/linq-score-collect/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/06/27/linq-trick/</loc>
+        <loc>http://lixudong.github.com/blog/2011/06/27/linq-trick/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/07/14/continue-bill-number-reject/</loc>
+        <loc>http://lixudong.github.com/blog/2011/07/14/continue-bill-number-reject/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/07/22/dotnetbar-combotree-show-path/</loc>
+        <loc>http://lixudong.github.com/blog/2011/07/22/dotnetbar-combotree-show-path/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/07/26/tornado-template-analyse/</loc>
+        <loc>http://lixudong.github.com/blog/2011/07/26/tornado-template-analyse/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/07/27/linq-example/</loc>
+        <loc>http://lixudong.github.com/blog/2011/07/27/linq-example/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/07/29/blog-with-markdown-and-highlight/</loc>
+        <loc>http://lixudong.github.com/blog/2011/07/29/blog-with-markdown-and-highlight/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/08/12/how-to-build-github-blog/</loc>
+        <loc>http://lixudong.github.com/blog/2011/08/12/how-to-build-github-blog/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/08/20/web-mine-demo-with-threejs/</loc>
+        <loc>http://lixudong.github.com/blog/2011/08/20/web-mine-demo-with-threejs/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/08/21/warcraft3-threejs-blender-demo/</loc>
+        <loc>http://lixudong.github.com/blog/2011/08/21/warcraft3-threejs-blender-demo/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/08/30/resolve-ubuntu-blank-screen/</loc>
+        <loc>http://lixudong.github.com/blog/2011/08/30/resolve-ubuntu-blank-screen/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/</loc>
+        <loc>
+            http://lixudong.github.com/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/
+        </loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/10/24/svg-solution-in-ie6/</loc>
+        <loc>http://lixudong.github.com/blog/2011/10/24/svg-solution-in-ie6/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/</loc>
+        <loc>http://lixudong.github.com/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2011/11/30/trick-on-jquery/</loc>
+        <loc>http://lixudong.github.com/blog/2011/11/30/trick-on-jquery/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2012/01/30/ext-core-record/</loc>
+        <loc>http://lixudong.github.com/blog/2012/01/30/ext-core-record/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2012/02/01/ext-core-design-pattern/</loc>
+        <loc>http://lixudong.github.com/blog/2012/02/01/ext-core-design-pattern/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2012/02/16/extjs-4-build-tool/</loc>
+        <loc>http://lixudong.github.com/blog/2012/02/16/extjs-4-build-tool/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/2012/04/26/new-extjs-mvc/</loc>
+        <loc>http://lixudong.github.com/blog/2012/04/26/new-extjs-mvc/</loc>
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/</loc>
+        <loc>http://lixudong.github.com/</loc>
         <lastmod>2012-05-19T20:49:22+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/about/</loc>
+        <loc>http://lixudong.github.com/about/</loc>
         <lastmod>2012-05-19T21:46:17+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/404.html</loc>
+        <loc>http://lixudong.github.com/404.html</loc>
         <lastmod>2012-05-19T22:42:07+08:00</lastmod>
     </url>
     <url>
-        <loc>http://stonelee.info/blog/archives/</loc>
+        <loc>http://lixudong.github.com/blog/archives/</loc>
         <lastmod>2012-05-19T20:49:22+08:00</lastmod>
     </url>
 </urlset>
