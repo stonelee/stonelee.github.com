@@ -1,0 +1,13 @@
+---
+layout: page
+title: 您要找的页面地址可能已经更改
+footer: false
+---
+<p>下面是最近的几篇文章</p>
+<div id="blog-archives" class="missing">
+	{% for post in site.posts limit: 10 %}
+	<article>
+		{% include archive_post.html %}
+	</article>
+	{% endfor %}
+</div>
