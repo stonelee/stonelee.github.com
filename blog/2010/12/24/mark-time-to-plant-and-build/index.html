@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>盖房子种树记好时间 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="问题描述 设想以下场景：盖个房子，房子需要m秒才能盖好；然后种了棵树，树需要n秒才能长好。盖房子、种树等行为都是连续的操作，手动即可，不能间断，而时间的存储一般人是需要存到脑子中，或者记到笔记本上，或者定个闹钟。时间到后再进行相应的处理。 解决方案 模拟人的行为：手动操作作为主线程顺序执行， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2010/12/24/mark-time-to-plant-and-build">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">盖房子种树记好时间</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-24T00:00:00+08:00" pubdate data-updated="true">Dec 24<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>问题描述</h2>
+
+<p>设想以下场景：盖个房子，房子需要m秒才能盖好；然后种了棵树，树需要n秒才能长好。盖房子、种树等行为都是连续的操作，手动即可，不能间断，而时间的存储一般人是需要存到脑子中，或者记到笔记本上，或者定个闹钟。时间到后再进行相应的处理。</p>
+
+<h2>解决方案</h2>
+
+<p>模拟人的行为：手动操作作为主线程顺序执行，需要存储时间时开启新的一个线程来保存时间并计时（也就是说两者需要做到异步）。仅仅存储时间是不够的，还需要将该时间所对应的状态信息保存下来，以供时间到后的下步操作。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;等待线程</span>
+</span><span class='line'><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
+</span><span class='line'><span class="sd">        name如果已存在，则会覆盖原来的</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
+</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">TimeThread</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
+</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;farm1&#39;</span><span class="p">,</span> <span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
+</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 结果如下：</p>
+
+<p><img src="/images/blog/plant_build.png" alt="" /></p>
+
+<p>改进了一下代码，去掉了不必要的线程名，这样就不用去考虑命名重复的问题了。另外把线程类简化成一个内部函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="p">))</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
+</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
+</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-24T00:00:00+08:00" pubdate data-updated="true">Dec 24<span>th</span>, 2010</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/12/24/draw-algorithm/" title="Previous Post: 算法时间复杂度直观展示">&laquo; 算法时间复杂度直观展示</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/01/09/vim-plugin/" title="Next Post: vim最佳插件实践">vim最佳插件实践 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

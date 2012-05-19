@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tornado模板机制分析 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="Tornado自带的模板系统非常有特色，相对django等框架来说，可以任意插入python语句，这对于前后台通吃的小团队和个人开发者来说非常方便，而且可以方便的从Tornado框架中剥离出来单独使用。下面简单研究一下模板的实现机制。 模板的实现集中在template.py中， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/07/26/tornado-template-analyse">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Tornado模板机制分析</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-26T00:00:00+08:00" pubdate data-updated="true">Jul 26<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Tornado自带的模板系统非常有特色，相对django等框架来说，可以任意插入python语句，这对于前后台通吃的小团队和个人开发者来说非常方便，而且可以方便的从Tornado框架中剥离出来单独使用。下面简单研究一下模板的实现机制。</p>
+
+<p>模板的实现集中在template.py中，之所以可以随意在模板文本中插入python语句，是因为代码运行时会直接将文本转成python代码。这是如何实现的呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">exec</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled</span> <span class="ow">in</span> <span class="n">namespace</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>exec是python的内置语句，其作用是动态执行python代码，第一个参数可以是string，可以是打开的file object，也可以是code object。可以使用in来引入环境变量。这句代码的意思就是在namespace所设定的环境变量中，执行self.compiled的代码。</p>
+
+<p>那么self.compiled从何而来呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">compiled</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;exec&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用exec执行python字符串时，需要先用解释器将其编译为字节代码，为避免多次编译导致没必要的时间消耗，可以预先进行编译。</p>
+
+<p>compile(source,filename,mode[,flags[,dont_inherit]])可以将字符串编译为字节代码，其中source是要被编译的字符串，filename是定义该字符串变量的文件，如果不需要的话推荐设置为<string>,mode指定编译类型（single指单个语句，exec指多个语句，eval指一个表达式）。</p>
+
+<p>exec实际上会动态生成函数_execute()，而且将环境变量插入namespace中，这样就可以从namespace中再取出该函数，然后执行，其结果就是以python代码的方式完成模板文本的解析。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">execute</span> <span class="o">=</span> <span class="n">namespace</span><span class="p">[</span><span class="s">&quot;_execute&quot;</span><span class="p">]</span>
+</span><span class='line'><span class="k">try</span><span class="p">:</span>
+</span><span class='line'>     <span class="k">return</span> <span class="n">execute</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么self.code是怎么生成的呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">reader</span> <span class="o">=</span> <span class="n">_TemplateReader</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">template_string</span><span class="p">)</span>
+</span><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">_File</span><span class="p">(</span><span class="n">_parse</span><span class="p">(</span><span class="n">reader</span><span class="p">))</span>
+</span><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_python</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">compress_whitespace</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>详细代码可以参见template.py,纯粹是字符串的解析，有时间再看吧。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-26T00:00:00+08:00" pubdate data-updated="true">Jul 26<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/tornado/'>tornado</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/07/22/dotnetbar-combotree-show-path/" title="Previous Post: DotNetBar中ComboTree显示整条路径信息">&laquo; DotNetBar中ComboTree显示整条路径信息</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/07/27/linq-example/" title="Next Post: LINQ流水线">LINQ流水线 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>如何解析word中存在合并单元格的表格 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="对于word中存在合并单元格的表格： 下图是对Cells遍历的结果，True表示该行该列的单元格存在，False表示不存在。 可以看到，word表格中行和列的合并单元格（Merge）机制是不一样的。
+Cells数组在计算时会无视行中的合并，将合并单元格作为普通格，依次进行存储， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/04/08/analysis-complicated-cell-of-word">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">如何解析word中存在合并单元格的表格</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">Apr 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>对于word中存在合并单元格的表格：</p>
+
+<p><img src="/images/blog/table.png" alt="" /></p>
+
+<p>下图是对Cells遍历的结果，True表示该行该列的单元格存在，False表示不存在。</p>
+
+<p><img src="/images/blog/cells.png" alt="" /></p>
+
+<p>可以看到，word表格中行和列的合并单元格（Merge）机制是不一样的。
+Cells数组在计算时会无视行中的合并，将合并单元格作为普通格，依次进行存储，合并后空出的项排在本行的最后。
+而在计算列时，会在第一次遇到合并单元格时将其进行存储，其后遇到时保留其指针，但是将该格剔除（不太好描述，可以理解为将其作为None值保存）。这是符合我们一般理解的。</p>
+
+<p>问题来了：
+在存在合并单元格的行中，如何知晓哪些行被合并？</p>
+
+<p>从网上搜索解决方案，在 <a href="http://www.xtremevbtalk.com/showthread.php?t=307600">这篇帖子</a>中提到,在word可以支持合并单元格操作之前，VBA中就实现了table对象，但是一直没有升级。因此当表格中存在合并单元格时，表格内容无法完整获取。</p>
+
+<p>目前想到的思路是判断每个单元格的宽度，用单元格数量完整的行做参照，判断单元格数量不全的行每个单元格的宽度，但是这个方案只对标准的合并单元格有效，宽度略微有所调整就不行了。</p>
+
+<p>Excel没有这种问题，难道Word的表格就是个纯粹的杯具吗？</p>
+
+<p>解决方案待续~，期待大牛解答。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">Apr 8<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/office/'>office</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/04/01/lxml-xpath-text-trap/" title="Previous Post: lxml中xpath的text()陷阱">&laquo; lxml中xpath的text()陷阱</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/04/08/data-scratch-and-analysis/" title="Next Post: 数据抓包及分析经验小结">数据抓包及分析经验小结 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

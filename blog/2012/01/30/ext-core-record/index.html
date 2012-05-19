@@ -5,11 +5,15 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Stonelee's Blog</title>
+  <title>Ext Core学习笔记 - Stonelee's Blog</title>
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="从年前技术选型开始算起，使用Extjs 4已经四五个月时间了。对比之前的3.x版本，Extjs 4给了我们太多的惊喜：全新的mvc架构、强大的class体系、灵活的js加载方式、纯div布局页面。因此，项目组毫不犹豫地选择其作为前端架构进行新项目的开发。 项目初始时，我们一直遵循推荐的MVC架构： &hellip;">
+  <meta name="description" content="Ext Core与jQuery类似，提供了跨浏览器的js封装。
+主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
+作为类库它提供了更高层次的抽象，方便具体问题的解决
+参考: http://docs.sencha.com/core/manual/ 1
+2 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonelee.github.com">
+  <link rel="canonical" href="http://stonelee.github.com/blog/2012/01/30/ext-core-record">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -75,311 +79,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 Mvc架构演化</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-26T00:00:00+08:00" pubdate data-updated="true">Apr 26<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>从年前技术选型开始算起，使用Extjs 4已经四五个月时间了。对比之前的3.x版本，Extjs 4给了我们太多的惊喜：全新的mvc架构、强大的class体系、灵活的js加载方式、纯div布局页面。因此，项目组毫不犹豫地选择其作为前端架构进行新项目的开发。</p>
-
-<p>项目初始时，我们一直遵循推荐的MVC架构：在view中配置页面控件，controller中编写业务逻辑。但随着项目的推进，模块代码越来越多，加之由于种种原因开发时间严重缩短，没有时间进行代码评审，controller中的代码灵活性过强，调用页面控件方式相对繁琐等问题逐渐暴露出来，页面基本无法复用，controller一片狼藉。</p>
-
-<h2>第一次重构</h2>
-
-<p>在用户桌面widget开发时，发现新widget与原模块中的view很像，但是在store,pagingtoolbar等方面略有差别，而controller中的逻辑非常杂乱，一个文件包含了整个模块的业务逻辑，维护和复用都相当困难。</p>
-
-<p>重构结果总结如下:</p>
-
-<ul>
-<li>将controller中的业务逻辑尽量移到view中，采用js闭包实现逻辑的相对隔离，跨多view的逻辑依然放在controller中，达到维护容易和代码复用的目的。</li>
-<li>采用extend的方式简化view开发</li>
-<li>操作按钮尽量使用inline方式，便于用户使用，也有利于集成到其他view中。</li>
-<li>add和edit两个界面合为一个，简化开发和维护工作量</li>
-<li>store.sync后回传的数据可能与grid中的column不符，这时无法享用自动load的好处，因此应该使用model来save。grid同时使用pagingtoolbar时必须用model来save，然后load，否则pagingtoolbar不能更新。</li>
-</ul>
-
-
-<h2>第二次重构</h2>
-
-<p>业务逻辑移到view中，满足了页面间高内聚、低耦合的设计要求，但是view之间相对独立的特点导致了无法实现逻辑代码复用的问题。</p>
-
-<p>经研究，可以使用mixin来实现逻辑的复用。</p>
-
-<p>例如Grid可以拆分为Columns（基本列）,Crud（增删改）,Operate（操作）,filter（筛选）等minin类,这几个类都包含了控件和业务逻辑,可以灵活配置在各个view中。</p>
-
-<p><img src="/images/blog/Extjs-New-MVC.png" alt="" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-16T00:00:00+08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>ExtJS 4采用新的MVC思路进行开发。 在项目开发阶段这种分散式的代码组织方式是很爽的，但是应用到生产环境中时为了减少服务端压力，需要对js文件进行压缩打包。 为解决这一问题，官方提供了打包工具<a href="http://www.sencha.com/products/jsbuilder">JSBuilder</a>, 使用方法如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>创建jsb文件：<span class="nv">$sencha</span> create jsb -a http://localhost/helloext/index.html -p app.jsb3
-</span><span class='line'>构建：<span class="nv">$sencha</span> build -p app.jsb3 -d .
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>但在实际使用时发现，不知道是因为水土不服还是我们的项目结构不合sencha的胃口。在构建jsb3文件的时候不是完全找不到任何路径，就是缺少大量项目文件，可以说是相当鸡肋。</p>
-
-<p>不如自己来吧！</p>
-
-<p>经测试发现，只要按照依赖顺序，将所有文件归置到一个文件中，然后压缩，项目即可正常调用。</p>
-
-<p>打包工具已经放到github上:<a href="https://github.com/stonelee/extjs4-build-tool">https://github.com/stonelee/extjs4-build-tool</a></p>
-
-<h2>思路</h2>
-
-<p>将app下的js文件按照model, store, view, controller的顺序来创建jsb3。</p>
-
-<p>如果view中使用requires加载其它view，则按照依赖顺序先行加载。</p>
-
-<p>然后针对项目需求做了点修改，将app.js按Ext.application分成两部分，分别加载到最后生成的文件中。</p>
-
-<h2>技术点</h2>
-
-<ul>
-<li>按照依赖加载关系进行排列<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/sort.py">sort.py</a></li>
-<li>文本解析<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/parse.py">parse.py</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<p>本工具仅仅将项目开发中自己创建的位于app文件夹中的model, store, view, controller以及用于项目整合的app.js打包成一个文件。
-其它ExtJS或者ux文件还需要自己打包。
-将build-tool放到app同级目录下，项目文档结构如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>|app
-</span><span class='line'>|--controller
-</span><span class='line'>|--model
-</span><span class='line'>|--store
-</span><span class='line'>|--view
-</span><span class='line'>|build-tool
-</span><span class='line'>|all.js
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最终生成文件：</p>
-
-<ul>
-<li>app.jsb3 压缩文件路径信息</li>
-<li>all-debug.js 未压缩的打包文件,供调试使用</li>
-<li>all.js 压缩打包文件,生产环境使用</li>
-</ul>
-
-
-<p>ps:</p>
-
-<p>从开始研究Ext打包，形成思路，到最终完成完整的打包工具并应用到项目中一共用了两天时间，其中纯python编码时间也就半天时间，看来经过这半年的js编码之后，我的python还没太手生嘛哈哈。动态语言之间的学习可以互相促进？待验证~</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-01T00:00:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>参考:
-<a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
-
-<h2>Singletons 单例模式</h2>
-
-<p>适用于只有static method或者只需要实例化一次的类，例如应用入口类。可以隐藏私有variables和methods</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">MyApp</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">data</span><span class="p">;</span> <span class="c1">//data is private and can&#39;t be accessed from outside.</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">);</span>
-</span><span class='line'>          <span class="c1">//Initialize application here</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">getData</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>          <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'><span class="p">}</span> <span class="p">();</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span><span class="nx">MyApp</span><span class="p">.</span><span class="nx">init</span><span class="p">,</span> <span class="nx">MyApp</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Observable观察者模式</h2>
-
-<p>Ext.util.Observable使用events实现在多个objects之间解耦</p>
-
-<p>事件触发流程：state changes -> fire event -> notified</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">MyClass</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Ext</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">Observable</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">addEvents</span><span class="p">(</span><span class="s1">&#39;datachanged&#39;</span><span class="p">);</span> <span class="c1">//specify the events we&#39;re going to fire</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">fireEvent</span><span class="p">(</span><span class="s1">&#39;datachanged&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// To subscribe to an event</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">();</span>
-</span><span class='line'><span class="nx">c</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;datachanged&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'><span class="nx">c</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;some&#39;</span><span class="p">);</span> <span class="c1">//3</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Composite 组合模式</h2>
-
-<p>将对象组与单一对象作统一处理，方便用户调用</p>
-
-<p>例如使用select取得的Ext.CompositeElement跟Ext.Element具有同样的调用接口</p>
-
-<h2>Flyweight 享元模式</h2>
-
-<p>使用共有的object，避免创建额外对象，减少内存占用，适用于单行原子操作。</p>
-
-<ul>
-<li>使用Ext.fly来以享元的方式获取Element,只能一次性使用</li>
-<li>Ext.get可以获取Element，然后保存以供未来使用</li>
-<li>Ext.getDom获取dom node</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a></h1>
+      <h1 class="entry-title">Ext Core学习笔记</h1>
     
     
       <p class="meta">
@@ -402,7 +107,7 @@
   </header>
 
 
-  <div class="entry-content"><p>Ext Core与jQuery类似，提供了跨浏览器的js封装。
+<div class="entry-content"><p>Ext Core与jQuery类似，提供了跨浏览器的js封装。
 主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
 作为类库它提供了更高层次的抽象，方便具体问题的解决
 参考: <a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
@@ -1001,118 +706,16 @@ Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
 
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
 
-<time datetime="2011-11-30T00:00:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>有人使用jquery来get服务端数据吗？
-相信略微有点功能的jquery程序都会使用把。</p>
-
-<h2>trick</h2>
-
-<p>前提确定，恶作剧开始。
-将下面代码插入任意js文件的可执行位置:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">fuck</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;fuck u!!!&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>效果</h2>
-
-<p>在我的系统中每隔5s向服务端请求一次数据，因此每隔5s会弹出一个温馨的祝福框。</p>
-
-<h2>原因</h2>
-
-<p>查看console没有任何异常啊，why？？
-将那个可爱的alert换为console.log，发现console出现了位置定位jquery-1.7.js (line 7611)，点过去看看：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="k">in</span> <span class="p">{</span> <span class="nx">success</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">error</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">complete</span><span class="o">:</span> <span class="mi">1</span> <span class="p">}</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">jqXHR</span><span class="p">[</span> <span class="nx">i</span> <span class="p">](</span> <span class="nx">s</span><span class="p">[</span> <span class="nx">i</span> <span class="p">]</span> <span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>jquery作者肿么了，object的for循环竟然没用hasOwnProperty来判断一下！！
-然后看了下周围的代码，也都是一样滴！！
-为了代码的简洁吗？为了运行的效率吗？基于用户的善意考虑吗？在js的prototype继承机制上，一切都是浮云~</p>
-
-<p>如此明显的bug估计在jquery看来是有意为之的，但是为防止自己的代码被问候，建议自己的代码按照这样的方式书写：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">obj</span><span class="o">=</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="s2">&quot;tom&quot;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">13</span><span class="p">};</span>
-</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">){</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">i</span><span class="p">)){</span>
-</span><span class='line'>      <span class="nx">doSomething</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这也是每本专业js书里的推荐写法。</p>
-
-<h2>ps</h2>
-
-<p>如果有人用这种方法捣乱，文件夹搜索Object.prototype即可。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -1124,458 +727,38 @@ Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
   
 
 
-<time datetime="2011-11-11T00:00:00+08:00" pubdate data-updated="true">Nov 11<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://stonelee.info/demos/currentscale_bug_in_chrome15/index.html">测试网址</a></p>
-
-<p>已提交bug，待解决</p>
-
-<h2>ps</h2>
-
-<p>chrome开发者已添加Labels: -Area-Undefined Area-WebKit</p>
-
-<h2>ps</h2>
-
-<p>chrome 13中是可以缩放的，因此继续研究，结果在定点缩放这一功能实现时发现大问题：</p>
-
-<p>放大，即currentScale *= 1.1时,
-当前鼠标的clientX减小，即event.clientX /= 1.1,
-但是图形中的点clientX不变</p>
-
-<p>移动，即currentTranslate.x -=10 时,
-当前鼠标clientX不变，
-但是图形中的点clientX -=10</p>
-
-<p>即缩放是浏览器行为，不改变图形client坐标，而移动是svg行为，会改变图形client坐标。</p>
-
-<p>两者的实现如此不一致，怪不得chrome 15中currentScale失效了，而currentTranslate没有。
-Google是不是把资源都放到canvas上了，svg这么明显的bug都不管。。。</p>
-
-<p>firefox下都是图形坐标改变，鼠标不变。很容易就能实现定点缩放功能。</p>
-
-<h2>ps</h2>
-
-<p>经反复研究发现，ie端支持svg的Chrome Frame方案不够成熟，该控件体积有20多M，安装需要几分钟，而且时常安装失败，安装体验太差。最重要的是chrome中svg缩放移动条件下鼠标定位与svg坐标换算非常诡异，经两天研究仍无法完美解决，导致无法实现定点缩放功能。页面初次加载也不够快（可能是gcf方式加载的问题），用户体验一般。
-所以&#8230;放弃&#8230;</p>
-
-<p>换用Adobe svg viewer吧。。。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2012-01-30T00:00:00+08:00" pubdate data-updated="true">Jan 30<span>th</span>, 2012</time>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a></h1>
-    
-    
-      <p class="meta">
-        
 
-
-
-
-
-
-
-
+<span class="categories">
   
+    <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
 
 
-<time datetime="2011-10-24T00:00:00+08:00" pubdate data-updated="true">Oct 24<span>th</span>, 2011</time>
-        
-      </p>
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>IE6下svg的渲染是个问题，目前主要有以下几种解决方案：</p>
-
-<h2><a href="http://code.google.com/p/svgweb/">svgweb</a></h2>
-
-<p>优点:开源，可在不支持svg的浏览器中使用flash来渲染，有效解决客户端下载插件问题</p>
-
-<p>缺点:svg封装不完全，flash渲染效率比较低，刷新页面时内存泄漏严重</p>
-
-<h2><a href="http://www.adobe.com/svg/viewer/install/">adobe SVGViewer</a></h2>
-
-<p>优点：对svg支持较好</p>
-
-<p>缺点：adobe已于2009年1月份明确表示不再提供支持，需要客户端下载插件</p>
-
-<h2><a href="http://code.google.com/intl/zh-CN/chrome/chromeframe/">Chrome Frame</a></h2>
-
-<p>优点：IE下使用chrome模式来渲染，速度快，原生支持svg</p>
-
-<h2>svgweb+chrome frame</h2>
-
-<p>这时目前我们项目组所使用的解决方案，可以较好地满足我们的需求</p>
-
-<ul>
-<li>系统整体框架为遗留系统，IE only，这决定了我们的客户必须使用IE（煤矿客户本来就对此喜闻乐见）</li>
-<li>一般客户端使用频率较低，使用svgweb提供的flash渲染，不用下载flash以外的插件</li>
-<li>监控中心中客户端数量较少，而且设备可控，使用chromeframe渲染svg单页面，渲染效率高，减少内存泄漏</li>
-</ul>
-
-
-<h3>发现问题：</h3>
-
-<p>在实际使用过程中发现，使用frame方式调用svg单页面时，通过指定chromeframe渲染头的方式是无效的:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;X-UA-Compatible&quot;</span> <span class="na">content=</span><span class="s">&quot;chrome=1&quot;</span><span class="nt">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>此时访问调用frameset的页面，会发现其依然是IE渲染，而单独访问该svg页面会使用chrome方式。</p>
-
-<p><a href="http://groups.google.com/group/google-chrome-frame/browse_thread/thread/d5ffe442658bc60e/e6d7a4c1c179c931">网上讨论结果</a>是目前chromeframe只支持顶层meta tag检测，而且貌似也不打算修正这一问题。</p>
-
-<h3>解决方案：</h3>
-
-<p>经过不断尝试，发现有一个取巧方法可以解决此问题，即使用gcf前缀指定渲染方式，形如gcf:http://gmail.com
-猛击 <a href="http://www.chromium.org/developers/how-tos/chrome-frame-getting-started#TOC-Testing-Your-Sites">参考网址</a></p>
-
-<p>这需要修改注册表：HEKY_CURRENT_USER\Software\Google\ChromeFrame下新建DWORD类型的键 AllowUnsafeURLs=1
-然后就可以这样调用该svg页面</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;frame</span> <span class="na">src=</span><span class="s">&quot;gcf:http://127.0.0.1/svg/index.html&quot;</span> <span class="na">name=</span><span class="s">&quot;MainFrame&quot;</span> <span class="na">id=</span><span class="s">&quot;MainFrame&quot;</span>  <span class="na">frameborder=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果要兼容没有安装chromeframe的浏览器，可以使用js动态更改。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">IsGCFInstalled</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">try</span> <span class="p">{</span>
-</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="s1">&#39;ChromeTab.ChromeFrame&#39;</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>              <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>          <span class="p">}</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
-</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">frame</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;MainFrame&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;MainFrame&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;frameborder&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">IsGCFInstalled</span><span class="p">())</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;gcf:http://10.10.22.84/develop/gmf/zhunqi/index.html&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;zhunqi/index.html&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="nx">frame</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#TreeFrameSet&#39;</span><span class="p">));</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">})();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ps</h3>
-
-<p>注册表中指定RenderInGcfUrls的方法也是无效的，原因估计等同于指定meta tag的方法。</p>
+      <div class="sharing">
+  
+  
+  
 </div>
-  
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-09-13T00:00:00+08:00" pubdate data-updated="true">Sep 13<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。</p>
-
-<h2>要求</h2>
-
-<ul>
-<li>能够实现前后台数据通信</li>
-<li>保持前端纯洁性，不掺杂过多服务端代码</li>
-<li>前端js使用相对url来获取数据,需要解决跨域问题</li>
-</ul>
-
-
-<h2>解决方案</h2>
-
-<h3>静态服务器nginx</h3>
-
-<p>提供前端html+js+css的静态展示</p>
-
-<p>需要配置nginx.conf:
-alias可以指定映射路径,
-autoindex可以自动列出文件目录</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>location /develop <span class="o">{</span>
-</span><span class='line'>  <span class="nb">alias</span>       <span class="s2">&quot;/home/lxd/Develop&quot;</span>;
-</span><span class='line'>  autoindex   on;
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>后台测试服务器tornado</h3>
-
-<p>不使用template_path和static_path,直接使用write来返回字符串数据,
-服务端简化到只需一个文件,
-tornado只用来产生数据，以独立应用的形式提供服务</p>
-
-<h3>跨域问题</h3>
-
-<p>使用nginx反向代理tornado服务器，来解决跨域问题</p>
-
-<p>nginx.conf添加反向代理</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>location /develop/gmf/zhunqi/tornado <span class="o">{</span>
-</span><span class='line'>  proxy_pass       <span class="s2">&quot;http://localhost:8888&quot;</span>;
-</span><span class='line'>  proxy_redirect   off;
-</span><span class='line'>  proxy_set_header X-Real-IP <span class="nv">$remote_addr</span>;
-</span><span class='line'>  proxy_set_header X-Forwarded-For <span class="nv">$proxy_add_x_forwarded_for</span>;
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>tornado文件指定url映射</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">(</span><span class="s">r&quot;/develop/gmf/zhunqi/tornado/mines&quot;</span><span class="p">,</span> <span class="n">MineHandler</span><span class="p">),</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+        <a class="basic-alignment left" href="/blog/2011/11/30/trick-on-jquery/" title="Previous Post: 恶搞jquery">&laquo; 恶搞jquery</a>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-08-30T00:00:00+08:00" pubdate data-updated="true">Aug 30<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天重新安装了ubuntu，准备作为个人开发的主环境。</p>
-
-<p>晚上的时候忽然蹦出来个激活硬件驱动的提示，我手贱了下随手就点了，结果重启后系统就进不去了，一直是黑屏，连ctrl+alt+F1都进不去。</p>
-
-<h2>解决方法</h2>
-
-<p>重启，在GRUB中按e进入编辑，删除quiet and splash，如果是Nvidia显卡添加nomodeset，如果是ATI显卡添加nomodeset xforcevesa</p>
-
-<p>按ctrl+x启动，然后会提示说找不到桌面，这时可以进入命令行了，删掉xorg.conf</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> /etc/X11/
-</span><span class='line'>sudo rm xorg.conf
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后就可以正常startx了</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-08-21T00:00:00+08:00" pubdate data-updated="true">Aug 21<span>st</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>早就想基于魔兽争霸的模型做点东西，周末抽空研究了下，比较简单。</p>
-
-<p>先看看效果。</p>
-
-<p><img src="/images/blog/warcraft.jpg" alt="" /></p>
-
-<h2>导出魔兽争霸模型</h2>
-
-<p>Warcraft 3 Viewer可以读取warcraft的MPQ文件，从中选择中意的模型，然后可以分别将MDX和texture导出。为了后面使用的方便，texture导出到和mdx相同目录下，格式为jpg。</p>
-
-<h2>导入到blender</h2>
-
-<p>使用modelconv来将mdx文件转换为obj文件。modelconv是一个命令行程序，调用后，输入要转换的mdx文件名和要转换成的obj文件名即可。
-然后使用blender来import该obj文件。</p>
-
-<h2>调整模型</h2>
-
-<p>自动导入的文件往往其大小和角度不符合实际需要，因此需要进行调整。</p>
-
-<ul>
-<li>缩放模型</li>
-<li>调整模型位置</li>
-<li>调整摄像机位置</li>
-<li>删掉多余的面</li>
-</ul>
-
-
-<h2>贴纹理(texture)</h2>
-
-<p>打开UV/Image Editor，打开贴图文件，在3D View视图中查看Textured视角，这时会发现模型已经自动贴好了纹理。但是这时候render的话会发现渲染出的模型依然是难看的灰色。因此需要新加一个Material，然后新加一个Texture，Type选择Image or Movie，Image选择之前的贴图文件，Mapping中Coordinates选择UV，这样才算真正贴好了纹理。</p>
-
-<h2>导出three.js模型</h2>
-
-<p>使用ThreeJS自带的blender导出插件，会自动将模型和纹理导成ThreeJS需要的json。只需将生成的js文件和texture复制到ThreeJS项目中即可正常使用。</p>
-
-<h2>ThreeJS中调用模型</h2>
-
-<p>注意调整模型位置，纹理会自动贴好。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">loader</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">JSONLoader</span><span class="p">();</span>
-</span><span class='line'><span class="nx">loader</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span> <span class="p">{</span> <span class="nx">model</span><span class="o">:</span> <span class="s2">&quot;warcraft/archer.js&quot;</span><span class="p">,</span> <span class="nx">callback</span><span class="o">:</span> <span class="nx">createScene</span> <span class="p">}</span> <span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">createScene</span><span class="p">(</span> <span class="nx">geometry</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span> <span class="nx">geometry</span><span class="p">,</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshFaceMaterial</span><span class="p">());</span>
-</span><span class='line'>    <span class="nx">mesh</span><span class="p">.</span><span class="nx">position</span><span class="p">.</span><span class="nx">x</span><span class="o">=-</span><span class="mi">15</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">mesh</span><span class="p">.</span><span class="nx">position</span><span class="p">.</span><span class="nx">y</span><span class="o">=-</span><span class="mi">5</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">mesh</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">mesh</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">mesh</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">scene</span><span class="p">.</span><span class="nx">addObject</span><span class="p">(</span> <span class="nx">mesh</span> <span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+        <a class="basic-alignment right" href="/blog/2012/02/01/ext-core-design-pattern/" title="Next Post: Ext Core设计模式">Ext Core设计模式 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
 
 </div>
-  
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -1608,7 +791,7 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/stonelee">@stonelee</a> on GitHub
@@ -1641,6 +824,7 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
 
   
 </aside>
+
 
     </div>
   </div>

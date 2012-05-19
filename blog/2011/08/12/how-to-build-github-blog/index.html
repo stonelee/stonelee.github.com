@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>搭建基于github的免费博客 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="优势 国外著名开源网站，影响力大（无声无息倒掉的风险较少）
+基于git的本地源码控制，安全（防GFW）
+纯文本写作，适合程序控
+可以绑定自己的域名
+空间免费 使用 fork我的博客
+git clone
+修改一下页面代码，在_posts中写自己的博客
+github page服务后台使用jekyll， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/08/12/how-to-build-github-blog">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">搭建基于github的免费博客</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-12T00:00:00+08:00" pubdate data-updated="true">Aug 12<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>优势</h2>
+
+<ul>
+<li>国外著名开源网站，影响力大（无声无息倒掉的风险较少）</li>
+<li>基于git的本地源码控制，安全（防GFW）</li>
+<li>纯文本写作，适合程序控</li>
+<li>可以绑定自己的域名</li>
+<li>空间免费</li>
+</ul>
+
+
+<h2>使用</h2>
+
+<ul>
+<li>fork我的博客</li>
+<li>git clone</li>
+<li>修改一下页面代码，在_posts中写自己的博客</li>
+<li>github page服务后台使用jekyll，为了在本地写作博客， 修改满意后再进行同步，自己安装jekyll是很有必要的。
+然后可以在本地启动</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>jekyll --server
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>功能增强</h2>
+
+<ul>
+<li>添加评论<a href="http://disqus.com">disqus</a></li>
+<li><a href="http://www.google.com/intl/zh-CN/analytics/">Google Analytics</a></li>
+<li>blog订阅:<a href="http://www.feedsky.com">FeedSky</a></li>
+<li>社会化推荐:<a href="http://www.jiathis.com">JiaThis</a></li>
+</ul>
+
+
+<h2>绑定域名</h2>
+
+<p>修改 A record并指向207.97.227.245</p>
+
+<p>我在Godaddy买的域名，还没用就被封DNS了。更换Nameservers后成功访问。使用的是 <a href="https://www.dnspod.cn/">dnspod</a>,据说是国内最早提供免费智能DNS产品的网站，需要邮箱和手机验证。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://saberma.me/other/2010/09/20/saberma-github-page-blog-build-with-jekyll.html">saberma的使用心得</a></li>
+<li><a href="http://pages.github.com/">官方pages简介</a></li>
+<li><a href="https://github.com/mojombo/jekyll/wiki/sites">其他人的博客列表</a></li>
+</ul>
+
+
+<h4>模板引擎liquid,是模版使用的语法</h4>
+
+<ul>
+<li><a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">用法</a></li>
+<li><a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">扩展</a></li>
+</ul>
+
+
+<h3>textile</h3>
+
+<ul>
+<li><a href="http://redcloth.org/hobix.com/textile/">语法参考</a></li>
+<li><a href="http://textile.thresholdstate.com/">练习</a></li>
+</ul>
+
+
+<h3>语法高亮支持语言</h3>
+
+<p><a href="http://pygments.org/docs/lexers/">pygments</a></p>
+
+<h3>模版网址</h3>
+
+<p><a href="http://freehtml5templates.com">基于html5、css3的免费模板</a></p>
+
+<h2>PS</h2>
+
+<h3>2012-05-05更新</h3>
+
+<p>jekyll安装:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install jekyll 0.11.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>遇到问题：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Liquid error: undefined method <span class="sb">`</span>join’ <span class="k">for</span> <span class="c">#</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决方法: liquid降级</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem uninstall liquid
+</span><span class='line'><span class="nv">$ </span>gem install liquid -v 2.2.2
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-12T00:00:00+08:00" pubdate data-updated="true">Aug 12<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/07/29/blog-with-markdown-and-highlight/" title="Previous Post: 糅合Markdown和语法高亮，快速写作技术博客">&laquo; 糅合Markdown和语法高亮，快速写作技术博客</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/08/20/web-mine-demo-with-threejs/" title="Next Post: 基于WebGL的矿井三维演示">基于WebGL的矿井三维演示 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

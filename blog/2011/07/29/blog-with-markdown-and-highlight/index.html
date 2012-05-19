@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>糅合Markdown和语法高亮，快速写作技术博客 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="之前博客在javaeye，不知道触犯了老大哪根神经，不声不响就给封了，现在来到CSDN，又正好赶上改版，好好的博客写完后格式乱七八糟。国内的其他博客商也都好不到哪里去，不知道什么时候就被封，算了，自己动手丰衣足食，自己搞个独立博客吧。 要求 代码写惯了，觉得可视化编辑器非常不靠谱，写代码花时间， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/07/29/blog-with-markdown-and-highlight">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">糅合Markdown和语法高亮，快速写作技术博客</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-29T00:00:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>之前博客在javaeye，不知道触犯了老大哪根神经，不声不响就给封了，现在来到CSDN，又正好赶上改版，好好的博客写完后格式乱七八糟。国内的其他博客商也都好不到哪里去，不知道什么时候就被封，算了，自己动手丰衣足食，自己搞个独立博客吧。</p>
+
+<h2>要求</h2>
+
+<p>代码写惯了，觉得可视化编辑器非常不靠谱，写代码花时间，写文档花时间，调格式更得花时间，而且不利于备份。因此要求纯文本，标记语言简单易学，实现代码高亮。</p>
+
+<h2>技术选型</h2>
+
+<ul>
+<li>标记语言 Markdown</li>
+<li>python封装库 python-markdown2</li>
+<li>代码高亮工具 Javascript code prettifier</li>
+</ul>
+
+
+<h2>实现</h2>
+
+<h3>1. markdown实现：</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">markdown2</span>
+</span><span class='line'><span class="n">content</span><span class="o">=</span><span class="s">&quot;something&quot;</span>
+</span><span class='line'><span class="n">markdown</span> <span class="o">=</span> <span class="n">markdown2</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>字符串content会按照markdown的语法生成相应的html标签，直接输出到页面上即可。</p>
+
+<h3>2. Javascript code prettifier使用：</h3>
+
+<p>引入js文件和选择的css模板</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;prettify.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;desert.css&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>函数加载到页面中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;prettify.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;body</span> <span class="na">onload=</span><span class="s">&quot;prettyPrint(); &quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>代码插入：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 40em; display: inline-block&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;pre</span> <span class="na">class=</span><span class="s">&quot;prettyprint&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        somecode
+</span><span class='line'>    <span class="nt">&lt;/pre&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>python-markdown2中已经实现了代码高亮，无奈语焉不详，而且语法也着实丑陋。本着“quick and dirty”的原则，直接定义</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>来包裹想高亮的代码，然后用replace来替换上面的div,pre标签。</p>
+
+<p>实现如此简单~</p>
+
+<h2>样例</h2>
+
+<p><img src="/images/blog/markdown.gif" alt="" /></p>
+
+<h2>源文件</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>标题
+</span><span class='line'>====
+</span><span class='line'>
+</span><span class='line'>前言
+</span><span class='line'>
+</span><span class='line'>**目录**
+</span><span class='line'>
+</span><span class='line'>* 第一章
+</span><span class='line'> * 第一节
+</span><span class='line'> * 第二节
+</span><span class='line'>* 第二章
+</span><span class='line'>* 第三章
+</span><span class='line'>
+</span><span class='line'>第一章
+</span><span class='line'>------
+</span><span class='line'>
+</span><span class='line'>**第一节**
+</span><span class='line'>
+</span><span class='line'>内容内容内容内容内容内容
+</span><span class='line'>
+</span><span class='line'>**第二节**
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;code&gt;</span>
+</span><span class='line'>def hello()
+</span><span class='line'>    print &quot;hello&quot;
+</span><span class='line'><span class="nt">&lt;/code&gt;</span>
+</span><span class='line'>
+</span><span class='line'>第二章
+</span><span class='line'>------
+</span><span class='line'>
+</span><span class='line'>内容内容内容内容内容内容
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>附有用的网址</h2>
+
+<p>Markdown</p>
+
+<ul>
+<li><a href="http://daringfireball.net/projects/markdown/basics">入门</a></li>
+<li><a href="http://daringfireball.net/projects/markdown/syntax">语法参考</a></li>
+<li><a href="http://daringfireball.net/projects/markdown/dingus">练习场</a>，熟练后直接使用这个</li>
+<li><a href="https://github.com/trentm/python-markdown2">markdown解析程序</a></li>
+</ul>
+
+
+<p>代码高亮 Javascript code prettifier</p>
+
+<ul>
+<li><a href="http://google-code-prettify.googlecode.com/svn/trunk/README.html">入门</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-29T00:00:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/tornado/'>tornado</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/07/27/linq-example/" title="Previous Post: LINQ流水线">&laquo; LINQ流水线</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/08/12/how-to-build-github-blog/" title="Next Post: 搭建基于github的免费博客">搭建基于github的免费博客 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

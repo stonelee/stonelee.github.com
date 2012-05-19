@@ -1,0 +1,448 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>连续票号剔除算法 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="问题场景 现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段 1
+2
+3
+4
+原来： 0-999
+领取： 0-99 100-199 400-499
+===========运算求解 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/07/14/continue-bill-number-reject">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">连续票号剔除算法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-14T00:00:00+08:00" pubdate data-updated="true">Jul 14<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>问题场景</h2>
+
+<p>现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>原来： 0-999
+</span><span class='line'>领取： 0-99 100-199 400-499
+</span><span class='line'>===========运算求解======================
+</span><span class='line'>剩余： 200-399 500-999</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>分析</h2>
+
+<p>如果单纯分析这个问题，此时票据只有1000张，数量很少，因此只需要将每个票号放到一个set中，然后进行简单的集合运算即可求出结果。</p>
+
+<p>但是现实系统中票据量往往很大(9位票据就是近10亿条记录)，每张票据一条记录进行存储是不现实的，因此需要进行分段存储，即将一次领取的几本票据（票号连续）作为一条记录，只记录起始票号和终止票号，运算时因为内存空间有限，也不能整体集合求解，需要另辟蹊径。</p>
+
+<p>既然是边界条件判断，如果用各种if应该可以解决问题，但是这样太繁琐，非常容易出错。今天早上忽然想到，这个问题中票号是连续的，因此只要找到前后几个关键点，整段票号就能确定，而段内的票号是不重要的。</p>
+
+<h2>算法</h2>
+
+<p>1.找到全部关键点</p>
+
+<p>原来的号：0 999</p>
+
+<p>每段领取号各向外扩展一个号，作为可能的关键点：
+-1 100 99 200 399 500</p>
+
+<p>2.将上两种关键点放到一个数组中，去重复排序，得到：
+-1 0 99 100 200 399 500 999</p>
+
+<p>3.去掉领取号中重复的点，剩余：
+-1 200 399 500 999</p>
+
+<p>4.只取原来范围内的点，剩余
+200 399 500 999</p>
+
+<p>5.两两一组，即为所求解
+(200,399),(500,999)</p>
+
+<h2>c#技巧</h2>
+
+<ul>
+<li>HashSet可以去重复，也可使用Distinct</li>
+<li>引入Linq后，数组可以进行集合运算。交集Intersect，差集Except，联集Union</li>
+<li>数组只能存储相同类型的数据</li>
+<li>二维数组和交错数组是不同的，二维数组形如int[,],GetLength(0)可获得第0维长度，依次类推</li>
+<li>需要筛选操作的话，使用交错数组string[][]，而不要使用多维数组int[,]</li>
+</ul>
+
+
+<h2>无码无真相</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//从父表票号段中剔除子表中的票号段  </span>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">getLeftNums</span><span class="p">(</span><span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span><span class="p">,</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//填入所有可能的关键点  </span>
+</span><span class='line'>    <span class="c1">//HashSet可去重复  </span>
+</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">possibleSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">fathers</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sons</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//去掉sons中已经使用过的点  </span>
+</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sonSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">sons</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">sonSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">withoutSonsSets</span> <span class="p">=</span> <span class="n">possibleSets</span><span class="p">.</span><span class="n">Except</span><span class="p">(</span><span class="n">sonSets</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//只取fathers范围内的点  </span>
+</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">inFatherSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="k">value</span> <span class="k">in</span> <span class="n">withoutSonsSets</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">fathers</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">&gt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">&amp;&amp;</span> <span class="k">value</span> <span class="p">&lt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">])</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">inFatherSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//排序  </span>
+</span><span class='line'>    <span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sortedLists</span> <span class="p">=</span> <span class="n">inFatherSets</span><span class="p">.</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">).</span><span class="n">ToList</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//两两一组  </span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">()</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">();</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">index</span> <span class="p">=</span> <span class="n">i</span> <span class="p">/</span> <span class="m">2</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">results</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>测试用例</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[Test]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">getLeftNum2</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">999</span> <span class="p">}</span> <span class="p">};</span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">99</span> <span class="p">},</span> <span class="p">{</span> <span class="m">100</span><span class="p">,</span> <span class="m">199</span> <span class="p">},</span> <span class="p">{</span> <span class="m">400</span><span class="p">,</span> <span class="m">499</span> <span class="p">}</span> <span class="p">};</span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="n">frmQueryBillDistribute</span><span class="p">.</span><span class="n">getLeftNums</span><span class="p">(</span><span class="n">fathers</span><span class="p">,</span> <span class="n">sons</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">asserts</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">200</span><span class="p">,</span> <span class="m">399</span> <span class="p">},</span> <span class="p">{</span> <span class="m">500</span><span class="p">,</span> <span class="m">999</span> <span class="p">}};</span>
+</span><span class='line'>    <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">asserts</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-14T00:00:00+08:00" pubdate data-updated="true">Jul 14<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/csharp/'>csharp</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/06/27/linq-trick/" title="Previous Post: LINQ技巧小结">&laquo; LINQ技巧小结</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/07/22/dotnetbar-combotree-show-path/" title="Next Post: DotNetBar中ComboTree显示整条路径信息">DotNetBar中ComboTree显示整条路径信息 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

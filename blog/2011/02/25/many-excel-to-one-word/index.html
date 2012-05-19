@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>多Excel文件导入到一个word - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="需求 多个Excel分布在不同文件夹下，每个Excel又有多个sheet表，现在需要把这些Excel一起汇总到一个word里。 探索 直接复制粘贴既麻烦又无聊，上网搜所相关方法竟然没有，难道我这个需求很少见吗？找到一个国外软件ExcelConverter（售价$49.9）, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/02/25/many-excel-to-one-word">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">多Excel文件导入到一个word</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-25T00:00:00+08:00" pubdate data-updated="true">Feb 25<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>需求</h2>
+
+<p>多个Excel分布在不同文件夹下，每个Excel又有多个sheet表，现在需要把这些Excel一起汇总到一个word里。</p>
+
+<h2>探索</h2>
+
+<p>直接复制粘贴既麻烦又无聊，上网搜所相关方法竟然没有，难道我这个需求很少见吗？找到一个国外软件<a href="http://www.coolutils.com/totalexcelconverter">ExcelConverter</a>（售价$49.9）,发现转换后货币格式的文字完全变成乱码。还是自己写吧，编码测试花了两个小时搞定。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;covert many excel files to one word file</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">win32com.client</span> <span class="kn">import</span> <span class="n">Dispatch</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">wdPageBreak</span> <span class="o">=</span> <span class="mi">7</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">isExcelFile</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;.xls&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">filesInDir</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+</span><span class='line'>    <span class="c">#generate absolute paths of files in a directory</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">findExcels</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">isExcelFile</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">yield</span> <span class="n">name</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filesInDir</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">isExcelFile</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+</span><span class='line'>                    <span class="k">yield</span> <span class="nb">file</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">ExcelToWord</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excelNames</span><span class="p">,</span> <span class="n">wordName</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_createExcel</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excelNames</span> <span class="o">=</span> <span class="n">findExcels</span><span class="p">(</span><span class="n">excelNames</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_createWord</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Documents</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">wordName</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_createExcel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">(</span><span class="s">&#39;Excel.Application&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="c">#self.excel.Visible = True</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">DisplayAlerts</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_createWord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">(</span><span class="s">&#39;Word.Application&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Visible</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">DisplayAlerts</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">excelName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">excelNames</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">print</span> <span class="s">&#39;coverting&#39;</span><span class="p">,</span> <span class="n">excelName</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Workbooks</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">excelName</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Worksheets</span><span class="o">.</span><span class="n">count</span><span class="p">):</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Worksheets</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span><span class="c">#start from 1</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">_paste</span><span class="p">()</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Workbooks</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Quit</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;covert is over&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="c"># select all contents in one sheet and copy</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Cells</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Copy</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="c">#paste to one word file and add a page break</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Paste</span><span class="p">()</span>
+</span><span class='line'>        <span class="c">#self.word.Selection.TypeParagraph()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">InsertBreak</span><span class="p">(</span><span class="n">wdPageBreak</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">excelNames</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>                <span class="s">u&#39;c:</span><span class="se">\\</span><span class="s">users</span><span class="se">\\</span><span class="s">lxd</span><span class="se">\\</span><span class="s">desktop</span><span class="se">\\</span><span class="s">文档&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s">u&#39;c:</span><span class="se">\\</span><span class="s">users</span><span class="se">\\</span><span class="s">lxd</span><span class="se">\\</span><span class="s">desktop</span><span class="se">\\</span><span class="s">汇总.xls&#39;</span><span class="p">,]</span>
+</span><span class='line'>    <span class="n">wordName</span> <span class="o">=</span> <span class="s">r&#39;c:\users\lxd\desktop\1.doc&#39;</span>
+</span><span class='line'>    <span class="n">e</span> <span class="o">=</span> <span class="n">ExcelToWord</span><span class="p">(</span><span class="n">excelNames</span><span class="p">,</span> <span class="n">wordName</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">e</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-25T00:00:00+08:00" pubdate data-updated="true">Feb 25<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/office/'>office</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/02/23/python-yield-usage/" title="Previous Post: yield使用心得">&laquo; yield使用心得</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/03/04/python-invoke-vba/" title="Next Post: python调用VBA心得">python调用VBA心得 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

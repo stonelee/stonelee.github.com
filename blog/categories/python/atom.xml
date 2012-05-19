@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: python | Stonelee's Blog]]></title>
+  <link href="http://stonelee.github.com/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://stonelee.github.com/"/>
+  <updated>2012-05-19T18:45:55+08:00</updated>
+  <id>http://stonelee.github.com/</id>
+  <author>
+    <name><![CDATA[stonelee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[lxml中xpath的text()陷阱]]></title>
+    <link href="http://stonelee.github.com/blog/2011/04/01/lxml-xpath-text-trap/"/>
+    <updated>2011-04-01T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/04/01/lxml-xpath-text-trap</id>
+    <content type="html"><![CDATA[<p>lxml中使用xpath方法获取html标签中的内容时经常会使用text()</p>
+
+<p><code>python
+tree = etree.HTML(html)
+s = tree.xpath('//p[@id="lk"]/a[3]/text()')[0]
+</code></p>
+
+<p>这段代码是从百度首页html中解析hao123这段文字。</p>
+
+<p>使用一下这个变量s，很普通吧~</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>print s
+hao123
+s=='hao123'
+True
+```</p></blockquote></blockquote></blockquote>
+
+<p>但是如果想把这个变量使用pickle序列化</p>
+
+<p><code>python
+import pickle
+pickle.dumps(s)
+</code></p>
+
+<p>报错了~</p>
+
+<p><code>python
+TypeError:can't pickle _Element objects
+</code></p>
+
+<p>为什么呢？</p>
+
+<p>我们被s=='hao123'骗了，这个s并不是str类型，而是lxml.etree._ElementStrinResult类型，比str多了getparent、is_text等多个方法，pickle对这个类型不能识别，因此转换一下类型即可。</p>
+
+<p>自己写个转换类型函数</p>
+
+<p>```python
+def get_text(nodes):</p>
+
+<pre><code>return [unicode(node.xpath('text()')[0]) for node in nodes]
+</code></pre>
+
+<p>```</p>
+
+<p>以后需要使用text()的时候，改为调用这个函数了：</p>
+
+<p><code>python
+nodes = tree.xpath('//p[@id="lk"]/a[3]')
+s = get_text(nodes)[0]
+</code></p>
+
+<h2>总结</h2>
+
+<p>在pickle时，请谨慎使用text()</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[python字符串格式化小结]]></title>
+    <link href="http://stonelee.github.com/blog/2011/03/31/python-string-format/"/>
+    <updated>2011-03-31T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/03/31/python-string-format</id>
+    <content type="html"><![CDATA[<p>将python字符串格式化方法以例子的形式表述如下：</p>
+
+<p>定义宽度</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>'%*s' %(5,'some')
+' some'
+```</p></blockquote></blockquote></blockquote>
+
+<p>左对齐</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>'%-*s' %(5,'some')
+'some '
+```</p></blockquote></blockquote></blockquote>
+
+<p>最小宽度为6的2位精度的浮点小数，位数不够时前补空格</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>'%6.2f' %8.123<br/>
+'  8.12'
+```</p></blockquote></blockquote></blockquote>
+
+<p>字典形式，可在正数前显示加号，位数不够时前面补0</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>'%(name)s = %(num)+06.2f' %{'name':'a','num':8.123}
+'a = +08.12'
+```</p></blockquote></blockquote></blockquote>
+
+<p>在八进制数前面显示零('0'),在十六进制前面显示'0x'或者'0X'(取决于用的是'x'还是'X')</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>'dec: %d/oct: %#o/hex: %#X' % (123,123,123)
+'dec: 123/oct: 0173/hex: 0X7B'
+```</p></blockquote></blockquote></blockquote>
+
+<p>科学计数法</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>'%e' % 1234.567890
+'1.234568e+03'
+```</p></blockquote></blockquote></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[windows下编译开源代码中的sphinx文档]]></title>
+    <link href="http://stonelee.github.com/blog/2011/03/22/windows-compile-sphinx-doc/"/>
+    <updated>2011-03-22T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/03/22/windows-compile-sphinx-doc</id>
+    <content type="html"><![CDATA[<p>许多python开源代码clone下来后会发现里面附带docs，有许多是Sphinx格式的帮助文件，可以将其编译为html以便在本地查看。</p>
+
+<p>编译sphinx文档的方法很简单，首先安装Sphinx</p>
+
+<p><code>bash
+easy_install Sphinx
+</code></p>
+
+<p>然后在docs目录下编译</p>
+
+<p><code>bash
+make html
+</code></p>
+
+<p>这样就会在build生成html样式的帮助文档。</p>
+
+<p>在windows下如果目录中没有make.bat文件，会报错：</p>
+
+<p><code>
+'make’不是内部或外部命令，也不是可运行的程序或批处理文件。
+</code></p>
+
+<p>解决方案：新建目录</p>
+
+<p><code>bash
+md temp
+cd temp
+</code></p>
+
+<p>生成sphinx脚手架</p>
+
+<p><code>bash
+sphinx-quickstart
+</code></p>
+
+<p>然后将生成的make.bat复制到原来文档目录下，然后make html。</p>
+
+<p>有时候会报错</p>
+
+<p><code>
+Error:Cannot find source directory
+</code></p>
+
+<p>这是因为配置路径有问题，按照提示进行相应配置即可。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[基于签名的数据传输]]></title>
+    <link href="http://stonelee.github.com/blog/2011/03/21/data-transfer-based-on-signature/"/>
+    <updated>2011-03-21T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/03/21/data-transfer-based-on-signature</id>
+    <content type="html"><![CDATA[<p>来自PyCon上的演讲：</p>
+
+<p><a href="http://www.slideshare.net/doughellmann/hidden-treasures-of-the-python-standard-library">Hidden Treasures of the Standard Library</a></p>
+
+<p>发送方：</p>
+
+<ul>
+<li>pickle序列化</li>
+<li>生成md5签名</li>
+<li>生成包，格式"签名\n数据长度\n数据"</li>
+</ul>
+
+
+<p><strong>数据传输</strong></p>
+
+<p>接收方：</p>
+
+<ul>
+<li>解析数据包</li>
+<li>根据解析出来的数据生成签名</li>
+<li>将新生成的签名与数据包中的签名对比，如果正确说明无篡改, 否则抛出异常</li>
+<li>pickle反序列化</li>
+</ul>
+
+
+<p>```python</p>
+
+<h1>!/usr/bin/env python</h1>
+
+<h1>-<em>- coding: utf-8 -</em>-</h1>
+
+<p><strong>revision</strong> = '0.1'
+<strong>author</strong> = 'lxd'</p>
+
+<p>import hmac
+from StringIO import StringIO
+import pickle</p>
+
+<p>def create_signature(key, msg):</p>
+
+<pre><code>h = hmac.new(key)
+h.update(msg)
+return h.hexdigest()
+</code></pre>
+
+<h6>####send</h6>
+
+<p>def send_buffer(signature, msg):</p>
+
+<pre><code>#模拟数据传输
+return StringIO('%s\n%d\n%s' %(signature, len(msg), msg))
+</code></pre>
+
+<p>def send_msg(key, message):</p>
+
+<pre><code>msg = pickle.dumps(message)
+signature = create_signature(key, msg)
+return send_buffer(signature, msg)
+</code></pre>
+
+<h6>####get</h6>
+
+<p>def parse_buffer(buffer):</p>
+
+<pre><code>signature = buffer.readline().rstrip()#strip \n
+msg_length = int(buffer.readline())
+msg = buffer.read(msg_length)
+return signature, msg
+</code></pre>
+
+<p>def check_signature(signature, key, msg):</p>
+
+<pre><code>new_signature = create_signature(key, msg)
+if new_signature == signature:
+    return msg
+else:
+    raise ValueError('signature error')
+</code></pre>
+
+<p>def get_msg(key, buffer):</p>
+
+<pre><code>signature, msg = parse_buffer(buffer)
+message = check_signature(signature, key, msg)
+return pickle.loads(message)
+</code></pre>
+
+<p>msg = 'some_message'
+key = 'some_key'
+buffer = send_msg(key, msg)
+print get_msg(key, buffer)
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[你可能所不知道的python中有用的特性]]></title>
+    <link href="http://stonelee.github.com/blog/2011/03/18/hidden-features-in-python/"/>
+    <updated>2011-03-18T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/03/18/hidden-features-in-python</id>
+    <content type="html"><![CDATA[<p>来自stackoverflow中python标签下按投票数排列第一位的问题：
+<a href="http://stackoverflow.com/questions/101268/hidden-features-of-python?tab=votes#tab-top">Hidden features of Python</a></p>
+
+<blockquote><p>题记：我们没有黑魔法，我们是可读的。</p>
+
+<p>Python is a dynamically and strongly typed programming language that encourages readability.</p></blockquote>
+
+<h2>1.链式操作符，要注意执行顺序问题，方法是加括号。</h2>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>x = 5
+10 &lt; x &lt; 20
+False
+x &lt; 10 &lt; x*10 &lt; 100
+True
+```</p></blockquote></blockquote></blockquote>
+
+<h2>2.debug regex</h2>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>re.compile("""
+ ^              # start of a line
+ [font         # the font tag
+ (?:=(?P<size>  # optional [font=+size]
+ [-+][0-9]{1,2} # size specification
+ ))?
+ ]             # end of tag
+ (.*?)          # text between the tags
+ [/font]      # end of the tag
+ """, re.DEBUG|re.VERBOSE|re.DOTALL)
+```</p></blockquote></blockquote></blockquote>
+
+<p>另附name match：</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>p = re.compile(r'(?P<word>\b\w+\b)')
+m = p.search( '(((( Lots of punctuation )))' )
+m.group('word')
+'Lots'
+```</p></blockquote></blockquote></blockquote>
+
+<h2>3.generator object</h2>
+
+<p>可以节省内存，但是只能使用一次</p>
+
+<h2>4.同时yield列表中的项和序号。</h2>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>a = ['a', 'b', 'c', 'd', 'e']
+for index, item in enumerate(a): print index, item
+```</p></blockquote></blockquote></blockquote>
+
+<h2>5.iter() can take a callable argument</h2>
+
+<p>```python
+def seek_next_line(f):</p>
+
+<pre><code>for c in iter(lambda: f.read(1),'\n'):
+    pass
+</code></pre>
+
+<p>```</p>
+
+<h2>6.Decorators</h2>
+
+<p>下面的评论中有人说这已经不算太hidden了</p>
+
+<h2>7.yield中send的使用</h2>
+
+<h2>8.</h2>
+
+<p>```python
+a = [1,2,3,4,5]</p>
+
+<blockquote><blockquote><blockquote><p>a[::2]  # iterate over the whole list in 2-increments
+[1,3,5]
+```</p></blockquote></blockquote></blockquote>
+
+<p>反转</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>a[::-1]
+[5,4,3,2,1]
+```</p></blockquote></blockquote></blockquote>
+
+<p>对比</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>list(reversed(range(4)))#这种方法返回的是iterator
+[3, 2, 1, 0]
+```</p></blockquote></blockquote></blockquote>
+
+<h2>9.默认参数可能会变</h2>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>def foo(x=[]):
+...     x.append(1)
+...     print x
+...
+foo()
+[1]
+foo()
+[1, 1]
+foo()
+[1, 1, 1]
+```</p></blockquote></blockquote></blockquote>
+
+<p>Instead, you should use a sentinel value denoting "not given" and replace with the mutable you'd like as default:</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>def foo(x=None):
+...     if x is None:
+...         x = []
+...     x.append(1)
+...     print x
+foo()
+[1]
+foo()
+[1]
+```</p></blockquote></blockquote></blockquote>
+
+<p>默认参数不过是函数的一个属性foo.func_defaults而已，因此对于list类型的可能会变动</p>
+
+<h2>10.defaultdict可以增强dict</h2>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>s = [('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]
+d = defaultdict(list)
+for k, v in s:
+...     d[k].append(v)
+...
+d.items()
+[('blue', [2, 4]), ('red', [1]), ('yellow', [1, 3])]
+```</p></blockquote></blockquote></blockquote>
+
+<p>相当于</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>d = {}
+for k, v in s:
+...     d.setdefault(k, []).append(v)
+```</p></blockquote></blockquote></blockquote>
+
+<p>对于列表中的每个key，如果该defaultdict中不存在，会使用default_factory来创建该值</p>
+
+<h2>11.for..else</h2>
+
+<p>对于丑陋的代码</p>
+
+<p>```python
+found = False
+for i in foo:</p>
+
+<pre><code>if i == 0:
+    found = True
+    break
+</code></pre>
+
+<p>if not found:</p>
+
+<pre><code>print("i was never 0")
+</code></pre>
+
+<p>```</p>
+
+<p>可以使用下面代码来替代</p>
+
+<p>```python
+for i in foo:</p>
+
+<pre><code>if i == 0:
+    break
+</code></pre>
+
+<p>else:</p>
+
+<pre><code>print("i was never 0")
+</code></pre>
+
+<p>```</p>
+
+<p>else在for循环从来没有break时调用，有人提议这个关键字else实际上用finally更合适。</p>
+
+<h2>12.值替换，“，”隐含的构成了一个tuple</h2>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>a = 10
+b = 5
+a, b
+(10, 5)</p>
+
+<p>a, b = b, a
+a, b
+(5, 10)
+```</p></blockquote></blockquote></blockquote>
+]]></content>
+  </entry>
+  
+</feed>

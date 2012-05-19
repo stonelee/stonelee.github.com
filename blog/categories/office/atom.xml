@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: office | Stonelee's Blog]]></title>
+  <link href="http://stonelee.github.com/blog/categories/office/atom.xml" rel="self"/>
+  <link href="http://stonelee.github.com/"/>
+  <updated>2012-05-19T18:45:55+08:00</updated>
+  <id>http://stonelee.github.com/</id>
+  <author>
+    <name><![CDATA[stonelee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[如何解析word中存在合并单元格的表格]]></title>
+    <link href="http://stonelee.github.com/blog/2011/04/08/analysis-complicated-cell-of-word/"/>
+    <updated>2011-04-08T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/04/08/analysis-complicated-cell-of-word</id>
+    <content type="html"><![CDATA[<p>对于word中存在合并单元格的表格：</p>
+
+<p><img src="/images/blog/table.png" alt="" /></p>
+
+<p>下图是对Cells遍历的结果，True表示该行该列的单元格存在，False表示不存在。</p>
+
+<p><img src="/images/blog/cells.png" alt="" /></p>
+
+<p>可以看到，word表格中行和列的合并单元格（Merge）机制是不一样的。
+Cells数组在计算时会无视行中的合并，将合并单元格作为普通格，依次进行存储，合并后空出的项排在本行的最后。
+而在计算列时，会在第一次遇到合并单元格时将其进行存储，其后遇到时保留其指针，但是将该格剔除（不太好描述，可以理解为将其作为None值保存）。这是符合我们一般理解的。</p>
+
+<p>问题来了：
+在存在合并单元格的行中，如何知晓哪些行被合并？</p>
+
+<p>从网上搜索解决方案，在 <a href="http://www.xtremevbtalk.com/showthread.php?t=307600">这篇帖子</a>中提到,在word可以支持合并单元格操作之前，VBA中就实现了table对象，但是一直没有升级。因此当表格中存在合并单元格时，表格内容无法完整获取。</p>
+
+<p>目前想到的思路是判断每个单元格的宽度，用单元格数量完整的行做参照，判断单元格数量不全的行每个单元格的宽度，但是这个方案只对标准的合并单元格有效，宽度略微有所调整就不行了。</p>
+
+<p>Excel没有这种问题，难道Word的表格就是个纯粹的杯具吗？</p>
+
+<p>解决方案待续~，期待大牛解答。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[菜鸟制作电子印章经验小结]]></title>
+    <link href="http://stonelee.github.com/blog/2011/03/07/make-electronic-stamp/"/>
+    <updated>2011-03-07T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/03/07/make-electronic-stamp</id>
+    <content type="html"><![CDATA[<p>在这个神奇的国度，有时候需要制作电子印章来应急。
+本人是PS菜鸟，现学现卖，将电子印章的制作方案总结如下。</p>
+
+<blockquote><p>特别注明:本文仅用于研究和学习，禁止用于非法用途或其他目的,本人对此不负任何法律责任,一切违法后果与本人无关。</p></blockquote>
+
+<h2>1.软件印章大师制作印章</h2>
+
+<p>新建一个圆形章，根据要制作的印章样式调整文字大小和位置，颜色选红色，默认生成的是蓝色印章。导出为bmp文件。</p>
+
+<h2>2.Photoshop做旧</h2>
+
+<ul>
+<li>打开之前的bmp文件</li>
+<li>alt+鼠标滚轮可以缩放图片</li>
+<li>用“魔棒”工具选中文字和印章部分，按住shift可以多选。</li>
+<li>滤镜-画笔描边-喷溅，增加边缘的毛刺,夸张点即可，缩小后才能显示出效果来</li>
+<li>滤镜-模糊-高斯模糊，明显减淡颜色</li>
+</ul>
+
+
+<p>其余技巧：</p>
+
+<ul>
+<li>油漆桶，填充比较暗比较浅的红色，显示做旧的效果。</li>
+<li>滤镜-纹理-颗粒-柔和，适当加点小点</li>
+<li>滤镜-锐化-智能锐化，适当加点小白点</li>
+<li>如果觉得白点太均匀了，用铅笔自己描写点</li>
+<li>减淡工具，减淡半边</li>
+</ul>
+
+
+<h2>3.导出gif白色为透明</h2>
+
+<p>文件-存储为Web和设备所用格式-GIF-选中透明度-选中颜色表右下角的白色小块-将选中的颜色映射为透明-存储</p>
+
+<h2>4.word中插入改图片</h2>
+
+<p>插入图片-文字环绕-衬于文字下方，将图片大小设为4.2厘米，适当旋转，放到合适的文档位置。</p>
+
+<p>制作电子印章和一般的作图不一样，印章越旧、越模糊，显得越真实。</p>
+
+<p><img src="/images/blog/stamp.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[多Excel文件导入到一个word]]></title>
+    <link href="http://stonelee.github.com/blog/2011/02/25/many-excel-to-one-word/"/>
+    <updated>2011-02-25T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2011/02/25/many-excel-to-one-word</id>
+    <content type="html"><![CDATA[<h2>需求</h2>
+
+<p>多个Excel分布在不同文件夹下，每个Excel又有多个sheet表，现在需要把这些Excel一起汇总到一个word里。</p>
+
+<h2>探索</h2>
+
+<p>直接复制粘贴既麻烦又无聊，上网搜所相关方法竟然没有，难道我这个需求很少见吗？找到一个国外软件<a href="http://www.coolutils.com/totalexcelconverter">ExcelConverter</a>（售价$49.9）,发现转换后货币格式的文字完全变成乱码。还是自己写吧，编码测试花了两个小时搞定。</p>
+
+<p>```python</p>
+
+<h1>!/usr/bin/env python</h1>
+
+<h1>-<em>- coding: utf-8 -</em>-</h1>
+
+<h1>Last Update:</h1>
+
+<p>'''covert many excel files to one word file
+'''</p>
+
+<p><strong>revision</strong> = '0.1'
+<strong>author</strong> = 'lxd'</p>
+
+<p>from win32com.client import Dispatch
+import os</p>
+
+<p>wdPageBreak = 7</p>
+
+<p>def isExcelFile(name):</p>
+
+<pre><code>return os.path.isfile(name) and os.path.splitext(name)[1] == '.xls'
+</code></pre>
+
+<p>def filesInDir(dir):</p>
+
+<pre><code>#generate absolute paths of files in a directory
+for root, dirs, files in os.walk(dir):
+    for file in files:
+        yield os.path.join(root, file)
+</code></pre>
+
+<p>def findExcels(names):</p>
+
+<pre><code>for name in names:
+    if isExcelFile(name):
+        yield name
+    else:
+        for file in filesInDir(name):
+            if isExcelFile(file):
+                yield file
+</code></pre>
+
+<p>class ExcelToWord(object):</p>
+
+<pre><code>def __init__(self, excelNames, wordName):
+    self._createExcel()
+    self.excelNames = findExcels(excelNames)
+
+    self._createWord()
+    self.word.Documents.Open(wordName)
+
+def _createExcel(self):
+    self.excel = Dispatch('Excel.Application')
+    #self.excel.Visible = True
+    self.excel.DisplayAlerts = False
+
+def _createWord(self):
+    self.word = Dispatch('Word.Application')
+    self.word.Visible = True
+    self.word.DisplayAlerts = False
+
+def process(self):
+    for excelName in self.excelNames:
+        print 'coverting', excelName
+        self.excel.Workbooks.Open(excelName)
+        for i in range(self.excel.Worksheets.count):
+            self.excel.Worksheets(i+1).Select()#start from 1
+            self._copy()
+            self._paste()
+        self.excel.Workbooks.Close()
+    self.excel.Quit()
+    print 'covert is over'
+
+def _copy(self):
+    # select all contents in one sheet and copy
+    self.excel.Cells.Select()
+    self.excel.Selection.Copy()
+
+def _paste(self):
+    #paste to one word file and add a page break
+    self.word.Selection.Paste()
+    #self.word.Selection.TypeParagraph()
+    self.word.Selection.InsertBreak(wdPageBreak)
+</code></pre>
+
+<p>if <strong>name</strong> == '<strong>main</strong>':</p>
+
+<pre><code>excelNames = [
+            u'c:\\users\\lxd\\desktop\\文档', 
+            u'c:\\users\\lxd\\desktop\\汇总.xls',]
+wordName = r'c:\users\lxd\desktop\1.doc'
+e = ExcelToWord(excelNames, wordName)
+e.process()
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[纸质材料数字化方法总结]]></title>
+    <link href="http://stonelee.github.com/blog/2010/08/02/paper-material-to-digital/"/>
+    <updated>2010-08-02T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2010/08/02/paper-material-to-digital</id>
+    <content type="html"><![CDATA[<p>如何将纸质材料转为word文档？</p>
+
+<h2>通过扫描仪将纸质材料扫描成图片格式。</h2>
+
+<p>首先安装扫描仪驱动，连接好扫描仪。
+我用的是汉王OCR 6.0，打开软件后，先选择好相应的扫描仪，点击“扫描”。
+模式我选的是“黑白图片”，经试验对于本来就比较清晰的文本这种格式的识别率最高，而且扫描速度也快。
+对于不太清楚的文本可以使用自定义设置，多试验几个选项来加强识别率。
+然后就要一页一页的将材料扫描为图片了，图片会自动保存到image目录下。</p>
+
+<h2>文字识别</h2>
+
+<p>点击“选择所有文字”，再点击“开始识别”，将保存的所有图片扫描为文本格式，这时会发现原来的图片文字会自动被识别保存到相应的文本文件里。
+识别过程中发现对于某些情况汉王识别率可以迅速降为0，比如扫描文字右侧文字偏小时，有黑道时。这时可以借助另一款识别软件 <a href="http://tjcnc1.skycn.com/down/OCR75.zip">清华紫光OCR</a> 来进行识别。</p>
+
+<h2>文字修改</h2>
+
+<p>借助汉王强大的识别对照功能，可以轻松实现文字的修改。</p>
+
+<p><img src="/images/blog/hanwang.jpg" alt="" /></p>
+
+<p>在上面的编辑区中，如果发现识别错误的地方，只需要将光标移过去，上方就会出现原来文字对照和文字提示，修改起来很方便。美中不足之处就是不能用鼠标滚轮移动页面，需要借助键盘上的上下箭头。另外“施”这个字无法修改，不知道什么原因....修改好一页后，只需要在左侧导航栏里点击下一幅图片就可以了，系统会自动保存。也幸亏有这个功能，汉王一高兴了就死掉，不知道为何原因。。。</p>
+
+<h2>文件整理到word中</h2>
+
+<p>编程实现各文本文件汇总到一个单一文件中。</p>
+
+<p>```python
+import os
+def join(pathname):</p>
+
+<pre><code>fdoc = open('doc.txt', 'a')
+for dirpath, dirnames, filenames in os.walk(pathname):
+    for file in filenames:
+        if file.split('.')[-1].lower() == 'txt':
+            wholeFile = os.path.join(pathname, file)
+            f = open(wholeFile, 'r')
+            fdoc.write(f.read())
+            f.close()
+            print '%s is over' % file
+    fdoc.close()
+    print 'all over'
+</code></pre>
+
+<p>if <strong>name</strong> == '<strong>main</strong>':</p>
+
+<pre><code>pathname = ur'D:\Program Files\HWOCR60\IMAGE'
+join(pathname)
+</code></pre>
+
+<p>```</p>
+
+<p>在word中将全部空格，回车符替换为空，然后分段，然后整体修改，搜索“设旋”、“设旌”改为“设施”...
+完善格式...</p>
+
+<h2>ps</h2>
+
+<p>Microsoft Office 工具里的Microsoft Office Document Imaging也可以实现识别功能，看它的版权页发现使用的是清华紫光的TH-OCR技术，不过是2002版本的，比起网上下载的99版TH-OCR好多了。可以考虑应用VBA做一些批处理操作。</p>
+
+<p>另外下载了据称是世界上最先进的识别软件ABBYY FineReader，试用版可以使用15天，识别50页，试用了下效果还可以。注册的话需要$200。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[dwg转化为svg]]></title>
+    <link href="http://stonelee.github.com/blog/2010/07/13/dwg-to-svg/"/>
+    <updated>2010-07-13T00:00:00+08:00</updated>
+    <id>http://stonelee.github.com/blog/2010/07/13/dwg-to-svg</id>
+    <content type="html"><![CDATA[<p>最近一个项目想将AutoCAD做的矿图转化为svg格式来在网页上作为底图展示。初步考虑使用Acme CAD Converter进行格式转化。</p>
+
+<p>命令行使用:</p>
+
+<p><code>bash
+$ AcmeCADConverter /r /p 1 /f 101 /a -2 /w 2000 /h 1500 "d:\Drawing1.dwg"
+</code></p>
+
+<ul>
+<li>/r 命令行模式</li>
+<li>/p 1 黑色</li>
+<li>/f 101 svg格式</li>
+<li>/a -2 转化所有图层</li>
+<li>/w 2000 宽2000mm（实际上是将svg图形放大到这个范围）</li>
+<li>/h 1500 高1500mm</li>
+<li>可添加多个文件路径。</li>
+<li>/e 自动伸展图形到合适位置，因为本项目还想在底图基础上绘制新的图形，对位置要求比较严格，因此不使用本项。需要在AutoCAD中将图形拖到一个合适的位置，然后再转化。</li>
+</ul>
+
+
+<p>未注册版本的Acme CAD Converter生成的svg会有一个水印，但从源码来看实际上就是12个path而已，非常
+容易去掉，不知道该软件作者是基于什么考虑...</p>
+
+<p>Google SketchUp可以很容易的创建三维图形，Inkscape来编辑svg图形。</p>
+]]></content>
+  </entry>
+  
+</feed>

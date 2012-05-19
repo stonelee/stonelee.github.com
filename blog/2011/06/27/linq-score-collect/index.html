@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>LINQ方式实现学生成绩汇总（右连接、聚合函数） - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="需求 从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表 取得所有姓名（包括没有成绩的）
+分数是该学生所有成绩的总和 先看效果图： 数据库结构简化模拟如下： 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+class Student
+{ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/06/27/linq-score-collect">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">LINQ方式实现学生成绩汇总（右连接、聚合函数）</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-27T00:00:00+08:00" pubdate data-updated="true">Jun 27<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>需求</h2>
+
+<p>从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表</p>
+
+<ul>
+<li>取得所有姓名（包括没有成绩的）</li>
+<li>分数是该学生所有成绩的总和</li>
+</ul>
+
+
+<p>先看效果图：</p>
+
+<p><img src="/images/blog/score.gif" alt="" /></p>
+
+<p>数据库结构简化模拟如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">class</span> <span class="nc">Student</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Score</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">StudentId</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">score</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>插入测试数据：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Student</span> <span class="n">p1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;张三&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Student</span> <span class="n">p2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;李四&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Student</span> <span class="n">p3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">3</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;王五&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">80</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">90</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">70</span> <span class="p">};</span>
+</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;</span> <span class="n">students</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Student</span><span class="p">[]</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span> <span class="p">});</span>
+</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;</span> <span class="n">scores</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Score</span><span class="p">[]</span> <span class="p">{</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">s3</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>查询，注意：</p>
+
+<ul>
+<li>LINQ中没有left join和right join之分，只有关键词join来控制连接，join之前表的作为完整的表连接，join之后的表需要使用DefaultIfEmpty来进行处理，才能正常的显示null值</li>
+<li>group中的key是分组的字段，分组后就可以使用聚合函数了</li>
+<li>LINQ就像生产流水线，可以分阶段进行数据排序、汇总、投影等操作，最后组装起来就能达到预定的效果</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//left join,返回左边每一个元素  </span>
+</span><span class='line'><span class="n">var</span> <span class="n">studentsTable</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">students</span>
+</span><span class='line'>                    <span class="n">join</span> <span class="n">score</span> <span class="k">in</span> <span class="n">scores</span> <span class="n">on</span> <span class="n">student</span><span class="p">.</span><span class="n">id</span> <span class="n">equals</span> <span class="n">score</span><span class="p">.</span><span class="n">StudentId</span> <span class="n">into</span> <span class="n">joinedTable</span>
+</span><span class='line'>                    <span class="n">from</span> <span class="n">j</span> <span class="k">in</span> <span class="n">joinedTable</span><span class="p">.</span><span class="n">DefaultIfEmpty</span><span class="p">()</span><span class="c1">//处理右边为空的情况  </span>
+</span><span class='line'>                    <span class="n">select</span> <span class="k">new</span>
+</span><span class='line'>                    <span class="p">{</span>
+</span><span class='line'>                        <span class="n">name</span> <span class="p">=</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">score</span> <span class="p">=</span> <span class="n">j</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">?</span> <span class="n">j</span><span class="p">.</span><span class="n">score</span> <span class="p">:</span> <span class="m">0</span>
+</span><span class='line'>                    <span class="p">};</span>
+</span><span class='line'><span class="c1">//聚合函数  </span>
+</span><span class='line'><span class="n">var</span> <span class="n">data</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">studentsTable</span>
+</span><span class='line'>           <span class="n">group</span> <span class="n">student</span> <span class="n">by</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span> <span class="n">into</span> <span class="n">g</span>
+</span><span class='line'>           <span class="n">select</span> <span class="k">new</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">name</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span>
+</span><span class='line'>               <span class="n">score</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Sum</span><span class="p">(</span><span class="n">student</span> <span class="p">=&gt;</span> <span class="n">student</span><span class="p">.</span><span class="n">score</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">};</span>
+</span><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看看效果：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-27T00:00:00+08:00" pubdate data-updated="true">Jun 27<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/csharp/'>csharp</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/04/08/data-scratch-and-analysis/" title="Previous Post: 数据抓包及分析经验小结">&laquo; 数据抓包及分析经验小结</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/06/27/linq-trick/" title="Next Post: LINQ技巧小结">LINQ技巧小结 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ExtJS 4打包工具 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="ExtJS 4采用新的MVC思路进行开发。 在项目开发阶段这种分散式的代码组织方式是很爽的，但是应用到生产环境中时为了减少服务端压力，需要对js文件进行压缩打包。 为解决这一问题，官方提供了打包工具JSBuilder, 使用方法如下： 1
+2
+创建jsb文件：$sencha create jsb &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2012/02/16/extjs-4-build-tool">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ExtJS 4打包工具</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-16T00:00:00+08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>ExtJS 4采用新的MVC思路进行开发。 在项目开发阶段这种分散式的代码组织方式是很爽的，但是应用到生产环境中时为了减少服务端压力，需要对js文件进行压缩打包。 为解决这一问题，官方提供了打包工具<a href="http://www.sencha.com/products/jsbuilder">JSBuilder</a>, 使用方法如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>创建jsb文件：<span class="nv">$sencha</span> create jsb -a http://localhost/helloext/index.html -p app.jsb3
+</span><span class='line'>构建：<span class="nv">$sencha</span> build -p app.jsb3 -d .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但在实际使用时发现，不知道是因为水土不服还是我们的项目结构不合sencha的胃口。在构建jsb3文件的时候不是完全找不到任何路径，就是缺少大量项目文件，可以说是相当鸡肋。</p>
+
+<p>不如自己来吧！</p>
+
+<p>经测试发现，只要按照依赖顺序，将所有文件归置到一个文件中，然后压缩，项目即可正常调用。</p>
+
+<p>打包工具已经放到github上:<a href="https://github.com/stonelee/extjs4-build-tool">https://github.com/stonelee/extjs4-build-tool</a></p>
+
+<h2>思路</h2>
+
+<p>将app下的js文件按照model, store, view, controller的顺序来创建jsb3。</p>
+
+<p>如果view中使用requires加载其它view，则按照依赖顺序先行加载。</p>
+
+<p>然后针对项目需求做了点修改，将app.js按Ext.application分成两部分，分别加载到最后生成的文件中。</p>
+
+<h2>技术点</h2>
+
+<ul>
+<li>按照依赖加载关系进行排列<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/sort.py">sort.py</a></li>
+<li>文本解析<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/parse.py">parse.py</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<p>本工具仅仅将项目开发中自己创建的位于app文件夹中的model, store, view, controller以及用于项目整合的app.js打包成一个文件。
+其它ExtJS或者ux文件还需要自己打包。
+将build-tool放到app同级目录下，项目文档结构如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>|app
+</span><span class='line'>|--controller
+</span><span class='line'>|--model
+</span><span class='line'>|--store
+</span><span class='line'>|--view
+</span><span class='line'>|build-tool
+</span><span class='line'>|all.js
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最终生成文件：</p>
+
+<ul>
+<li>app.jsb3 压缩文件路径信息</li>
+<li>all-debug.js 未压缩的打包文件,供调试使用</li>
+<li>all.js 压缩打包文件,生产环境使用</li>
+</ul>
+
+
+<p>ps:</p>
+
+<p>从开始研究Ext打包，形成思路，到最终完成完整的打包工具并应用到项目中一共用了两天时间，其中纯python编码时间也就半天时间，看来经过这半年的js编码之后，我的python还没太手生嘛哈哈。动态语言之间的学习可以互相促进？待验证~</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-16T00:00:00+08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/02/01/ext-core-design-pattern/" title="Previous Post: Ext Core设计模式">&laquo; Ext Core设计模式</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/04/26/new-extjs-mvc/" title="Next Post: ExtJS 4 mvc架构演化">ExtJS 4 mvc架构演化 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

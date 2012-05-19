@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>DotNetBar中ComboTree显示整条路径信息 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="背景 ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示： 1
+2
+3
+Tree — node — node 点击节点node，默认显示结果为node，即仅仅是节点信息。
+现在需求是要显示Tree node，即返回整条路径信息。 思路 看上去很简单的样子， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/07/22/dotnetbar-combotree-show-path">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">DotNetBar中ComboTree显示整条路径信息</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-22T00:00:00+08:00" pubdate data-updated="true">Jul 22<span>nd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>背景</h2>
+
+<p>ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Tree
+</span><span class='line'>     — node
+</span><span class='line'>     — node</span></code></pre></td></tr></table></div></figure>
+
+
+<p>点击节点node，默认显示结果为node，即仅仅是节点信息。
+现在需求是要显示Tree node，即返回整条路径信息。</p>
+
+<h2>思路</h2>
+
+<p>看上去很简单的样子，在选择事件中得到该节点的父路径信息，然后设置ComboTree的Text值即可。
+嗯嗯！我擦！Text没用！！</p>
+
+<h2>换个思路</h2>
+
+<p>更改显示节点，即SelectedNode的Text，这下行了。ComboBox显示成功，但问题是原来节点的信息也被更改了，导致树变得很难看。没办法，在弹出菜单出现时再改回去，弹出菜单出现时改回来吧！真是个丑陋的做法！</p>
+
+<p><img src="/images/blog/combobox.gif" alt="" /></p>
+
+<h2>无代码无真相</h2>
+
+<p>主要是用Tag来存储内部信息，没什么技术含量~</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//显示整个路径信息  </span>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">showFullText</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">strPaths</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">.</span><span class="n">FullPath</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;;&#39;</span><span class="p">).</span><span class="n">ToList</span><span class="p">().</span><span class="n">ForEach</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">strPaths</span> <span class="p">+=</span> <span class="n">s</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span> <span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//存储原值  </span>
+</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//更改text  </span>
+</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">strPaths</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupShowing</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//改回原值  </span>
+</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span><span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="k">as</span> <span class="n">Node</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">thisNode</span><span class="p">!=</span><span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupClose</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">showFullText</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-22T00:00:00+08:00" pubdate data-updated="true">Jul 22<span>nd</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/csharp/'>csharp</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/07/14/continue-bill-number-reject/" title="Previous Post: 连续票号剔除算法">&laquo; 连续票号剔除算法</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/07/26/tornado-template-analyse/" title="Next Post: Tornado模板机制分析">Tornado模板机制分析 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

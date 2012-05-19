@@ -1,0 +1,1447 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="用了一周的时间研究WebGL相关技术，发现该技术竟然已经发展到如此地步，足以应用于企业开发领域。因此我使用Blender建模，基于ThreeJS实现了一个能够在浏览器上运行的矿井结构的三维效果展示。 浏览器兼容 Chrome和Firefox的较新版本均可流畅运行, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/page/2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/08/20/web-mine-demo-with-threejs/">基于WebGL的矿井三维演示</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-20T00:00:00+08:00" pubdate data-updated="true">Aug 20<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>用了一周的时间研究WebGL相关技术，发现该技术竟然已经发展到如此地步，足以应用于企业开发领域。因此我使用Blender建模，基于ThreeJS实现了一个能够在浏览器上运行的矿井结构的三维效果展示。</p>
+
+<p><img src="/images/blog/webmine.jpg" alt="" /></p>
+
+<p><img src="/images/blog/webmine2.jpg" alt="" /></p>
+
+<h2>浏览器兼容</h2>
+
+<p>Chrome和Firefox的较新版本均可流畅运行,
+IE8需要借助ChromeFrame插件</p>
+
+<h2>平台兼容</h2>
+
+<p>基于浏览器的应用，完美跨平台。
+经测试在手机Android2.3的Firefox中也可以显示。</p>
+
+<h2>主要功能</h2>
+
+<ul>
+<li>鼠标对模型的自由旋转、缩放、平移</li>
+<li>巷道文字显示</li>
+<li>人员移动轨迹回放，在模型中显示</li>
+<li>传感器在巷道模型上定点显示</li>
+<li>点击传感器，显示从后台服务器中取得的环境参数</li>
+<li>轮询方式从后台取得报警信息，在界面上展示。</li>
+<li>使用DAT.GUI实现模型参数的实时显示和动态更改。</li>
+</ul>
+
+
+<h2>感想</h2>
+
+<p>发展眼光很重要。新技术浪潮的到来往往会伴随行业洗牌，传统巨头会在一系列历史遗留问题中纠缠不清，无法很好的转移航向来适应未来的发展。新入行者恰恰可以利用后发优势，凭借新技术的潮头，爆发似的抢占市场。新技术不可怕，可怕的是技术上畏首畏尾，不敢突破的心态。跟在别人屁股后面永远只能吃那个。勇于打破既有规则，实现对既有规则的颠覆，建立自己的游戏规则，自己带着别人在圈子里玩，这才是我们应该做的事情。</p>
+
+<p>跨平台很重要，未来不再是windows的天下，随着智能手机和平板电脑的日益普及和流行，Linux系愈发强势。微软早就不是以前的巨无霸，谷歌苹果已经成为新生代的巨头。.net系的技术经常随市场一变再变，千万不要妄想抱住某厂商的大粗腿，民主化的开源社区才是王道（当然没有各大厂商的财力支持也是白搭）。</p>
+
+<p>基于浏览器的应用开发很重要，基于云端的浏览器应用是业界趋势。虽然基于系统原生的程序性能更强，用户体验更好，但是多平台开发需要多语言的移植，对于小公司来说从无论从人力物力还是发维护成本都是不可能的。而且根据摩尔定律，硬件性能越来越强，价格越来越便宜，我们要做的只是等待，而且不会等待太久。</p>
+
+<p>人很重要。好的程序员的工作效率会是垃圾程序员的数十倍，但是工资往往不需要这么多，他们更希望的是得到认可、得到尊重。好的程序员是自我管理的，他们无聊的时候也在学习，因为这是一种乐趣，他们工作效率极高，但从不加班。他们厌恶浪费生命的会议，厌恶一切不必要的手续和流程，厌恶一切没理由的说教和唠叨，推崇使用最简单最有效的方法来解决最复杂的问题。天外飞仙，一剑封喉。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/08/12/how-to-build-github-blog/">搭建基于github的免费博客</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-12T00:00:00+08:00" pubdate data-updated="true">Aug 12<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>优势</h2>
+
+<ul>
+<li>国外著名开源网站，影响力大（无声无息倒掉的风险较少）</li>
+<li>基于git的本地源码控制，安全（防GFW）</li>
+<li>纯文本写作，适合程序控</li>
+<li>可以绑定自己的域名</li>
+<li>空间免费</li>
+</ul>
+
+
+<h2>使用</h2>
+
+<ul>
+<li>fork我的博客</li>
+<li>git clone</li>
+<li>修改一下页面代码，在_posts中写自己的博客</li>
+<li>github page服务后台使用jekyll，为了在本地写作博客， 修改满意后再进行同步，自己安装jekyll是很有必要的。
+然后可以在本地启动</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>jekyll --server
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>功能增强</h2>
+
+<ul>
+<li>添加评论<a href="http://disqus.com">disqus</a></li>
+<li><a href="http://www.google.com/intl/zh-CN/analytics/">Google Analytics</a></li>
+<li>blog订阅:<a href="http://www.feedsky.com">FeedSky</a></li>
+<li>社会化推荐:<a href="http://www.jiathis.com">JiaThis</a></li>
+</ul>
+
+
+<h2>绑定域名</h2>
+
+<p>修改 A record并指向207.97.227.245</p>
+
+<p>我在Godaddy买的域名，还没用就被封DNS了。更换Nameservers后成功访问。使用的是 <a href="https://www.dnspod.cn/">dnspod</a>,据说是国内最早提供免费智能DNS产品的网站，需要邮箱和手机验证。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://saberma.me/other/2010/09/20/saberma-github-page-blog-build-with-jekyll.html">saberma的使用心得</a></li>
+<li><a href="http://pages.github.com/">官方pages简介</a></li>
+<li><a href="https://github.com/mojombo/jekyll/wiki/sites">其他人的博客列表</a></li>
+</ul>
+
+
+<h4>模板引擎liquid,是模版使用的语法</h4>
+
+<ul>
+<li><a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">用法</a></li>
+<li><a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">扩展</a></li>
+</ul>
+
+
+<h3>textile</h3>
+
+<ul>
+<li><a href="http://redcloth.org/hobix.com/textile/">语法参考</a></li>
+<li><a href="http://textile.thresholdstate.com/">练习</a></li>
+</ul>
+
+
+<h3>语法高亮支持语言</h3>
+
+<p><a href="http://pygments.org/docs/lexers/">pygments</a></p>
+
+<h3>模版网址</h3>
+
+<p><a href="http://freehtml5templates.com">基于html5、css3的免费模板</a></p>
+
+<h2>PS</h2>
+
+<h3>2012-05-05更新</h3>
+
+<p>jekyll安装:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install jekyll 0.11.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>遇到问题：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Liquid error: undefined method <span class="sb">`</span>join’ <span class="k">for</span> <span class="c">#</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决方法: liquid降级</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem uninstall liquid
+</span><span class='line'><span class="nv">$ </span>gem install liquid -v 2.2.2
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/07/29/blog-with-markdown-and-highlight/">糅合Markdown和语法高亮，快速写作技术博客</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-29T00:00:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>之前博客在javaeye，不知道触犯了老大哪根神经，不声不响就给封了，现在来到CSDN，又正好赶上改版，好好的博客写完后格式乱七八糟。国内的其他博客商也都好不到哪里去，不知道什么时候就被封，算了，自己动手丰衣足食，自己搞个独立博客吧。</p>
+
+<h2>要求</h2>
+
+<p>代码写惯了，觉得可视化编辑器非常不靠谱，写代码花时间，写文档花时间，调格式更得花时间，而且不利于备份。因此要求纯文本，标记语言简单易学，实现代码高亮。</p>
+
+<h2>技术选型</h2>
+
+<ul>
+<li>标记语言 Markdown</li>
+<li>python封装库 python-markdown2</li>
+<li>代码高亮工具 Javascript code prettifier</li>
+</ul>
+
+
+<h2>实现</h2>
+
+<h3>1. markdown实现：</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">markdown2</span>
+</span><span class='line'><span class="n">content</span><span class="o">=</span><span class="s">&quot;something&quot;</span>
+</span><span class='line'><span class="n">markdown</span> <span class="o">=</span> <span class="n">markdown2</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>字符串content会按照markdown的语法生成相应的html标签，直接输出到页面上即可。</p>
+
+<h3>2. Javascript code prettifier使用：</h3>
+
+<p>引入js文件和选择的css模板</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;prettify.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;desert.css&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>函数加载到页面中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;prettify.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;body</span> <span class="na">onload=</span><span class="s">&quot;prettyPrint(); &quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>代码插入：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 40em; display: inline-block&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;pre</span> <span class="na">class=</span><span class="s">&quot;prettyprint&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        somecode
+</span><span class='line'>    <span class="nt">&lt;/pre&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>python-markdown2中已经实现了代码高亮，无奈语焉不详，而且语法也着实丑陋。本着“quick and dirty”的原则，直接定义</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>来包裹想高亮的代码，然后用replace来替换上面的div,pre标签。</p>
+
+<p>实现如此简单~</p>
+
+<h2>样例</h2>
+
+<p><img src="/images/blog/markdown.gif" alt="" /></p>
+
+<h2>源文件</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>标题
+</span><span class='line'>====
+</span><span class='line'>
+</span><span class='line'>前言
+</span><span class='line'>
+</span><span class='line'>**目录**
+</span><span class='line'>
+</span><span class='line'>* 第一章
+</span><span class='line'> * 第一节
+</span><span class='line'> * 第二节
+</span><span class='line'>* 第二章
+</span><span class='line'>* 第三章
+</span><span class='line'>
+</span><span class='line'>第一章
+</span><span class='line'>------
+</span><span class='line'>
+</span><span class='line'>**第一节**
+</span><span class='line'>
+</span><span class='line'>内容内容内容内容内容内容
+</span><span class='line'>
+</span><span class='line'>**第二节**
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;code&gt;</span>
+</span><span class='line'>def hello()
+</span><span class='line'>    print &quot;hello&quot;
+</span><span class='line'><span class="nt">&lt;/code&gt;</span>
+</span><span class='line'>
+</span><span class='line'>第二章
+</span><span class='line'>------
+</span><span class='line'>
+</span><span class='line'>内容内容内容内容内容内容
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>附有用的网址</h2>
+
+<p>Markdown</p>
+
+<ul>
+<li><a href="http://daringfireball.net/projects/markdown/basics">入门</a></li>
+<li><a href="http://daringfireball.net/projects/markdown/syntax">语法参考</a></li>
+<li><a href="http://daringfireball.net/projects/markdown/dingus">练习场</a>，熟练后直接使用这个</li>
+<li><a href="https://github.com/trentm/python-markdown2">markdown解析程序</a></li>
+</ul>
+
+
+<p>代码高亮 Javascript code prettifier</p>
+
+<ul>
+<li><a href="http://google-code-prettify.googlecode.com/svn/trunk/README.html">入门</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/07/27/linq-example/">LINQ流水线</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-27T00:00:00+08:00" pubdate data-updated="true">Jul 27<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>linq帅呆了~这一刻函数编程附身</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//处理废票文本框中用户的输入</span>
+</span><span class='line'><span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">getDirtyNumList</span><span class="p">(</span><span class="kt">int</span> <span class="n">startNum</span><span class="p">,</span> <span class="kt">int</span> <span class="n">endNum</span><span class="p">,</span> <span class="kt">string</span> <span class="n">txtDirtyNums</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">txtDirtyNums</span><span class="p">.</span><span class="n">Trim</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="p">[]</span> <span class="p">{</span> <span class="sc">&#39; &#39;</span><span class="p">,</span> <span class="sc">&#39;,&#39;</span><span class="p">,</span> <span class="sc">&#39;，&#39;</span> <span class="p">})</span><span class="c1">//去掉头尾的空格或者逗号</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="p">[]</span> <span class="p">{</span> <span class="sc">&#39;,&#39;</span><span class="p">,</span> <span class="sc">&#39;，&#39;</span> <span class="p">})</span><span class="c1">//将字符串分割为数组</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">key</span> <span class="p">=&gt;</span> <span class="n">Regex</span><span class="p">.</span><span class="n">IsMatch</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="err">@</span><span class="s">&quot;^\d+{1}quot;))//数字</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">key</span> <span class="p">=&gt;</span> <span class="n">Convert</span><span class="p">.</span><span class="n">ToInt32</span><span class="p">(</span><span class="n">key</span><span class="p">))</span><span class="c1">//转格式</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">key</span> <span class="p">=&gt;</span> <span class="n">key</span> <span class="p">&gt;=</span> <span class="n">startNum</span> <span class="p">&amp;&amp;</span> <span class="n">key</span> <span class="p">&lt;=</span> <span class="n">endNum</span><span class="p">)</span><span class="c1">//必须在范围内</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">key</span> <span class="p">=&gt;</span> <span class="n">key</span><span class="p">)</span><span class="c1">//排序</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">Distinct</span><span class="p">()</span><span class="c1">//去重复</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">ToList</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/07/26/tornado-template-analyse/">Tornado模板机制分析</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-26T00:00:00+08:00" pubdate data-updated="true">Jul 26<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Tornado自带的模板系统非常有特色，相对django等框架来说，可以任意插入python语句，这对于前后台通吃的小团队和个人开发者来说非常方便，而且可以方便的从Tornado框架中剥离出来单独使用。下面简单研究一下模板的实现机制。</p>
+
+<p>模板的实现集中在template.py中，之所以可以随意在模板文本中插入python语句，是因为代码运行时会直接将文本转成python代码。这是如何实现的呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">exec</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled</span> <span class="ow">in</span> <span class="n">namespace</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>exec是python的内置语句，其作用是动态执行python代码，第一个参数可以是string，可以是打开的file object，也可以是code object。可以使用in来引入环境变量。这句代码的意思就是在namespace所设定的环境变量中，执行self.compiled的代码。</p>
+
+<p>那么self.compiled从何而来呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">compiled</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;exec&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用exec执行python字符串时，需要先用解释器将其编译为字节代码，为避免多次编译导致没必要的时间消耗，可以预先进行编译。</p>
+
+<p>compile(source,filename,mode[,flags[,dont_inherit]])可以将字符串编译为字节代码，其中source是要被编译的字符串，filename是定义该字符串变量的文件，如果不需要的话推荐设置为<string>,mode指定编译类型（single指单个语句，exec指多个语句，eval指一个表达式）。</p>
+
+<p>exec实际上会动态生成函数_execute()，而且将环境变量插入namespace中，这样就可以从namespace中再取出该函数，然后执行，其结果就是以python代码的方式完成模板文本的解析。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">execute</span> <span class="o">=</span> <span class="n">namespace</span><span class="p">[</span><span class="s">&quot;_execute&quot;</span><span class="p">]</span>
+</span><span class='line'><span class="k">try</span><span class="p">:</span>
+</span><span class='line'>     <span class="k">return</span> <span class="n">execute</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么self.code是怎么生成的呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">reader</span> <span class="o">=</span> <span class="n">_TemplateReader</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">template_string</span><span class="p">)</span>
+</span><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">_File</span><span class="p">(</span><span class="n">_parse</span><span class="p">(</span><span class="n">reader</span><span class="p">))</span>
+</span><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_python</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">compress_whitespace</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>详细代码可以参见template.py,纯粹是字符串的解析，有时间再看吧。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/07/22/dotnetbar-combotree-show-path/">DotNetBar中ComboTree显示整条路径信息</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-22T00:00:00+08:00" pubdate data-updated="true">Jul 22<span>nd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>背景</h2>
+
+<p>ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Tree
+</span><span class='line'>     — node
+</span><span class='line'>     — node</span></code></pre></td></tr></table></div></figure>
+
+
+<p>点击节点node，默认显示结果为node，即仅仅是节点信息。
+现在需求是要显示Tree node，即返回整条路径信息。</p>
+
+<h2>思路</h2>
+
+<p>看上去很简单的样子，在选择事件中得到该节点的父路径信息，然后设置ComboTree的Text值即可。
+嗯嗯！我擦！Text没用！！</p>
+
+<h2>换个思路</h2>
+
+<p>更改显示节点，即SelectedNode的Text，这下行了。ComboBox显示成功，但问题是原来节点的信息也被更改了，导致树变得很难看。没办法，在弹出菜单出现时再改回去，弹出菜单出现时改回来吧！真是个丑陋的做法！</p>
+
+<p><img src="/images/blog/combobox.gif" alt="" /></p>
+
+<h2>无代码无真相</h2>
+
+<p>主要是用Tag来存储内部信息，没什么技术含量~</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//显示整个路径信息  </span>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">showFullText</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">strPaths</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">.</span><span class="n">FullPath</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;;&#39;</span><span class="p">).</span><span class="n">ToList</span><span class="p">().</span><span class="n">ForEach</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">strPaths</span> <span class="p">+=</span> <span class="n">s</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span> <span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//存储原值  </span>
+</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//更改text  </span>
+</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">strPaths</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupShowing</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//改回原值  </span>
+</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span><span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="k">as</span> <span class="n">Node</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">thisNode</span><span class="p">!=</span><span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupClose</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">showFullText</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/07/14/continue-bill-number-reject/">连续票号剔除算法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-14T00:00:00+08:00" pubdate data-updated="true">Jul 14<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>问题场景</h2>
+
+<p>现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>原来： 0-999
+</span><span class='line'>领取： 0-99 100-199 400-499
+</span><span class='line'>===========运算求解======================
+</span><span class='line'>剩余： 200-399 500-999</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>分析</h2>
+
+<p>如果单纯分析这个问题，此时票据只有1000张，数量很少，因此只需要将每个票号放到一个set中，然后进行简单的集合运算即可求出结果。</p>
+
+<p>但是现实系统中票据量往往很大(9位票据就是近10亿条记录)，每张票据一条记录进行存储是不现实的，因此需要进行分段存储，即将一次领取的几本票据（票号连续）作为一条记录，只记录起始票号和终止票号，运算时因为内存空间有限，也不能整体集合求解，需要另辟蹊径。</p>
+
+<p>既然是边界条件判断，如果用各种if应该可以解决问题，但是这样太繁琐，非常容易出错。今天早上忽然想到，这个问题中票号是连续的，因此只要找到前后几个关键点，整段票号就能确定，而段内的票号是不重要的。</p>
+
+<h2>算法</h2>
+
+<p>1.找到全部关键点</p>
+
+<p>原来的号：0 999</p>
+
+<p>每段领取号各向外扩展一个号，作为可能的关键点：
+-1 100 99 200 399 500</p>
+
+<p>2.将上两种关键点放到一个数组中，去重复排序，得到：
+-1 0 99 100 200 399 500 999</p>
+
+<p>3.去掉领取号中重复的点，剩余：
+-1 200 399 500 999</p>
+
+<p>4.只取原来范围内的点，剩余
+200 399 500 999</p>
+
+<p>5.两两一组，即为所求解
+(200,399),(500,999)</p>
+
+<h2>c#技巧</h2>
+
+<ul>
+<li>HashSet可以去重复，也可使用Distinct</li>
+<li>引入Linq后，数组可以进行集合运算。交集Intersect，差集Except，联集Union</li>
+<li>数组只能存储相同类型的数据</li>
+<li>二维数组和交错数组是不同的，二维数组形如int[,],GetLength(0)可获得第0维长度，依次类推</li>
+<li>需要筛选操作的话，使用交错数组string[][]，而不要使用多维数组int[,]</li>
+</ul>
+
+
+<h2>无码无真相</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//从父表票号段中剔除子表中的票号段  </span>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">getLeftNums</span><span class="p">(</span><span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span><span class="p">,</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//填入所有可能的关键点  </span>
+</span><span class='line'>    <span class="c1">//HashSet可去重复  </span>
+</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">possibleSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">fathers</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sons</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//去掉sons中已经使用过的点  </span>
+</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sonSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">sons</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">sonSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">withoutSonsSets</span> <span class="p">=</span> <span class="n">possibleSets</span><span class="p">.</span><span class="n">Except</span><span class="p">(</span><span class="n">sonSets</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//只取fathers范围内的点  </span>
+</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">inFatherSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="k">value</span> <span class="k">in</span> <span class="n">withoutSonsSets</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">fathers</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">&gt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">&amp;&amp;</span> <span class="k">value</span> <span class="p">&lt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">])</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">inFatherSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//排序  </span>
+</span><span class='line'>    <span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sortedLists</span> <span class="p">=</span> <span class="n">inFatherSets</span><span class="p">.</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">).</span><span class="n">ToList</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//两两一组  </span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">()</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">();</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">index</span> <span class="p">=</span> <span class="n">i</span> <span class="p">/</span> <span class="m">2</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">results</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>测试用例</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[Test]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">getLeftNum2</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">999</span> <span class="p">}</span> <span class="p">};</span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">99</span> <span class="p">},</span> <span class="p">{</span> <span class="m">100</span><span class="p">,</span> <span class="m">199</span> <span class="p">},</span> <span class="p">{</span> <span class="m">400</span><span class="p">,</span> <span class="m">499</span> <span class="p">}</span> <span class="p">};</span>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="n">frmQueryBillDistribute</span><span class="p">.</span><span class="n">getLeftNums</span><span class="p">(</span><span class="n">fathers</span><span class="p">,</span> <span class="n">sons</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">asserts</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">200</span><span class="p">,</span> <span class="m">399</span> <span class="p">},</span> <span class="p">{</span> <span class="m">500</span><span class="p">,</span> <span class="m">999</span> <span class="p">}};</span>
+</span><span class='line'>    <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">asserts</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/06/27/linq-trick/">LINQ技巧小结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-27T00:00:00+08:00" pubdate data-updated="true">Jun 27<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>LINQ可不是简单的SQL语句的替代品，它将繁琐的数据操作（排序、求和、分组、投影、打包）统一起来，极大地简化了代码。</p>
+
+<h2>查询所有以ABC开头的字符串</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span><span class="p">[]</span> <span class="n">xx</span><span class="p">={</span><span class="s">&quot;ABCEFG&quot;</span><span class="p">,</span><span class="s">&quot;ABCASDFASDF&quot;</span><span class="p">,</span><span class="s">&quot;12312ADSFASD&quot;</span><span class="p">};</span>
+</span><span class='line'><span class="n">xx</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">x</span><span class="p">=&gt;</span><span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">&quot;ABC&quot;</span><span class="p">)).</span><span class="n">ToList</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">.</span><span class="n">ForEach</span><span class="p">(</span><span class="n">x</span><span class="p">=&gt;</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用正则来解决</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span><span class="p">[]</span> <span class="n">xx</span> <span class="p">=</span> <span class="p">{</span> <span class="s">&quot;ABCEFG&quot;</span><span class="p">,</span> <span class="s">&quot;abcASDFASDF&quot;</span><span class="p">,</span> <span class="s">&quot;12312ADSFASD&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">xx</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">Regex</span><span class="p">.</span><span class="n">IsMatch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&quot;^abc&quot;</span><span class="p">,</span><span class="n">RegexOptions</span><span class="p">.</span><span class="n">IgnoreCase</span><span class="p">))</span>
+</span><span class='line'>  <span class="p">.</span><span class="n">ToList</span><span class="p">().</span><span class="n">ForEach</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">s</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>简化字符</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span> <span class="n">source</span> <span class="p">=</span> <span class="s">@&quot;西瓜,1,a</span>
+</span><span class='line'><span class="s">苹果,2,b</span>
+</span><span class='line'><span class="s">橙子,3,c&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="err">结果数组：西瓜</span><span class="p">,</span><span class="err">苹果</span><span class="p">,</span><span class="err">橙子</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span><span class="p">[]</span> <span class="n">array1</span> <span class="p">=</span> <span class="n">source</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="p">[]</span> <span class="p">{</span> <span class="err">&#39;</span><span class="p">/</span><span class="n">r</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="p">/</span><span class="n">n</span><span class="err">&#39;</span> <span class="p">})</span>
+</span><span class='line'>                  <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;,&#39;</span><span class="p">)[</span><span class="m">0</span><span class="p">]).</span><span class="n">ToArray</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/06/27/linq-score-collect/">LINQ方式实现学生成绩汇总（右连接、聚合函数）</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-27T00:00:00+08:00" pubdate data-updated="true">Jun 27<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>需求</h2>
+
+<p>从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表</p>
+
+<ul>
+<li>取得所有姓名（包括没有成绩的）</li>
+<li>分数是该学生所有成绩的总和</li>
+</ul>
+
+
+<p>先看效果图：</p>
+
+<p><img src="/images/blog/score.gif" alt="" /></p>
+
+<p>数据库结构简化模拟如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">class</span> <span class="nc">Student</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Score</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">StudentId</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">score</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>插入测试数据：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Student</span> <span class="n">p1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;张三&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Student</span> <span class="n">p2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;李四&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Student</span> <span class="n">p3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">3</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;王五&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">80</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">90</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">70</span> <span class="p">};</span>
+</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;</span> <span class="n">students</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Student</span><span class="p">[]</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span> <span class="p">});</span>
+</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;</span> <span class="n">scores</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Score</span><span class="p">[]</span> <span class="p">{</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">s3</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>查询，注意：</p>
+
+<ul>
+<li>LINQ中没有left join和right join之分，只有关键词join来控制连接，join之前表的作为完整的表连接，join之后的表需要使用DefaultIfEmpty来进行处理，才能正常的显示null值</li>
+<li>group中的key是分组的字段，分组后就可以使用聚合函数了</li>
+<li>LINQ就像生产流水线，可以分阶段进行数据排序、汇总、投影等操作，最后组装起来就能达到预定的效果</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//left join,返回左边每一个元素  </span>
+</span><span class='line'><span class="n">var</span> <span class="n">studentsTable</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">students</span>
+</span><span class='line'>                    <span class="n">join</span> <span class="n">score</span> <span class="k">in</span> <span class="n">scores</span> <span class="n">on</span> <span class="n">student</span><span class="p">.</span><span class="n">id</span> <span class="n">equals</span> <span class="n">score</span><span class="p">.</span><span class="n">StudentId</span> <span class="n">into</span> <span class="n">joinedTable</span>
+</span><span class='line'>                    <span class="n">from</span> <span class="n">j</span> <span class="k">in</span> <span class="n">joinedTable</span><span class="p">.</span><span class="n">DefaultIfEmpty</span><span class="p">()</span><span class="c1">//处理右边为空的情况  </span>
+</span><span class='line'>                    <span class="n">select</span> <span class="k">new</span>
+</span><span class='line'>                    <span class="p">{</span>
+</span><span class='line'>                        <span class="n">name</span> <span class="p">=</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">score</span> <span class="p">=</span> <span class="n">j</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">?</span> <span class="n">j</span><span class="p">.</span><span class="n">score</span> <span class="p">:</span> <span class="m">0</span>
+</span><span class='line'>                    <span class="p">};</span>
+</span><span class='line'><span class="c1">//聚合函数  </span>
+</span><span class='line'><span class="n">var</span> <span class="n">data</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">studentsTable</span>
+</span><span class='line'>           <span class="n">group</span> <span class="n">student</span> <span class="n">by</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span> <span class="n">into</span> <span class="n">g</span>
+</span><span class='line'>           <span class="n">select</span> <span class="k">new</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">name</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span>
+</span><span class='line'>               <span class="n">score</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Sum</span><span class="p">(</span><span class="n">student</span> <span class="p">=&gt;</span> <span class="n">student</span><span class="p">.</span><span class="n">score</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">};</span>
+</span><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看看效果：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/08/data-scratch-and-analysis/">数据抓包及分析经验小结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">Apr 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>分析网络包——Wireshark</li>
+<li>查看AMF数据结构工具——AMF Explorer</li>
+<li>查看cookie工具——Firecookie</li>
+<li>cookie操作</li>
+<li>cookie分析</li>
+</ul>
+
+
+<h2>1.分析网络包——Wireshark</h2>
+
+<ul>
+<li>ubuntu下需要sudo wireshark启动</li>
+<li>Capture-interfaces:Start有ip的Device</li>
+<li>本机网络包无法抓取</li>
+<li>filter中填写:
+
+<ul>
+<li>http and ip.src==192.168.1.103只显示本机发送的http协议包</li>
+<li>http and ip.addr==192.168.1.103只显示本机发送和接收的http协议包</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>2.查看AMF数据结构工具——AMF Explorer</h2>
+
+<p>AMF Explorer基于Firebug的AMF查看插件</p>
+
+<h2>3.查看cookie工具——Firecookie</h2>
+
+<p>Firecookie基于Firebug的cookie查看、删除修改等操作插件，还可以下断点</p>
+
+<h2>4.cookie操作</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">urllib2</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">cookielib</span>
+</span><span class='line'><span class="c">#自动记录cookie</span>
+</span><span class='line'><span class="n">cj</span> <span class="o">=</span> <span class="n">cookielib</span><span class="o">.</span><span class="n">CookieJar</span><span class="p">()</span>
+</span><span class='line'><span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="n">cj</span><span class="p">))</span>
+</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/def/linkedlist.php?busynothing=12345&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">response</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#获取服务器返回的cookie</span>
+</span><span class='line'><span class="n">cookies</span> <span class="o">=</span> <span class="n">cj</span><span class="o">.</span><span class="n">make_cookies</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span> <span class="c"># extract all cookies that this request-response pair added to the jar</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#修改cookie</span>
+</span><span class='line'><span class="n">cookie</span> <span class="o">=</span> <span class="n">cookies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'><span class="n">cookie</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;the flowers are on their way&#39;</span> <span class="c"># 将其值设为要发送的，不必自己转码</span>
+</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/stuff/violin.php&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
+</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">add_cookie_header</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="c">#将cookies放入请求头部</span>
+</span><span class='line'><span class="k">print</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>5.cookie分析</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>Connection   keep-alive
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>说明使用的是长连接，应该使用Httplib2而不是Urllib2</p>
+
+<p>网站登录信息往往保存在基于session的cookie里，因此在发送数据包的时候提供</p>
+
+<p>服务端Response Headers   set-cookie发送给客户端cookie然后</p>
+
+<p>客户端Request Headers    Cookie才能保存</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

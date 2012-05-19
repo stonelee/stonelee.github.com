@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>基于WebGL的矿井三维演示 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="用了一周的时间研究WebGL相关技术，发现该技术竟然已经发展到如此地步，足以应用于企业开发领域。因此我使用Blender建模，基于ThreeJS实现了一个能够在浏览器上运行的矿井结构的三维效果展示。 浏览器兼容 Chrome和Firefox的较新版本均可流畅运行, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/08/20/web-mine-demo-with-threejs">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">基于WebGL的矿井三维演示</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-20T00:00:00+08:00" pubdate data-updated="true">Aug 20<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>用了一周的时间研究WebGL相关技术，发现该技术竟然已经发展到如此地步，足以应用于企业开发领域。因此我使用Blender建模，基于ThreeJS实现了一个能够在浏览器上运行的矿井结构的三维效果展示。</p>
+
+<p><img src="/images/blog/webmine.jpg" alt="" /></p>
+
+<p><img src="/images/blog/webmine2.jpg" alt="" /></p>
+
+<h2>浏览器兼容</h2>
+
+<p>Chrome和Firefox的较新版本均可流畅运行,
+IE8需要借助ChromeFrame插件</p>
+
+<h2>平台兼容</h2>
+
+<p>基于浏览器的应用，完美跨平台。
+经测试在手机Android2.3的Firefox中也可以显示。</p>
+
+<h2>主要功能</h2>
+
+<ul>
+<li>鼠标对模型的自由旋转、缩放、平移</li>
+<li>巷道文字显示</li>
+<li>人员移动轨迹回放，在模型中显示</li>
+<li>传感器在巷道模型上定点显示</li>
+<li>点击传感器，显示从后台服务器中取得的环境参数</li>
+<li>轮询方式从后台取得报警信息，在界面上展示。</li>
+<li>使用DAT.GUI实现模型参数的实时显示和动态更改。</li>
+</ul>
+
+
+<h2>感想</h2>
+
+<p>发展眼光很重要。新技术浪潮的到来往往会伴随行业洗牌，传统巨头会在一系列历史遗留问题中纠缠不清，无法很好的转移航向来适应未来的发展。新入行者恰恰可以利用后发优势，凭借新技术的潮头，爆发似的抢占市场。新技术不可怕，可怕的是技术上畏首畏尾，不敢突破的心态。跟在别人屁股后面永远只能吃那个。勇于打破既有规则，实现对既有规则的颠覆，建立自己的游戏规则，自己带着别人在圈子里玩，这才是我们应该做的事情。</p>
+
+<p>跨平台很重要，未来不再是windows的天下，随着智能手机和平板电脑的日益普及和流行，Linux系愈发强势。微软早就不是以前的巨无霸，谷歌苹果已经成为新生代的巨头。.net系的技术经常随市场一变再变，千万不要妄想抱住某厂商的大粗腿，民主化的开源社区才是王道（当然没有各大厂商的财力支持也是白搭）。</p>
+
+<p>基于浏览器的应用开发很重要，基于云端的浏览器应用是业界趋势。虽然基于系统原生的程序性能更强，用户体验更好，但是多平台开发需要多语言的移植，对于小公司来说从无论从人力物力还是发维护成本都是不可能的。而且根据摩尔定律，硬件性能越来越强，价格越来越便宜，我们要做的只是等待，而且不会等待太久。</p>
+
+<p>人很重要。好的程序员的工作效率会是垃圾程序员的数十倍，但是工资往往不需要这么多，他们更希望的是得到认可、得到尊重。好的程序员是自我管理的，他们无聊的时候也在学习，因为这是一种乐趣，他们工作效率极高，但从不加班。他们厌恶浪费生命的会议，厌恶一切不必要的手续和流程，厌恶一切没理由的说教和唠叨，推崇使用最简单最有效的方法来解决最复杂的问题。天外飞仙，一剑封喉。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-20T00:00:00+08:00" pubdate data-updated="true">Aug 20<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/08/12/how-to-build-github-blog/" title="Previous Post: 搭建基于github的免费博客">&laquo; 搭建基于github的免费博客</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/08/21/warcraft3-threejs-blender-demo/" title="Next Post: 基于WebGL的魔兽争霸Demo">基于WebGL的魔兽争霸Demo &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

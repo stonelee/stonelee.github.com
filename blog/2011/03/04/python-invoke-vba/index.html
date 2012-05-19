@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>python调用VBA心得 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="接上篇，在继续优化过程中发现几个问题，记述如下： 更改表格某行的字体，如果此表格中有合并单元格，会报错： 1
+"无法访问此集合中单独的行，因为表格有纵向合并的单元格。" 经研究，不能使用如下语句 1
+word.Selection.Tables[0].Rows[0] 解决方案： 1
+2
+3
+word &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/03/04/python-invoke-vba">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">python调用VBA心得</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-04T00:00:00+08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>接上篇，在继续优化过程中发现几个问题，记述如下：</p>
+
+<h3>更改表格某行的字体，如果此表格中有合并单元格，会报错：</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"无法访问此集合中单独的行，因为表格有纵向合并的单元格。"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>经研究，不能使用如下语句</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决方案：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SelectRow</span><span class="p">()</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selectin</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">Size</span><span class="o">=</span><span class="mi">18</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很多操作都可以用“先选择再操作”的方法来间接实现。</p>
+
+<p>但是要注意，使用Select前后一定要保存好鼠标的位置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">pos</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Start</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在操作完后要恢复鼠标。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SetRange</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>如果想使用constants里的word常量，应该使用makepy</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">gencache</span><span class="o">.</span><span class="n">EnsureDispatch</span><span class="p">(</span><span class="s">&#39;Word.Application&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后就可以像这样调用了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">InsertBreak</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">wdPageBreak</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://oreilly.com/catalog/pythonwin32/chapter/ch12.html">这里有篇讲COM高级用法的文章</a>，值得一看</p>
+
+<h3>Selection返回的貌似是刚操作的元素</h3>
+
+<h3>Tables(1)和Tables[ 0]是一样的</h3>
+
+<h3>对于大的文件，会在执行VBA的过程中显示“拼写或语法错误太多”这样的对话框，这会影响脚本的正常运行，解决方法是在打开文件后</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">GrammarChecked</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">SpellingChecked</span> <span class="o">=</span> <span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>性能优化</h3>
+
+<p>在文档很大的情况下，word的自动分页等可视化步骤会极大地减慢速度，因此需要将不必要的功能暂时去掉。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">View</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">wdNormalView</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">Options</span><span class="o">.</span><span class="n">Pagination</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="bp">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原来完整格式化一段表格需要100多s，现在只需58s了，有意思的是，如果将word的Visible设为False，速度反而有所下降。估计是操作系统自动将后台操作程序的CPU和内存使用优先级下调的缘故。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-04T00:00:00+08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/02/25/many-excel-to-one-word/" title="Previous Post: 多Excel文件导入到一个word">&laquo; 多Excel文件导入到一个word</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/03/07/make-electronic-stamp/" title="Next Post: 菜鸟制作电子印章经验小结">菜鸟制作电子印章经验小结 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

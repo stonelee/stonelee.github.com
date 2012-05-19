@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>数据抓包及分析经验小结 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="分析网络包——Wireshark
+查看AMF数据结构工具——AMF Explorer
+查看cookie工具——Firecookie
+cookie操作
+cookie分析 1.分析网络包——Wireshark ubuntu下需要sudo wireshark启动
+Capture-interfaces: &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2011/04/08/data-scratch-and-analysis">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">数据抓包及分析经验小结</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">Apr 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li>分析网络包——Wireshark</li>
+<li>查看AMF数据结构工具——AMF Explorer</li>
+<li>查看cookie工具——Firecookie</li>
+<li>cookie操作</li>
+<li>cookie分析</li>
+</ul>
+
+
+<h2>1.分析网络包——Wireshark</h2>
+
+<ul>
+<li>ubuntu下需要sudo wireshark启动</li>
+<li>Capture-interfaces:Start有ip的Device</li>
+<li>本机网络包无法抓取</li>
+<li>filter中填写:
+
+<ul>
+<li>http and ip.src==192.168.1.103只显示本机发送的http协议包</li>
+<li>http and ip.addr==192.168.1.103只显示本机发送和接收的http协议包</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>2.查看AMF数据结构工具——AMF Explorer</h2>
+
+<p>AMF Explorer基于Firebug的AMF查看插件</p>
+
+<h2>3.查看cookie工具——Firecookie</h2>
+
+<p>Firecookie基于Firebug的cookie查看、删除修改等操作插件，还可以下断点</p>
+
+<h2>4.cookie操作</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">urllib2</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">cookielib</span>
+</span><span class='line'><span class="c">#自动记录cookie</span>
+</span><span class='line'><span class="n">cj</span> <span class="o">=</span> <span class="n">cookielib</span><span class="o">.</span><span class="n">CookieJar</span><span class="p">()</span>
+</span><span class='line'><span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="n">cj</span><span class="p">))</span>
+</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/def/linkedlist.php?busynothing=12345&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">response</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#获取服务器返回的cookie</span>
+</span><span class='line'><span class="n">cookies</span> <span class="o">=</span> <span class="n">cj</span><span class="o">.</span><span class="n">make_cookies</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span> <span class="c"># extract all cookies that this request-response pair added to the jar</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#修改cookie</span>
+</span><span class='line'><span class="n">cookie</span> <span class="o">=</span> <span class="n">cookies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'><span class="n">cookie</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;the flowers are on their way&#39;</span> <span class="c"># 将其值设为要发送的，不必自己转码</span>
+</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/stuff/violin.php&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
+</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">add_cookie_header</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="c">#将cookies放入请求头部</span>
+</span><span class='line'><span class="k">print</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>5.cookie分析</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>Connection   keep-alive
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>说明使用的是长连接，应该使用Httplib2而不是Urllib2</p>
+
+<p>网站登录信息往往保存在基于session的cookie里，因此在发送数据包的时候提供</p>
+
+<p>服务端Response Headers   set-cookie发送给客户端cookie然后</p>
+
+<p>客户端Request Headers    Cookie才能保存</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">Apr 8<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/04/08/analysis-complicated-cell-of-word/" title="Previous Post: 如何解析word中存在合并单元格的表格">&laquo; 如何解析word中存在合并单元格的表格</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/06/27/linq-score-collect/" title="Next Post: LINQ方式实现学生成绩汇总（右连接、聚合函数）">LINQ方式实现学生成绩汇总（右连接、聚合函数） &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

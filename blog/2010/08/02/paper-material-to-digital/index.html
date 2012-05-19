@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>纸质材料数字化方法总结 - Stonelee's Blog</title>
+  <meta name="author" content="stonelee">
+
+  
+  <meta name="description" content="如何将纸质材料转为word文档？ 通过扫描仪将纸质材料扫描成图片格式。 首先安装扫描仪驱动，连接好扫描仪。
+我用的是汉王OCR 6.0，打开软件后，先选择好相应的扫描仪，点击“扫描”。
+模式我选的是“黑白图片”，经试验对于本来就比较清晰的文本这种格式的识别率最高，而且扫描速度也快。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://stonelee.github.com/blog/2010/08/02/paper-material-to-digital">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Stonelee's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20312823-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Stonelee's Blog</a></h1>
+  
+    <h2>如无必要，勿增实体</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:stonelee.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">纸质材料数字化方法总结</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-08-02T00:00:00+08:00" pubdate data-updated="true">Aug 2<span>nd</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>如何将纸质材料转为word文档？</p>
+
+<h2>通过扫描仪将纸质材料扫描成图片格式。</h2>
+
+<p>首先安装扫描仪驱动，连接好扫描仪。
+我用的是汉王OCR 6.0，打开软件后，先选择好相应的扫描仪，点击“扫描”。
+模式我选的是“黑白图片”，经试验对于本来就比较清晰的文本这种格式的识别率最高，而且扫描速度也快。
+对于不太清楚的文本可以使用自定义设置，多试验几个选项来加强识别率。
+然后就要一页一页的将材料扫描为图片了，图片会自动保存到image目录下。</p>
+
+<h2>文字识别</h2>
+
+<p>点击“选择所有文字”，再点击“开始识别”，将保存的所有图片扫描为文本格式，这时会发现原来的图片文字会自动被识别保存到相应的文本文件里。
+识别过程中发现对于某些情况汉王识别率可以迅速降为0，比如扫描文字右侧文字偏小时，有黑道时。这时可以借助另一款识别软件 <a href="http://tjcnc1.skycn.com/down/OCR75.zip">清华紫光OCR</a> 来进行识别。</p>
+
+<h2>文字修改</h2>
+
+<p>借助汉王强大的识别对照功能，可以轻松实现文字的修改。</p>
+
+<p><img src="/images/blog/hanwang.jpg" alt="" /></p>
+
+<p>在上面的编辑区中，如果发现识别错误的地方，只需要将光标移过去，上方就会出现原来文字对照和文字提示，修改起来很方便。美中不足之处就是不能用鼠标滚轮移动页面，需要借助键盘上的上下箭头。另外“施”这个字无法修改，不知道什么原因&#8230;.修改好一页后，只需要在左侧导航栏里点击下一幅图片就可以了，系统会自动保存。也幸亏有这个功能，汉王一高兴了就死掉，不知道为何原因。。。</p>
+
+<h2>文件整理到word中</h2>
+
+<p>编程实现各文本文件汇总到一个单一文件中。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">fdoc</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;doc.txt&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;txt&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">wholeFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">wholeFile</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">fdoc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span><span class='line'>                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>                <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is over&#39;</span> <span class="o">%</span> <span class="nb">file</span>
+</span><span class='line'>        <span class="n">fdoc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;all over&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">pathname</span> <span class="o">=</span> <span class="s">ur&#39;D:\Program Files\HWOCR60\IMAGE&#39;</span>
+</span><span class='line'>    <span class="n">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在word中将全部空格，回车符替换为空，然后分段，然后整体修改，搜索“设旋”、“设旌”改为“设施”&#8230;
+完善格式&#8230;</p>
+
+<h2>ps</h2>
+
+<p>Microsoft Office 工具里的Microsoft Office Document Imaging也可以实现识别功能，看它的版权页发现使用的是清华紫光的TH-OCR技术，不过是2002版本的，比起网上下载的99版TH-OCR好多了。可以考虑应用VBA做一些批处理操作。</p>
+
+<p>另外下载了据称是世界上最先进的识别软件ABBYY FineReader，试用版可以使用15天，识别50页，试用了下效果还可以。注册的话需要$200。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-08-02T00:00:00+08:00" pubdate data-updated="true">Aug 2<span>nd</span>, 2010</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/office/'>office</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/08/01/difference-in-static-method-and-class-method-in-python/" title="Previous Post: python中类方法、类实例方法、静态方法的使用与区别">&laquo; python中类方法、类实例方法、静态方法的使用与区别</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2010/08/14/use-inter-process-communicate-develop-inkscape-plugin/" title="Next Post: 使用进程间通信开发Inkscape插件">使用进程间通信开发Inkscape插件 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/16/extjs-4-build-tool/">ExtJS 4打包工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/01/ext-core-design-pattern/">Ext Core设计模式</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/30/ext-core-record/">Ext Core学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/stonelee">@stonelee</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'stonelee',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - stonelee -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'stonelee';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
