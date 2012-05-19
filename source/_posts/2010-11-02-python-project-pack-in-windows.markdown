@@ -1,6 +1,7 @@
 ---
 layout: post
 title: windows下python打包完整解决方案
+comments: true
 category: python
 ---
 

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: python嵌入IE浏览器
+comments: true
 category: python
 ---
 

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: python闭包实现的所谓bug
+comments: true
 category: python
 ---
 

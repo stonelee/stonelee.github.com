@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 使用热键控制python程序
+comments: true
 category: python
 ---
 

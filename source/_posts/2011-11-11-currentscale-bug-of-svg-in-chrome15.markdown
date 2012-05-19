@@ -1,6 +1,7 @@
 ---
 layout: post
 title: chrome15中无法使用svg的currentScale方法
+comments: true
 category: javascript
 ---
 

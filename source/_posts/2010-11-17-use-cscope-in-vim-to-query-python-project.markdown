@@ -1,6 +1,7 @@
 ---
 layout: post
 title: windows使用vim插件cscope查询python项目
+comments: true
 category: vim
 ---
 

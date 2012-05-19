@@ -1,6 +1,7 @@
 ---
 layout: post
 title: yield使用心得
+comments: true
 category: python
 ---
 

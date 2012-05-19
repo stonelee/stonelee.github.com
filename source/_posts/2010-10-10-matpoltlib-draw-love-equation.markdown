@@ -1,6 +1,7 @@
 ---
 layout: post
 title: matpoltlib绘制爱的方程式
+comments: true
 category: python
 ---
 

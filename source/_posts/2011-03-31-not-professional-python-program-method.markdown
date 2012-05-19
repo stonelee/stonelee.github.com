@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 非专业python编程方法小结
+comments: true
 category: develop
 ---
 

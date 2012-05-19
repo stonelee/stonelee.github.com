@@ -1,6 +1,7 @@
 ---
 layout: post
 title: hg版本管理最优实践
+comments: true
 category: develop
 ---
 

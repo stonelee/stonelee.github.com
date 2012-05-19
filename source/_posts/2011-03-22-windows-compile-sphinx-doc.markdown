@@ -1,6 +1,7 @@
 ---
 layout: post
 title: windows下编译开源代码中的sphinx文档
+comments: true
 category: python
 ---
 

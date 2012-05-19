@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 基于WebGL的魔兽争霸Demo
+comments: true
 category: web
 ---
 

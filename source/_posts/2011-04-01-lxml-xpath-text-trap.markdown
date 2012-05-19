@@ -1,6 +1,7 @@
 ---
 layout: post
 title: lxml中xpath的text()陷阱
+comments: true
 category: python
 ---
 

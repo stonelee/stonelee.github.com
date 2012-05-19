@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Tornado模板机制分析
+comments: true
 category: tornado
 ---
 

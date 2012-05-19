@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 为tortoisehg出把力
+comments: true
 category: develop
 ---
 

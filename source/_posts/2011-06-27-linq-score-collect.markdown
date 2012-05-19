@@ -1,6 +1,7 @@
 ---
 layout: post
 title: LINQ方式实现学生成绩汇总（右连接、聚合函数）
+comments: true
 category: csharp
 ---
 

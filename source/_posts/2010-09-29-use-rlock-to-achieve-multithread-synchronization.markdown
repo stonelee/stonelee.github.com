@@ -1,6 +1,7 @@
 ---
 layout: post
 title: RLock来实现多线程同步
+comments: true
 category: python
 ---
 

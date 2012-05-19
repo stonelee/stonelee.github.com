@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 盖房子种树记好时间
+comments: true
 category: python
 ---
 

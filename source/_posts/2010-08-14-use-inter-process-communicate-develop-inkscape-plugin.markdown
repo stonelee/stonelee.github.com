@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 使用进程间通信开发Inkscape插件
+comments: true
 category: python
 ---
 

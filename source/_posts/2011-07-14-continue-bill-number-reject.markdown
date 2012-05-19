@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 连续票号剔除算法
+comments: true
 category: csharp
 ---
 

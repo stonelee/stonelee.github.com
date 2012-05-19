@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 基于wxwebkit实现简单的浏览器
+comments: true
 category: python
 ---
 

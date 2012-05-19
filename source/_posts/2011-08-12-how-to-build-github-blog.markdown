@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 搭建基于github的免费博客
+comments: true
 category: web
 ---
 

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 算法时间复杂度直观展示
+comments: true
 category: python
 ---
 

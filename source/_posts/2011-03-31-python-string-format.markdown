@@ -1,6 +1,7 @@
 ---
 layout: post
 title: python字符串格式化小结
+comments: true
 category: python
 ---
 

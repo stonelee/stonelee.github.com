@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 菜鸟制作电子印章经验小结
+comments: true
 category: office
 ---
 

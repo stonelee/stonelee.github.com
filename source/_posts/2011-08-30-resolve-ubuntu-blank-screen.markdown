@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 解决ubuntu中激活显卡驱动导致启动黑屏问题
+comments: true
 category: ubuntu
 ---
 

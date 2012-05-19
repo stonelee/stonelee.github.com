@@ -1,6 +1,7 @@
 ---
 layout: post
 title: IE6下渲染svg的解决方案
+comments: true
 category: javascript
 ---
 

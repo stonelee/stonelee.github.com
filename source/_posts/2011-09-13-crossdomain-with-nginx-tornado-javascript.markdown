@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 打造纯净前端开发环境(附nginx反向代理解决跨域问题)
+comments: true
 category: web
 ---
 

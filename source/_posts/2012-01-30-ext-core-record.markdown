@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Ext Core学习笔记
+comments: true
 categories: [javascript, extjs]
 ---
 

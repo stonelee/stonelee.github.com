@@ -1,6 +1,7 @@
 ---
 layout: post
 title: vim最佳插件实践
+comments: true
 category: vim
 ---
 

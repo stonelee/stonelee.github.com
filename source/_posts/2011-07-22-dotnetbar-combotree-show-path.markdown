@@ -1,6 +1,7 @@
 ---
 layout: post
 title: DotNetBar中ComboTree显示整条路径信息
+comments: true
 category: csharp
 ---
 

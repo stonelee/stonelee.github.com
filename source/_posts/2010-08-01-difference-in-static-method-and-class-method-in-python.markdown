@@ -1,6 +1,7 @@
 ---
 layout: post
 title: python中类方法、类实例方法、静态方法的使用与区别
+comments: true
 category: python
 ---
 

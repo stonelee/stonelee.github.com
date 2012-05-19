@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 糅合Markdown和语法高亮，快速写作技术博客
+comments: true
 category: tornado
 ---
 

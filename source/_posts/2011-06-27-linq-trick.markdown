@@ -1,6 +1,7 @@
 ---
 layout: post
 title: LINQ技巧小结
+comments: true
 category: csharp
 ---
 

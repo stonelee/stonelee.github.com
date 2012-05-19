@@ -1,6 +1,7 @@
 ---
 layout: post
 title: GAE中使用自定义filter，实现文字截断
+comments: true
 category: python
 ---
 

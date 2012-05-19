@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 纸质材料数字化方法总结
+comments: true
 category: office
 ---
 

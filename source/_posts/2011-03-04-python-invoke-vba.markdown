@@ -1,6 +1,7 @@
 ---
 layout: post
 title: python调用VBA心得
+comments: true
 category: python
 ---
 

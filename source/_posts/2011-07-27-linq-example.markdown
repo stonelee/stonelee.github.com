@@ -1,6 +1,7 @@
 ---
 layout: post
 title: LINQ流水线
+comments: true
 category: csharp
 ---
 

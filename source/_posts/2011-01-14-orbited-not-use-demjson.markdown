@@ -1,6 +1,7 @@
 ---
 layout: post
 title: orbited中最好不要使用demjson，会导致twisted报错
+comments: true
 category: python
 ---
 

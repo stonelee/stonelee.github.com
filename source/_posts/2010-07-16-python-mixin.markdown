@@ -1,6 +1,7 @@
 ---
 layout: post
 title: python动态改变对象属性（热插拔）
+comments: true
 category: python
 ---
 

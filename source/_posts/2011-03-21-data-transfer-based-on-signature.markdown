@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 基于签名的数据传输
+comments: true
 category: python
 ---
 

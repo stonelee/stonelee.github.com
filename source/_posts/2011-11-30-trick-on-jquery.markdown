@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 恶搞jquery
+comments: true
 category: javascript
 ---
 

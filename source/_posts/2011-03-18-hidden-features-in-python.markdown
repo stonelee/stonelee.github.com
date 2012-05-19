@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 你可能所不知道的python中有用的特性
+comments: true
 category: python
 ---
 

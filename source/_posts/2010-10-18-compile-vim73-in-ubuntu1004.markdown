@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 在ubuntu 10.0.4上编译vim7.3
+comments: true
 category: vim
 ---
 

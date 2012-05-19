@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 基于WebGL的矿井三维演示
+comments: true
 category: web
 ---
 

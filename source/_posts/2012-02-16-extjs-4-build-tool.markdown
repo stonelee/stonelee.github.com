@@ -1,6 +1,7 @@
 ---
 layout: post
 title: ExtJS 4打包工具
+comments: true
 categories: [javascript, extjs]
 ---
 
