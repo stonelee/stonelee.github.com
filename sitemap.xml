@@ -196,7 +196,7 @@
     </url>
     <url>
         <loc>http://stonelee.info/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/</loc>
-        <lastmod>2012-05-20T00:43:49+08:00</lastmod>
+        <lastmod>2012-05-20T19:35:26+08:00</lastmod>
     </url>
     <url>
         <loc>http://stonelee.info/blog/2011/11/30/trick-on-jquery/</loc>
@@ -219,12 +219,16 @@
         <lastmod>2012-05-20T00:43:49+08:00</lastmod>
     </url>
     <url>
+        <loc>http://stonelee.info/projects/</loc>
+        <lastmod>2012-05-20T19:31:11+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://stonelee.info/</loc>
-        <lastmod>2012-05-19T20:49:22+08:00</lastmod>
+        <lastmod>2012-05-20T19:35:26+08:00</lastmod>
     </url>
     <url>
         <loc>http://stonelee.info/about/</loc>
-        <lastmod>2012-05-19T21:46:17+08:00</lastmod>
+        <lastmod>2012-05-20T19:25:26+08:00</lastmod>
     </url>
     <url>
         <loc>http://stonelee.info/404.html</loc>
@@ -232,6 +236,6 @@
     </url>
     <url>
         <loc>http://stonelee.info/blog/archives/</loc>
-        <lastmod>2012-05-19T20:49:22+08:00</lastmod>
+        <lastmod>2012-05-20T19:35:26+08:00</lastmod>
     </url>
 </urlset>
