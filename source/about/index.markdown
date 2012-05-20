@@ -1,6 +1,7 @@
 ---
 layout: about
 title: "About Me"
+comments: true
 sharing: true
 footer: true
 ---

@@ -5,7 +5,7 @@ comments: true
 category: javascript
 ---
 
-[测试网址](http://stonelee.info/demos/currentscale_bug_in_chrome15/index.html)
+[测试网址](/demos/currentscale_bug_in_chrome15/index.html)
 
 已提交bug，待解决
 
