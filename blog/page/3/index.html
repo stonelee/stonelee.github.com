@@ -9,8 +9,12 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="对于word中存在合并单元格的表格： 下图是对Cells遍历的结果，True表示该行该列的单元格存在，False表示不存在。 可以看到，word表格中行和列的合并单元格（Merge）机制是不一样的。
-Cells数组在计算时会无视行中的合并，将合并单元格作为普通格，依次进行存储， &hellip;">
+  <meta name="description" content="分析网络包——Wireshark
+查看AMF数据结构工具——AMF Explorer
+查看cookie工具——Firecookie
+cookie操作
+cookie分析 1.分析网络包——Wireshark ubuntu下需要sudo wireshark启动
+Capture-interfaces: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +83,141 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/04/08/data-scratch-and-analysis/">数据抓包及分析经验小结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">2011-04-08</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>分析网络包——Wireshark</li>
+<li>查看AMF数据结构工具——AMF Explorer</li>
+<li>查看cookie工具——Firecookie</li>
+<li>cookie操作</li>
+<li>cookie分析</li>
+</ul>
+
+
+<h2>1.分析网络包——Wireshark</h2>
+
+<ul>
+<li>ubuntu下需要sudo wireshark启动</li>
+<li>Capture-interfaces:Start有ip的Device</li>
+<li>本机网络包无法抓取</li>
+<li>filter中填写:
+
+<ul>
+<li>http and ip.src==192.168.1.103只显示本机发送的http协议包</li>
+<li>http and ip.addr==192.168.1.103只显示本机发送和接收的http协议包</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>2.查看AMF数据结构工具——AMF Explorer</h2>
+
+<p>AMF Explorer基于Firebug的AMF查看插件</p>
+
+<h2>3.查看cookie工具——Firecookie</h2>
+
+<p>Firecookie基于Firebug的cookie查看、删除修改等操作插件，还可以下断点</p>
+
+<h2>4.cookie操作</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">urllib2</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">cookielib</span>
+</span><span class='line'><span class="c">#自动记录cookie</span>
+</span><span class='line'><span class="n">cj</span> <span class="o">=</span> <span class="n">cookielib</span><span class="o">.</span><span class="n">CookieJar</span><span class="p">()</span>
+</span><span class='line'><span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="n">cj</span><span class="p">))</span>
+</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/def/linkedlist.php?busynothing=12345&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">response</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#获取服务器返回的cookie</span>
+</span><span class='line'><span class="n">cookies</span> <span class="o">=</span> <span class="n">cj</span><span class="o">.</span><span class="n">make_cookies</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span> <span class="c"># extract all cookies that this request-response pair added to the jar</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#修改cookie</span>
+</span><span class='line'><span class="n">cookie</span> <span class="o">=</span> <span class="n">cookies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'><span class="n">cookie</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;the flowers are on their way&#39;</span> <span class="c"># 将其值设为要发送的，不必自己转码</span>
+</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/stuff/violin.php&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
+</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">add_cookie_header</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="c">#将cookies放入请求头部</span>
+</span><span class='line'><span class="k">print</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>5.cookie分析</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>Connection   keep-alive
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>说明使用的是长连接，应该使用Httplib2而不是Urllib2</p>
+
+<p>网站登录信息往往保存在基于session的cookie里，因此在发送数据包的时候提供</p>
+
+<p>服务端Response Headers   set-cookie发送给客户端cookie然后</p>
+
+<p>客户端Request Headers    Cookie才能保存</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1234,225 +1373,6 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/02/25/many-excel-to-one-word/">多Excel文件导入到一个word</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-02-25T00:00:00+08:00" pubdate data-updated="true">2011-02-25</time>
-        
-      </p>
-    
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-  </header>
-
-
-  <div class="entry-content"><h2>需求</h2>
-
-<p>多个Excel分布在不同文件夹下，每个Excel又有多个sheet表，现在需要把这些Excel一起汇总到一个word里。</p>
-
-<h2>探索</h2>
-
-<p>直接复制粘贴既麻烦又无聊，上网搜所相关方法竟然没有，难道我这个需求很少见吗？找到一个国外软件<a href="http://www.coolutils.com/totalexcelconverter">ExcelConverter</a>（售价$49.9）,发现转换后货币格式的文字完全变成乱码。还是自己写吧，编码测试花了两个小时搞定。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
-</span><span class='line'><span class="c"># Last Update:</span>
-</span><span class='line'>
-</span><span class='line'><span class="sd">&#39;&#39;&#39;covert many excel files to one word file</span>
-</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
-</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">from</span> <span class="nn">win32com.client</span> <span class="kn">import</span> <span class="n">Dispatch</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">os</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">wdPageBreak</span> <span class="o">=</span> <span class="mi">7</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">isExcelFile</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;.xls&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">filesInDir</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
-</span><span class='line'>    <span class="c">#generate absolute paths of files in a directory</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">findExcels</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">isExcelFile</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-</span><span class='line'>            <span class="k">yield</span> <span class="n">name</span>
-</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filesInDir</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-</span><span class='line'>                <span class="k">if</span> <span class="n">isExcelFile</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
-</span><span class='line'>                    <span class="k">yield</span> <span class="nb">file</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">ExcelToWord</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excelNames</span><span class="p">,</span> <span class="n">wordName</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_createExcel</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excelNames</span> <span class="o">=</span> <span class="n">findExcels</span><span class="p">(</span><span class="n">excelNames</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">_createWord</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Documents</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">wordName</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_createExcel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">(</span><span class="s">&#39;Excel.Application&#39;</span><span class="p">)</span>
-</span><span class='line'>        <span class="c">#self.excel.Visible = True</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">DisplayAlerts</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_createWord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="p">(</span><span class="s">&#39;Word.Application&#39;</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Visible</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">DisplayAlerts</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">for</span> <span class="n">excelName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">excelNames</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">print</span> <span class="s">&#39;coverting&#39;</span><span class="p">,</span> <span class="n">excelName</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Workbooks</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">excelName</span><span class="p">)</span>
-</span><span class='line'>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Worksheets</span><span class="o">.</span><span class="n">count</span><span class="p">):</span>
-</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Worksheets</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span><span class="c">#start from 1</span>
-</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
-</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">_paste</span><span class="p">()</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Workbooks</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Quit</span><span class="p">()</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;covert is over&#39;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="c"># select all contents in one sheet and copy</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Cells</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">excel</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Copy</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="c">#paste to one word file and add a page break</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Paste</span><span class="p">()</span>
-</span><span class='line'>        <span class="c">#self.word.Selection.TypeParagraph()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">InsertBreak</span><span class="p">(</span><span class="n">wdPageBreak</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">excelNames</span> <span class="o">=</span> <span class="p">[</span>
-</span><span class='line'>                <span class="s">u&#39;c:</span><span class="se">\\</span><span class="s">users</span><span class="se">\\</span><span class="s">lxd</span><span class="se">\\</span><span class="s">desktop</span><span class="se">\\</span><span class="s">文档&#39;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s">u&#39;c:</span><span class="se">\\</span><span class="s">users</span><span class="se">\\</span><span class="s">lxd</span><span class="se">\\</span><span class="s">desktop</span><span class="se">\\</span><span class="s">汇总.xls&#39;</span><span class="p">,]</span>
-</span><span class='line'>    <span class="n">wordName</span> <span class="o">=</span> <span class="s">r&#39;c:\users\lxd\desktop\1.doc&#39;</span>
-</span><span class='line'>    <span class="n">e</span> <span class="o">=</span> <span class="n">ExcelToWord</span><span class="p">(</span><span class="n">excelNames</span><span class="p">,</span> <span class="n">wordName</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">e</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1481,6 +1401,10 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/08/22/bootstrap-modal/">Bootstrap modal源码分析</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
@@ -1516,10 +1440,6 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
     
       <li class="post">
         <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a>
       </li>
     
   </ul>

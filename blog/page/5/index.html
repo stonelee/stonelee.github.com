@@ -9,25 +9,14 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="如何在python应用程序中嵌入浏览器？google半天之后发现 wxWebKit 是一个相对给力的webkit封装，虽然也有相当多的不足之处，但是对于简单的html渲染是没用问题的，直接给出代码。 1
+  <meta name="description" content="https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484 开源项目：tortoisehg bug内容： 1
 2
 3
 4
 5
 6
 7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19 &hellip;">
+8 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,6 +85,106 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/17/help-tortoisehg/">为tortoisehg出把力</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-17T00:00:00+08:00" pubdate data-updated="true">2010-12-17</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p><a href="https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484">https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484</a></p>
+
+<p>开源项目：tortoisehg</p>
+
+<p>bug内容：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#936 ImportError: MemoryLoadLibrary failed loading win32api.pyd
+</span><span class='line'>Reported by Dmitry Zanozin / dmitryzan, created 10 months ago.
+</span><span class='line'>I've received error message on startup of my WinXP after reboot just after install of the latest nightly build tortoisehg-unstable-0.9.35067-hg-1.4.3+67-07bd7608a0ea.exe
+</span><span class='line'>There was a suggestion to examine thgtaskbar.exe.log file:
+</span><span class='line'>thgtaskbar.exe.log
+</span><span class='line'>Traceback (most recent call last):
+</span><span class='line'>File "thgtaskbar.py", line 13, in &lt;module&gt;
+</span><span class='line'>File "zipextimporter.pyo", line 98, in load_module
+</span><span class='line'>ImportError: MemoryLoadLibrary failed loading win32api.pyd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>偶的解决方案：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>istonelee
+</span><span class='line'>written about a month ago
+</span><span class='line'>when I use py2exe to create my project,I receive the same error.I analyse the depends of this dll,and found that py2exe makes some mistakes that include mswsock.dll and powrprof.dll into the library. and my solution is modify the setup.py
+</span><span class='line'>'dll_excludes': [ "mswsock.dll", "powrprof.dll" ]
+</span><span class='line'>hope my experience could be any useful :)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>被作者采纳了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Steve Borho / sborho
+</span><span class='line'>written about a month ago
+</span><span class='line'>That is interesting that it causes the same error for you. I've added those two and several more DLLs to the dll_excludes list in the setup.cfg file. setup.cfg hasn't changed in 9 months, since 1.0 was released.
+</span><span class='line'>http://bitbucket.org/tortoisehg/thg-winbuild/src/tip/misc/setup.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So Happy~</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1481,125 +1570,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/08/02/paper-material-to-digital/">纸质材料数字化方法总结</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-08-02T00:00:00+08:00" pubdate data-updated="true">2010-08-02</time>
-        
-      </p>
-    
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-  </header>
-
-
-  <div class="entry-content"><p>如何将纸质材料转为word文档？</p>
-
-<h2>通过扫描仪将纸质材料扫描成图片格式。</h2>
-
-<p>首先安装扫描仪驱动，连接好扫描仪。
-我用的是汉王OCR 6.0，打开软件后，先选择好相应的扫描仪，点击“扫描”。
-模式我选的是“黑白图片”，经试验对于本来就比较清晰的文本这种格式的识别率最高，而且扫描速度也快。
-对于不太清楚的文本可以使用自定义设置，多试验几个选项来加强识别率。
-然后就要一页一页的将材料扫描为图片了，图片会自动保存到image目录下。</p>
-
-<h2>文字识别</h2>
-
-<p>点击“选择所有文字”，再点击“开始识别”，将保存的所有图片扫描为文本格式，这时会发现原来的图片文字会自动被识别保存到相应的文本文件里。
-识别过程中发现对于某些情况汉王识别率可以迅速降为0，比如扫描文字右侧文字偏小时，有黑道时。这时可以借助另一款识别软件 <a href="http://tjcnc1.skycn.com/down/OCR75.zip">清华紫光OCR</a> 来进行识别。</p>
-
-<h2>文字修改</h2>
-
-<p>借助汉王强大的识别对照功能，可以轻松实现文字的修改。</p>
-
-<p><img src="/images/blog/hanwang.jpg" alt="" /></p>
-
-<p>在上面的编辑区中，如果发现识别错误的地方，只需要将光标移过去，上方就会出现原来文字对照和文字提示，修改起来很方便。美中不足之处就是不能用鼠标滚轮移动页面，需要借助键盘上的上下箭头。另外“施”这个字无法修改，不知道什么原因&#8230;.修改好一页后，只需要在左侧导航栏里点击下一幅图片就可以了，系统会自动保存。也幸亏有这个功能，汉王一高兴了就死掉，不知道为何原因。。。</p>
-
-<h2>文件整理到word中</h2>
-
-<p>编程实现各文本文件汇总到一个单一文件中。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">os</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">fdoc</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;doc.txt&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;txt&#39;</span><span class="p">:</span>
-</span><span class='line'>                <span class="n">wholeFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
-</span><span class='line'>                <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">wholeFile</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
-</span><span class='line'>                <span class="n">fdoc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-</span><span class='line'>                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class='line'>                <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is over&#39;</span> <span class="o">%</span> <span class="nb">file</span>
-</span><span class='line'>        <span class="n">fdoc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;all over&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">pathname</span> <span class="o">=</span> <span class="s">ur&#39;D:\Program Files\HWOCR60\IMAGE&#39;</span>
-</span><span class='line'>    <span class="n">join</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在word中将全部空格，回车符替换为空，然后分段，然后整体修改，搜索“设旋”、“设旌”改为“设施”&#8230;
-完善格式&#8230;</p>
-
-<h2>ps</h2>
-
-<p>Microsoft Office 工具里的Microsoft Office Document Imaging也可以实现识别功能，看它的版权页发现使用的是清华紫光的TH-OCR技术，不过是2002版本的，比起网上下载的99版TH-OCR好多了。可以考虑应用VBA做一些批处理操作。</p>
-
-<p>另外下载了据称是世界上最先进的识别软件ABBYY FineReader，试用版可以使用15天，识别50页，试用了下效果还可以。注册的话需要$200。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/6/">&larr; Older</a>
@@ -1628,6 +1598,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/08/22/bootstrap-modal/">Bootstrap modal源码分析</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
@@ -1663,10 +1637,6 @@
     
       <li class="post">
         <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a>
       </li>
     
   </ul>

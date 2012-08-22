@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Stonelee's Blog]]></title>
   <link href="http://stonelee.info/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2012-08-22T15:57:01+08:00</updated>
+  <updated>2012-08-22T17:14:59+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -12,6 +12,134 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Bootstrap modal源码分析]]></title>
+    <link href="http://stonelee.info/blog/2012/08/22/bootstrap-modal/"/>
+    <updated>2012-08-22T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/08/22/bootstrap-modal</id>
+    <content type="html"><![CDATA[<p>要分析的代码见:
+<a href="https://github.com/twitter/bootstrap/blob/master/js/bootstrap-modal.js">bootstrap-modal</a></p>
+
+<h2>整体结构</h2>
+
+<p>用匿名函数将代码整个包裹起来，防止全局变量污染。</p>
+
+<p><code>
+!function ($) {}(window.jQuery);
+</code></p>
+
+<p>但是传递的参数为window.jQuery，这个在使用seajs封装时有点小问题，为了迁就它，不得已只好将jQuery暴露出来。</p>
+
+<h3>类定义</h3>
+
+<p>提供插件的基本逻辑</p>
+
+<p>```
+//定义对象
+var Modal = function (element, options) {}</p>
+
+<p>//在prototype中定义对象方法
+Modal.prototype = {</p>
+
+<pre><code>//constructor重新设置原型链，使得Modal.prototype.constructor === Modal，而不是Object
+constructor: Modal
+</code></pre>
+
+<p>  , show: function () {}
+  , hide: function (e) {}
+}
+```</p>
+
+<h3>jQuery插件定义</h3>
+
+<p>```
+$.fn.modal = function (option) {
+  //return使得方法可以进行链式调用。
+  return this.each(function () {</p>
+
+<pre><code>var $this = $(this)
+  , data = $this.data('modal')
+  , options = $.extend({}, $.fn.modal.defaults, $this.data(), typeof option == 'object' &amp;&amp; option)
+//将内部使用对象存放到data('modal')中，可以轻松从外部获取
+if (!data) $this.data('modal', (data = new Modal(this, options)))
+if (typeof option == 'string') data[option]()
+else if (options.show) data.show()
+</code></pre>
+
+<p>  })
+}</p>
+
+<p>//使得插件默认配置项可以在插件代码外重新设置。
+$.fn.modal.defaults = {</p>
+
+<pre><code>backdrop: true
+</code></pre>
+
+<p>  , keyboard: true
+  , show: true
+}</p>
+
+<p>//代码外面可以通过$.fn.modal.Constructor来获得Modal
+$.fn.modal.Constructor = Modal
+```</p>
+
+<h3>Data-api</h3>
+
+<p>在页面标签中设置data-toggle就可以提供modal调用，为页面编写者提供了最大的便利。</p>
+
+<p>```
+$(function () {
+  $('body').on('click.modal.data-api', '[data-toggle="modal"]', function ( e ) {</p>
+
+<pre><code>var $this = $(this)
+  , href = $this.attr('href')
+  , $target = $($this.attr('data-target') || (href &amp;&amp; href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
+  , option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) &amp;&amp; href }, $target.data(), $this.data())
+
+e.preventDefault()
+
+$target
+  .modal(option)
+  .one('hide', function () {
+    $this.focus()
+  })
+</code></pre>
+
+<p>  })
+})
+```</p>
+
+<h2>技术难点</h2>
+
+<p>```
+var Modal = function (element, options) {
+  this.options = options
+  this.$element = $(element)</p>
+
+<pre><code>.delegate('[data-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this))
+</code></pre>
+
+<p>  this.options.remote &amp;&amp; this.$element.find('.modal-body').load(this.options.remote)
+}
+```</p>
+
+<p>上面这段代码中，</p>
+
+<p>this指向的是Modal类的对象，通过new Modal()生成。
+this.options和this.$element是该对象的属性。
+this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p>
+
+<p>$.proxy(this.hide, this)使得hide中的this指向这个代码中的this，即modal对象。
+如果直接在delegate中调用this.hide，会导致hide中的this指向delegate的目标对象，也就是[data-dismiss="modal"]这个页面组件，通常是个按钮。</p>
+
+<h2>结尾</h2>
+
+<p>不得不佩服Twitter员工的水平，代码结构相当优雅清晰，有许多设计细节值得借鉴。</p>
+
+<p>弄清了整体结构和技术难点，其他部分作为实现细节就简单了，对照着代码看下就好。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ExtJS 4 mvc架构演化]]></title>
@@ -670,72 +798,6 @@ Ext.fly('slideEl').slideOut('r', {</p>
 
 <p>});
 ```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[恶搞jquery]]></title>
-    <link href="http://stonelee.info/blog/2011/11/30/trick-on-jquery/"/>
-    <updated>2011-11-30T00:00:00+08:00</updated>
-    <id>http://stonelee.info/blog/2011/11/30/trick-on-jquery</id>
-    <content type="html"><![CDATA[<p>有人使用jquery来get服务端数据吗？
-相信略微有点功能的jquery程序都会使用把。</p>
-
-<h2>trick</h2>
-
-<p>前提确定，恶作剧开始。
-将下面代码插入任意js文件的可执行位置:</p>
-
-<p>```js
-Object.prototype.fuck=function(){</p>
-
-<pre><code>alert("fuck u!!!");
-</code></pre>
-
-<p>};
-```</p>
-
-<h2>效果</h2>
-
-<p>在我的系统中每隔5s向服务端请求一次数据，因此每隔5s会弹出一个温馨的祝福框。</p>
-
-<h2>原因</h2>
-
-<p>查看console没有任何异常啊，why？？
-将那个可爱的alert换为console.log，发现console出现了位置定位jquery-1.7.js (line 7611)，点过去看看：</p>
-
-<p>```js
-for ( i in { success: 1, error: 1, complete: 1 } ) {</p>
-
-<pre><code>jqXHR[ i ]( s[ i ] );
-</code></pre>
-
-<p>}
-```</p>
-
-<p>jquery作者肿么了，object的for循环竟然没用hasOwnProperty来判断一下！！
-然后看了下周围的代码，也都是一样滴！！
-为了代码的简洁吗？为了运行的效率吗？基于用户的善意考虑吗？在js的prototype继承机制上，一切都是浮云~</p>
-
-<p>如此明显的bug估计在jquery看来是有意为之的，但是为防止自己的代码被问候，建议自己的代码按照这样的方式书写：</p>
-
-<p>```js
-var obj={name:"tom",age:13};
-for (var i in obj){</p>
-
-<pre><code>if (obj.hasOwnProperty(i)){
-    doSomething(i);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>这也是每本专业js书里的推荐写法。</p>
-
-<h2>ps</h2>
-
-<p>如果有人用这种方法捣乱，文件夹搜索Object.prototype即可。</p>
 ]]></content>
   </entry>
   

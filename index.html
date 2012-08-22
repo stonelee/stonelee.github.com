@@ -9,7 +9,9 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="从年前技术选型开始算起，使用Extjs 4已经四五个月时间了。对比之前的3.x版本，Extjs 4给了我们太多的惊喜：全新的mvc架构、强大的class体系、灵活的js加载方式、纯div布局页面。因此，项目组毫不犹豫地选择其作为前端架构进行新项目的开发。 项目初始时，我们一直遵循推荐的MVC架构： &hellip;">
+  <meta name="description" content="要分析的代码见:
+bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止全局变量污染。 1
+!function ($) {}(window.jQuery); 但是传递的参数为window.jQuery，这个在使用seajs封装时有点小问题，为了迁就它， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +80,208 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/22/bootstrap-modal/">Bootstrap Modal源码分析</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-22T00:00:00+08:00" pubdate data-updated="true">2012-08-22</time>
+        
+      </p>
+    
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+  </header>
+
+
+  <div class="entry-content"><p>要分析的代码见:
+<a href="https://github.com/twitter/bootstrap/blob/master/js/bootstrap-modal.js">bootstrap-modal</a></p>
+
+<h2>整体结构</h2>
+
+<p>用匿名函数将代码整个包裹起来，防止全局变量污染。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>!function ($) {}(window.jQuery);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是传递的参数为window.jQuery，这个在使用seajs封装时有点小问题，为了迁就它，不得已只好将jQuery暴露出来。</p>
+
+<h3>类定义</h3>
+
+<p>提供插件的基本逻辑</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//定义对象
+</span><span class='line'>var Modal = function (element, options) {}
+</span><span class='line'>
+</span><span class='line'>//在prototype中定义对象方法
+</span><span class='line'>Modal.prototype = {
+</span><span class='line'>    //constructor重新设置原型链，使得Modal.prototype.constructor === Modal，而不是Object
+</span><span class='line'>    constructor: Modal
+</span><span class='line'>  , show: function () {}
+</span><span class='line'>  , hide: function (e) {}
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>jQuery插件定义</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$.fn.modal = function (option) {
+</span><span class='line'>  //return使得方法可以进行链式调用。
+</span><span class='line'>  return this.each(function () {
+</span><span class='line'>    var $this = $(this)
+</span><span class='line'>      , data = $this.data('modal')
+</span><span class='line'>      , options = $.extend({}, $.fn.modal.defaults, $this.data(), typeof option == 'object' && option)
+</span><span class='line'>    //将内部使用对象存放到data('modal')中，可以轻松从外部获取
+</span><span class='line'>    if (!data) $this.data('modal', (data = new Modal(this, options)))
+</span><span class='line'>    if (typeof option == 'string') data[option]()
+</span><span class='line'>    else if (options.show) data.show()
+</span><span class='line'>  })
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>//使得插件默认配置项可以在插件代码外重新设置。
+</span><span class='line'>$.fn.modal.defaults = {
+</span><span class='line'>    backdrop: true
+</span><span class='line'>  , keyboard: true
+</span><span class='line'>  , show: true
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>//代码外面可以通过$.fn.modal.Constructor来获得Modal
+</span><span class='line'>$.fn.modal.Constructor = Modal</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Data-api</h3>
+
+<p>在页面标签中设置data-toggle就可以提供modal调用，为页面编写者提供了最大的便利。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$(function () {
+</span><span class='line'>  $('body').on('click.modal.data-api', '[data-toggle="modal"]', function ( e ) {
+</span><span class='line'>    var $this = $(this)
+</span><span class='line'>      , href = $this.attr('href')
+</span><span class='line'>      , $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
+</span><span class='line'>      , option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+</span><span class='line'>
+</span><span class='line'>    e.preventDefault()
+</span><span class='line'>
+</span><span class='line'>    $target
+</span><span class='line'>      .modal(option)
+</span><span class='line'>      .one('hide', function () {
+</span><span class='line'>        $this.focus()
+</span><span class='line'>      })
+</span><span class='line'>  })
+</span><span class='line'>})</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>技术难点</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var Modal = function (element, options) {
+</span><span class='line'>  this.options = options
+</span><span class='line'>  this.$element = $(element)
+</span><span class='line'>    .delegate('[data-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this))
+</span><span class='line'>  this.options.remote && this.$element.find('.modal-body').load(this.options.remote)
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面这段代码中，</p>
+
+<p>this指向的是Modal类的对象，通过new Modal()生成。
+this.options和this.$element是该对象的属性。
+this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p>
+
+<p>$.proxy(this.hide, this)使得hide中的this指向这个代码中的this，即modal对象。
+如果直接在delegate中调用this.hide，会导致hide中的this指向delegate的目标对象，也就是[data-dismiss=&#8221;modal&#8221;]这个页面组件，通常是个按钮。</p>
+
+<h2>结尾</h2>
+
+<p>不得不佩服Twitter员工的水平，代码结构相当优雅清晰，有许多设计细节值得借鉴。</p>
+
+<p>弄清了整体结构和技术难点，其他部分作为实现细节就简单了，对照着代码看下就好。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1579,116 +1783,6 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-08-21T00:00:00+08:00" pubdate data-updated="true">2011-08-21</time>
-        
-      </p>
-    
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-  </header>
-
-
-  <div class="entry-content"><p>早就想基于魔兽争霸的模型做点东西，周末抽空研究了下，比较简单。</p>
-
-<p>先看看效果。</p>
-
-<p><img src="/images/blog/warcraft.jpg" alt="" /></p>
-
-<h2>导出魔兽争霸模型</h2>
-
-<p>Warcraft 3 Viewer可以读取warcraft的MPQ文件，从中选择中意的模型，然后可以分别将MDX和texture导出。为了后面使用的方便，texture导出到和mdx相同目录下，格式为jpg。</p>
-
-<h2>导入到blender</h2>
-
-<p>使用modelconv来将mdx文件转换为obj文件。modelconv是一个命令行程序，调用后，输入要转换的mdx文件名和要转换成的obj文件名即可。
-然后使用blender来import该obj文件。</p>
-
-<h2>调整模型</h2>
-
-<p>自动导入的文件往往其大小和角度不符合实际需要，因此需要进行调整。</p>
-
-<ul>
-<li>缩放模型</li>
-<li>调整模型位置</li>
-<li>调整摄像机位置</li>
-<li>删掉多余的面</li>
-</ul>
-
-
-<h2>贴纹理(texture)</h2>
-
-<p>打开UV/Image Editor，打开贴图文件，在3D View视图中查看Textured视角，这时会发现模型已经自动贴好了纹理。但是这时候render的话会发现渲染出的模型依然是难看的灰色。因此需要新加一个Material，然后新加一个Texture，Type选择Image or Movie，Image选择之前的贴图文件，Mapping中Coordinates选择UV，这样才算真正贴好了纹理。</p>
-
-<h2>导出three.js模型</h2>
-
-<p>使用ThreeJS自带的blender导出插件，会自动将模型和纹理导成ThreeJS需要的json。只需将生成的js文件和texture复制到ThreeJS项目中即可正常使用。</p>
-
-<h2>ThreeJS中调用模型</h2>
-
-<p>注意调整模型位置，纹理会自动贴好。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">loader</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">JSONLoader</span><span class="p">();</span>
-</span><span class='line'><span class="nx">loader</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span> <span class="p">{</span> <span class="nx">model</span><span class="o">:</span> <span class="s2">&quot;warcraft/archer.js&quot;</span><span class="p">,</span> <span class="nx">callback</span><span class="o">:</span> <span class="nx">createScene</span> <span class="p">}</span> <span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">createScene</span><span class="p">(</span> <span class="nx">geometry</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">mesh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">Mesh</span><span class="p">(</span> <span class="nx">geometry</span><span class="p">,</span> <span class="k">new</span> <span class="nx">THREE</span><span class="p">.</span><span class="nx">MeshFaceMaterial</span><span class="p">());</span>
-</span><span class='line'>    <span class="nx">mesh</span><span class="p">.</span><span class="nx">position</span><span class="p">.</span><span class="nx">x</span><span class="o">=-</span><span class="mi">15</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">mesh</span><span class="p">.</span><span class="nx">position</span><span class="p">.</span><span class="nx">y</span><span class="o">=-</span><span class="mi">5</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">mesh</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">mesh</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">mesh</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">z</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">scene</span><span class="p">.</span><span class="nx">addObject</span><span class="p">(</span> <span class="nx">mesh</span> <span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1715,6 +1809,10 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/08/22/bootstrap-modal/">Bootstrap modal源码分析</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/04/26/new-extjs-mvc/">ExtJS 4 mvc架构演化</a>
@@ -1750,10 +1848,6 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
     
       <li class="post">
         <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/08/21/warcraft3-threejs-blender-demo/">基于WebGL的魔兽争霸Demo</a>
       </li>
     
   </ul>
