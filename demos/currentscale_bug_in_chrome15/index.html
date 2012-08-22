@@ -9,16 +9,28 @@
 		<div id="contents">
 			<p>click the button and it will scale. Using javascript it works fine in chrome 13 and firefox 7,but not in chrome 15.0.874.12</p>
 			<p><a href="drawing.svg" target="_blank">but when I directly put javascript in the svg file ,it will be ok in chrome 15.0.874.12</a></p>
+			<p>
+				<input id="zoom" type="button" value="zoom"/>
+			</p>
 			<object data="drawing.svg" type="image/svg+xml" width="800" height="600" id="drawing"></object>
 		</div>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script type="text/javascript">
-			window.onLoad= function() {
+			$(function(){
 				var svgRoot = document.getElementById("drawing").contentDocument.documentElement;
 				setInterval(function() {
 					svgRoot.currentScale += 0.1;
 				},
 				1000);
-			};
+
+				$('#zoom').click(function(){
+					var svgRoot = document.getElementById("drawing").contentDocument.documentElement;
+					setInterval(function() {
+						svgRoot.currentScale += 0.1;
+					},
+					1000);
+				});
+			});
 		</script>
 	</body>
 </html>
