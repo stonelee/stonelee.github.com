@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: ubuntu - Stonelee's Blog</title>
+  <title>当前端遇到Adblock Plus - Stonelee's Blog</title>
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="Category: ubuntu">
+  <meta name="description" content="今天将最近开发的演示程序集成到同事的业务框架中去，结果在同事的浏览器中报错： Firebug中显示报错，但是没有具体错误提示，只显示问题所在代码 1
+r.open('GET', url, true) 点进去看发现其上下文只是一般的ajax调用而已，why？ 排错 浏览器问题？ 最初怀疑跟浏览器有关 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonelee.infoblog/categories/ubuntu">
+  <link rel="canonical" href="http://stonelee.info/blog/2012/09/19/adblock-plus-bug">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,36 +80,164 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Ubuntu</h1>
     
+      <h1 class="entry-title">当前端遇到Adblock Plus</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-19T00:00:00+08:00" pubdate data-updated="true">2012-09-19</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>今天将最近开发的演示程序集成到同事的业务框架中去，结果在同事的浏览器中报错：</p>
 
-  
-  <h2>2011</h2>
+<p><img src="/images/blog/adblock-bug.png" alt="" /></p>
 
-<article>
-  
-<h1><a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a></h1>
-<time datetime="2011-08-30T00:00:00+08:00" pubdate><span class='month'>Aug</span> <span class='day'>30</span> <span class='year'>2011</span></time>
+<p>Firebug中显示报错，但是没有具体错误提示，只显示问题所在代码</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a></span>
-</footer>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>r.open('GET', url, true)</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
+<p>点进去看发现其上下文只是一般的ajax调用而已，why？</p>
 
+<h2>排错</h2>
+
+<h3>浏览器问题？</h3>
+
+<p>最初怀疑跟浏览器有关,我测试使用的是chrome和firefox14，而同事使用firefox15.
+于是在测试服务器上安装firefox15，木有报错&#8230;</p>
+
+<h3>调用库代码问题？</h3>
+
+<p>报错的代码属于seajs，google搜索关键字无果，更新到最新版本还是没效果</p>
+
+<h3>冷静思考</h3>
+
+<p>一共有5个tpl模板文件需要加载，此处加载了4个，出问题的为track.tpl.
+于是怀疑模板文件是否格式有问题，难道有未闭合的html标签？
+反复对照查看发现没有问题&#8230;</p>
+
+<p>索性将调用改为其他模板，这下不再报错了，虽然模板渲染还是有问题。</p>
+
+<p>难道是文件编码问题？隐藏字符？还是文件内容有瑕疵？</p>
+
+<p>猛然想到，同事使用firefox多年，而测试服务器是新安装的纯净版，难道是插件造成的问题?</p>
+
+<h2>原因</h2>
+
+<p>Firefox插件Adblock Plus的过滤列表ChinaList+EasyList中
+有规则：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>|http://*/track.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>导致模板文件track.tpl被屏蔽，从而ajax加载该文件失败</p>
+
+<p>因此解决方案是将该文件改名为tracks.tpl</p>
+
+<p>苦逼前端，除了应付各种浏览器兼容问题，尼玛还要应付浏览器插件兼容!!!
+摔！！！</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">stonelee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-19T00:00:00+08:00" pubdate data-updated="true">2012-09-19</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+
+<!-- UJian Button BEGIN -->
+<div class="ujian-hook"></div>
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1532263"></script>
+<!-- UJian Button END -->
+
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/08/22/bootstrap-modal/" title="Previous Post: Bootstrap modal源码分析">&laquo; Bootstrap modal源码分析</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -232,7 +361,10 @@
       var disqus_shortname = 'stonelee';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://stonelee.info/blog/2012/09/19/adblock-plus-bug/';
+        var disqus_url = 'http://stonelee.info/blog/2012/09/19/adblock-plus-bug/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

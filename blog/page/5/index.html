@@ -9,14 +9,7 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="https://bitbucket.org/tortoisehg/stable/issue/936/importerror-memoryloadlibrary-failed-loading#comment-280484 开源项目：tortoisehg bug内容： 1
-2
-3
-4
-5
-6
-7
-8 &hellip;">
+  <meta name="description" content="今天在研究visual studio 2008中的WebBroswer时忽然想到，对于我的简单需求（只想在程序中嵌入一个浏览器，而不是开发一个浏览器程序与Chrome、Firefox竞争）来说，只需要简单的调用IE就可以了（我的程序只是针对windows用户）， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,6 +80,78 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/17/python-embed-web-browser/">python嵌入IE浏览器</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-17T00:00:00+08:00" pubdate data-updated="true">2010-12-17</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>今天在研究visual studio 2008中的WebBroswer时忽然想到，对于我的简单需求（只想在程序中嵌入一个浏览器，而不是开发一个浏览器程序与Chrome、Firefox竞争）来说，只需要简单的调用IE就可以了（我的程序只是针对windows用户），这样的另一个好处是如果用户用IE曾经载入过的文件（如Flash游戏），用我的嵌入式浏览器就不用再次载入的。比以前的思路更符合我的需求，因此我决定顺着这个思路找找看，结果发现人家wxpython早就有了web.lib.iewin，骑驴找驴的事情再次发生~</p>
+
+<p>关键代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">ie</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">iewin</span><span class="o">.</span><span class="n">IEHtmlWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打开网页：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">ie</span><span class="o">.</span><span class="n">LoadUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此简单~</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1562,96 +1627,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/08/14/use-inter-process-communicate-develop-inkscape-plugin/">使用进程间通信开发Inkscape插件</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-08-14T00:00:00+08:00" pubdate data-updated="true">2010-08-14</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>Inkscape是一款功能强大的svg图形绘制软件,开源免费，而且可以用python写扩展。</p>
-
-<p>正好项目需要借助Inkscape来绘制图形，需要开发相应的插件，翻遍Inkscape的插件系统，觉得它的实现比较弱，尤其是界面控件，仅仅提供了基本的文本、下拉框几种，不给力啊~</p>
-
-<p>在与同事谈论许久之后，给出以下方案：</p>
-
-<p>1.Extensions调用子进程，传递参数。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">subprocess</span>
-</span><span class='line'><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;lxd/error.txt&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">subproc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&#39;python&#39;</span><span class="p">,</span> <span class="s">&#39;lxd/lxd.py&#39;</span><span class="p">],</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-</span><span class='line'><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class='line'><span class="n">r</span> <span class="o">=</span> <span class="n">subproc</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="s">&#39;inkscape&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="c">#传递参数，返回子进程的stdout</span>
-</span><span class='line'><span class="n">draw_sth</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span><span class="c">#Inkscape画图</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>2.子进程中进行实际功能开发。此段略过~可以借助强大丰富的python库实现理想的效果。</p>
-
-<p>3.子进程与Extensions进程间通信，返回参数。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
-</span><span class='line'><span class="n">s</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="c">#获取主进程Extensions传递的参数</span>
-</span><span class='line'><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s">&#39;123&#39;</span><span class="p">)</span><span class="c">#向主进程Extensions传递参数</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/6/">&larr; Older</a>
@@ -1680,6 +1655,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/19/adblock-plus-bug/">当前端遇到Adblock Plus</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/08/22/bootstrap-modal/">Bootstrap modal源码分析</a>
@@ -1715,10 +1694,6 @@
     
       <li class="post">
         <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
       </li>
     
   </ul>

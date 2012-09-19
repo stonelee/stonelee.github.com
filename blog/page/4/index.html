@@ -9,7 +9,12 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="需求 多个Excel分布在不同文件夹下，每个Excel又有多个sheet表，现在需要把这些Excel一起汇总到一个word里。 探索 直接复制粘贴既麻烦又无聊，上网搜所相关方法竟然没有，难道我这个需求很少见吗？找到一个国外软件ExcelConverter（售价$49.9）, &hellip;">
+  <meta name="description" content="接上篇，在继续优化过程中发现几个问题，记述如下： 更改表格某行的字体，如果此表格中有合并单元格，会报错： 1
+"无法访问此集合中单独的行，因为表格有纵向合并的单元格。" 经研究，不能使用如下语句 1
+word.Selection.Tables[0].Rows[0] 解决方案： 1
+2
+3
+word &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +85,146 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/04/python-invoke-vba/">python调用VBA心得</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-04T00:00:00+08:00" pubdate data-updated="true">2011-03-04</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>接上篇，在继续优化过程中发现几个问题，记述如下：</p>
+
+<h3>更改表格某行的字体，如果此表格中有合并单元格，会报错：</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"无法访问此集合中单独的行，因为表格有纵向合并的单元格。"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>经研究，不能使用如下语句</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决方案：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SelectRow</span><span class="p">()</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selectin</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">Size</span><span class="o">=</span><span class="mi">18</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很多操作都可以用“先选择再操作”的方法来间接实现。</p>
+
+<p>但是要注意，使用Select前后一定要保存好鼠标的位置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">pos</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Start</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在操作完后要恢复鼠标。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SetRange</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>如果想使用constants里的word常量，应该使用makepy</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">gencache</span><span class="o">.</span><span class="n">EnsureDispatch</span><span class="p">(</span><span class="s">&#39;Word.Application&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后就可以像这样调用了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">InsertBreak</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">wdPageBreak</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://oreilly.com/catalog/pythonwin32/chapter/ch12.html">这里有篇讲COM高级用法的文章</a>，值得一看</p>
+
+<h3>Selection返回的貌似是刚操作的元素</h3>
+
+<h3>Tables(1)和Tables[ 0]是一样的</h3>
+
+<h3>对于大的文件，会在执行VBA的过程中显示“拼写或语法错误太多”这样的对话框，这会影响脚本的正常运行，解决方法是在打开文件后</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">GrammarChecked</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">SpellingChecked</span> <span class="o">=</span> <span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>性能优化</h3>
+
+<p>在文档很大的情况下，word的自动分页等可视化步骤会极大地减慢速度，因此需要将不必要的功能暂时去掉。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">View</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">wdNormalView</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">Options</span><span class="o">.</span><span class="n">Pagination</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="bp">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原来完整格式化一段表格需要100多s，现在只需58s了，有意思的是，如果将word的Visible设为False，速度反而有所下降。估计是操作系统自动将后台操作程序的CPU和内存使用优先级下调的缘故。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1648,78 +1793,6 @@ zm 所有折叠</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/12/17/python-embed-web-browser/">python嵌入IE浏览器</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-12-17T00:00:00+08:00" pubdate data-updated="true">2010-12-17</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>今天在研究visual studio 2008中的WebBroswer时忽然想到，对于我的简单需求（只想在程序中嵌入一个浏览器，而不是开发一个浏览器程序与Chrome、Firefox竞争）来说，只需要简单的调用IE就可以了（我的程序只是针对windows用户），这样的另一个好处是如果用户用IE曾经载入过的文件（如Flash游戏），用我的嵌入式浏览器就不用再次载入的。比以前的思路更符合我的需求，因此我决定顺着这个思路找找看，结果发现人家wxpython早就有了web.lib.iewin，骑驴找驴的事情再次发生~</p>
-
-<p>关键代码：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">ie</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">iewin</span><span class="o">.</span><span class="n">IEHtmlWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>打开网页：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">ie</span><span class="o">.</span><span class="n">LoadUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如此简单~</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1748,6 +1821,10 @@ zm 所有折叠</p>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/19/adblock-plus-bug/">当前端遇到Adblock Plus</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/08/22/bootstrap-modal/">Bootstrap modal源码分析</a>
@@ -1783,10 +1860,6 @@ zm 所有折叠</p>
     
       <li class="post">
         <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
       </li>
     
   </ul>

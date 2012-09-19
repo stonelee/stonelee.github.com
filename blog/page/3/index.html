@@ -9,12 +9,19 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="分析网络包——Wireshark
-查看AMF数据结构工具——AMF Explorer
-查看cookie工具——Firecookie
-cookie操作
-cookie分析 1.分析网络包——Wireshark ubuntu下需要sudo wireshark启动
-Capture-interfaces: &hellip;">
+  <meta name="description" content="需求 从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表 取得所有姓名（包括没有成绩的）
+分数是该学生所有成绩的总和 先看效果图： 数据库结构简化模拟如下： 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+class Student
+{ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,6 +92,191 @@ Capture-interfaces: &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/06/27/linq-score-collect/">LINQ方式实现学生成绩汇总（右连接、聚合函数）</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-27T00:00:00+08:00" pubdate data-updated="true">2011-06-27</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><h2>需求</h2>
+
+<p>从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表</p>
+
+<ul>
+<li>取得所有姓名（包括没有成绩的）</li>
+<li>分数是该学生所有成绩的总和</li>
+</ul>
+
+
+<p>先看效果图：</p>
+
+<p><img src="/images/blog/score.gif" alt="" /></p>
+
+<p>数据库结构简化模拟如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">class</span> <span class="nc">Student</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Score</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">StudentId</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">score</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>插入测试数据：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Student</span> <span class="n">p1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;张三&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Student</span> <span class="n">p2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;李四&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Student</span> <span class="n">p3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">3</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;王五&quot;</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">80</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">90</span> <span class="p">};</span>
+</span><span class='line'><span class="n">Score</span> <span class="n">s3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">70</span> <span class="p">};</span>
+</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;</span> <span class="n">students</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Student</span><span class="p">[]</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span> <span class="p">});</span>
+</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;</span> <span class="n">scores</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Score</span><span class="p">[]</span> <span class="p">{</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">s3</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>查询，注意：</p>
+
+<ul>
+<li>LINQ中没有left join和right join之分，只有关键词join来控制连接，join之前表的作为完整的表连接，join之后的表需要使用DefaultIfEmpty来进行处理，才能正常的显示null值</li>
+<li>group中的key是分组的字段，分组后就可以使用聚合函数了</li>
+<li>LINQ就像生产流水线，可以分阶段进行数据排序、汇总、投影等操作，最后组装起来就能达到预定的效果</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//left join,返回左边每一个元素  </span>
+</span><span class='line'><span class="n">var</span> <span class="n">studentsTable</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">students</span>
+</span><span class='line'>                    <span class="n">join</span> <span class="n">score</span> <span class="k">in</span> <span class="n">scores</span> <span class="n">on</span> <span class="n">student</span><span class="p">.</span><span class="n">id</span> <span class="n">equals</span> <span class="n">score</span><span class="p">.</span><span class="n">StudentId</span> <span class="n">into</span> <span class="n">joinedTable</span>
+</span><span class='line'>                    <span class="n">from</span> <span class="n">j</span> <span class="k">in</span> <span class="n">joinedTable</span><span class="p">.</span><span class="n">DefaultIfEmpty</span><span class="p">()</span><span class="c1">//处理右边为空的情况  </span>
+</span><span class='line'>                    <span class="n">select</span> <span class="k">new</span>
+</span><span class='line'>                    <span class="p">{</span>
+</span><span class='line'>                        <span class="n">name</span> <span class="p">=</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+</span><span class='line'>                        <span class="n">score</span> <span class="p">=</span> <span class="n">j</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">?</span> <span class="n">j</span><span class="p">.</span><span class="n">score</span> <span class="p">:</span> <span class="m">0</span>
+</span><span class='line'>                    <span class="p">};</span>
+</span><span class='line'><span class="c1">//聚合函数  </span>
+</span><span class='line'><span class="n">var</span> <span class="n">data</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">studentsTable</span>
+</span><span class='line'>           <span class="n">group</span> <span class="n">student</span> <span class="n">by</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span> <span class="n">into</span> <span class="n">g</span>
+</span><span class='line'>           <span class="n">select</span> <span class="k">new</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">name</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span>
+</span><span class='line'>               <span class="n">score</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Sum</span><span class="p">(</span><span class="n">student</span> <span class="p">=&gt;</span> <span class="n">student</span><span class="p">.</span><span class="n">score</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">};</span>
+</span><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看看效果：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1315,146 +1507,6 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/03/04/python-invoke-vba/">python调用VBA心得</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-03-04T00:00:00+08:00" pubdate data-updated="true">2011-03-04</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>接上篇，在继续优化过程中发现几个问题，记述如下：</p>
-
-<h3>更改表格某行的字体，如果此表格中有合并单元格，会报错：</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>"无法访问此集合中单独的行，因为表格有纵向合并的单元格。"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>经研究，不能使用如下语句</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>解决方案：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Select</span><span class="p">()</span>
-</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SelectRow</span><span class="p">()</span>
-</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selectin</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">Size</span><span class="o">=</span><span class="mi">18</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>很多操作都可以用“先选择再操作”的方法来间接实现。</p>
-
-<p>但是要注意，使用Select前后一定要保存好鼠标的位置</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">pos</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">Range</span><span class="o">.</span><span class="n">Start</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在操作完后要恢复鼠标。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">SetRange</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>如果想使用constants里的word常量，应该使用makepy</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">gencache</span><span class="o">.</span><span class="n">EnsureDispatch</span><span class="p">(</span><span class="s">&#39;Word.Application&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后就可以像这样调用了</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">InsertBreak</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">wdPageBreak</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><a href="http://oreilly.com/catalog/pythonwin32/chapter/ch12.html">这里有篇讲COM高级用法的文章</a>，值得一看</p>
-
-<h3>Selection返回的貌似是刚操作的元素</h3>
-
-<h3>Tables(1)和Tables[ 0]是一样的</h3>
-
-<h3>对于大的文件，会在执行VBA的过程中显示“拼写或语法错误太多”这样的对话框，这会影响脚本的正常运行，解决方法是在打开文件后</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">GrammarChecked</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">SpellingChecked</span> <span class="o">=</span> <span class="bp">True</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>性能优化</h3>
-
-<p>在文档很大的情况下，word的自动分页等可视化步骤会极大地减慢速度，因此需要将不必要的功能暂时去掉。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">View</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">wdNormalView</span>
-</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">Options</span><span class="o">.</span><span class="n">Pagination</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class='line'><span class="n">word</span><span class="o">.</span><span class="n">ActiveDocument</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="bp">False</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>原来完整格式化一段表格需要100多s，现在只需58s了，有意思的是，如果将word的Visible设为False，速度反而有所下降。估计是操作系统自动将后台操作程序的CPU和内存使用优先级下调的缘故。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1483,6 +1535,10 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/19/adblock-plus-bug/">当前端遇到Adblock Plus</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/08/22/bootstrap-modal/">Bootstrap modal源码分析</a>
@@ -1518,10 +1574,6 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
     
       <li class="post">
         <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/08/30/resolve-ubuntu-blank-screen/">解决ubuntu中激活显卡驱动导致启动黑屏问题</a>
       </li>
     
   </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[Stonelee's Blog]]></title>
   <link href="http://stonelee.info/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2012-08-31T16:19:59+08:00</updated>
+  <updated>2012-09-19T14:12:27+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[当前端遇到Adblock Plus]]></title>
+    <link href="http://stonelee.info/blog/2012/09/19/adblock-plus-bug/"/>
+    <updated>2012-09-19T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/09/19/adblock-plus-bug</id>
+    <content type="html"><![CDATA[<p>今天将最近开发的演示程序集成到同事的业务框架中去，结果在同事的浏览器中报错：</p>
+
+<p><img src="http://stonelee.info/images/blog/adblock-bug.png" alt="" /></p>
+
+<p>Firebug中显示报错，但是没有具体错误提示，只显示问题所在代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>r.open('GET', url, true)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>点进去看发现其上下文只是一般的ajax调用而已，why？</p>
+
+<h2>排错</h2>
+
+<h3>浏览器问题？</h3>
+
+<p>最初怀疑跟浏览器有关,我测试使用的是chrome和firefox14，而同事使用firefox15.
+于是在测试服务器上安装firefox15，木有报错&#8230;</p>
+
+<h3>调用库代码问题？</h3>
+
+<p>报错的代码属于seajs，google搜索关键字无果，更新到最新版本还是没效果</p>
+
+<h3>冷静思考</h3>
+
+<p>一共有5个tpl模板文件需要加载，此处加载了4个，出问题的为track.tpl.
+于是怀疑模板文件是否格式有问题，难道有未闭合的html标签？
+反复对照查看发现没有问题&#8230;</p>
+
+<p>索性将调用改为其他模板，这下不再报错了，虽然模板渲染还是有问题。</p>
+
+<p>难道是文件编码问题？隐藏字符？还是文件内容有瑕疵？</p>
+
+<p>猛然想到，同事使用firefox多年，而测试服务器是新安装的纯净版，难道是插件造成的问题?</p>
+
+<h2>原因</h2>
+
+<p>Firefox插件Adblock Plus的过滤列表ChinaList+EasyList中
+有规则：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>|http://*/track.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>导致模板文件track.tpl被屏蔽，从而ajax加载该文件失败</p>
+
+<p>因此解决方案是将该文件改名为tracks.tpl</p>
+
+<p>苦逼前端，除了应付各种浏览器兼容问题，尼玛还要应付浏览器插件兼容!!!
+摔！！！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Bootstrap modal源码分析]]></title>
@@ -2143,144 +2201,6 @@ IE8需要借助ChromeFrame插件</p>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span><span class="p">[]</span> <span class="n">array1</span> <span class="p">=</span> <span class="n">source</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="p">[]</span> <span class="p">{</span> <span class="err">&#39;</span><span class="p">/</span><span class="n">r</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="p">/</span><span class="n">n</span><span class="err">&#39;</span> <span class="p">})</span>
 </span><span class='line'>                  <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;,&#39;</span><span class="p">)[</span><span class="m">0</span><span class="p">]).</span><span class="n">ToArray</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[LINQ方式实现学生成绩汇总（右连接、聚合函数）]]></title>
-    <link href="http://stonelee.info/blog/2011/06/27/linq-score-collect/"/>
-    <updated>2011-06-27T00:00:00+08:00</updated>
-    <id>http://stonelee.info/blog/2011/06/27/linq-score-collect</id>
-    <content type="html"><![CDATA[<h2>需求</h2>
-
-<p>从数据表students中取得所有学生姓名，然后将其scores表对应中的分数相加，显示一个“姓名：分数”的列表</p>
-
-<ul>
-<li>取得所有姓名（包括没有成绩的）</li>
-<li>分数是该学生所有成绩的总和</li>
-</ul>
-
-
-<p>先看效果图：</p>
-
-<p><img src="http://stonelee.info/images/blog/score.gif" alt="" /></p>
-
-<p>数据库结构简化模拟如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">class</span> <span class="nc">Student</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">class</span> <span class="nc">Score</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">StudentId</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">score</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>插入测试数据：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Student</span> <span class="n">p1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;张三&quot;</span> <span class="p">};</span>
-</span><span class='line'><span class="n">Student</span> <span class="n">p2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;李四&quot;</span> <span class="p">};</span>
-</span><span class='line'><span class="n">Student</span> <span class="n">p3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Student</span><span class="p">()</span> <span class="p">{</span> <span class="n">id</span> <span class="p">=</span> <span class="m">3</span><span class="p">,</span> <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;王五&quot;</span> <span class="p">};</span>
-</span><span class='line'><span class="n">Score</span> <span class="n">s1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">80</span> <span class="p">};</span>
-</span><span class='line'><span class="n">Score</span> <span class="n">s2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">90</span> <span class="p">};</span>
-</span><span class='line'><span class="n">Score</span> <span class="n">s3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Score</span><span class="p">()</span> <span class="p">{</span> <span class="n">StudentId</span> <span class="p">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">score</span> <span class="p">=</span> <span class="m">70</span> <span class="p">};</span>
-</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;</span> <span class="n">students</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Student</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Student</span><span class="p">[]</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span> <span class="p">});</span>
-</span><span class='line'><span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;</span> <span class="n">scores</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Score</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">Score</span><span class="p">[]</span> <span class="p">{</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">s3</span> <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>查询，注意：</p>
-
-<ul>
-<li>LINQ中没有left join和right join之分，只有关键词join来控制连接，join之前表的作为完整的表连接，join之后的表需要使用DefaultIfEmpty来进行处理，才能正常的显示null值</li>
-<li>group中的key是分组的字段，分组后就可以使用聚合函数了</li>
-<li>LINQ就像生产流水线，可以分阶段进行数据排序、汇总、投影等操作，最后组装起来就能达到预定的效果</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//left join,返回左边每一个元素  </span>
-</span><span class='line'><span class="n">var</span> <span class="n">studentsTable</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">students</span>
-</span><span class='line'>                    <span class="n">join</span> <span class="n">score</span> <span class="k">in</span> <span class="n">scores</span> <span class="n">on</span> <span class="n">student</span><span class="p">.</span><span class="n">id</span> <span class="n">equals</span> <span class="n">score</span><span class="p">.</span><span class="n">StudentId</span> <span class="n">into</span> <span class="n">joinedTable</span>
-</span><span class='line'>                    <span class="n">from</span> <span class="n">j</span> <span class="k">in</span> <span class="n">joinedTable</span><span class="p">.</span><span class="n">DefaultIfEmpty</span><span class="p">()</span><span class="c1">//处理右边为空的情况  </span>
-</span><span class='line'>                    <span class="n">select</span> <span class="k">new</span>
-</span><span class='line'>                    <span class="p">{</span>
-</span><span class='line'>                        <span class="n">name</span> <span class="p">=</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
-</span><span class='line'>                        <span class="n">score</span> <span class="p">=</span> <span class="n">j</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">?</span> <span class="n">j</span><span class="p">.</span><span class="n">score</span> <span class="p">:</span> <span class="m">0</span>
-</span><span class='line'>                    <span class="p">};</span>
-</span><span class='line'><span class="c1">//聚合函数  </span>
-</span><span class='line'><span class="n">var</span> <span class="n">data</span> <span class="p">=</span> <span class="n">from</span> <span class="n">student</span> <span class="k">in</span> <span class="n">studentsTable</span>
-</span><span class='line'>           <span class="n">group</span> <span class="n">student</span> <span class="n">by</span> <span class="n">student</span><span class="p">.</span><span class="n">name</span> <span class="n">into</span> <span class="n">g</span>
-</span><span class='line'>           <span class="n">select</span> <span class="k">new</span>
-</span><span class='line'>           <span class="p">{</span>
-</span><span class='line'>               <span class="n">name</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span>
-</span><span class='line'>               <span class="n">score</span> <span class="p">=</span> <span class="n">g</span><span class="p">.</span><span class="n">Sum</span><span class="p">(</span><span class="n">student</span> <span class="p">=&gt;</span> <span class="n">student</span><span class="p">.</span><span class="n">score</span><span class="p">)</span>
-</span><span class='line'>           <span class="p">};</span>
-</span><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>看看效果：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">var</span> <span class="n">d</span> <span class="k">in</span> <span class="n">data</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;name:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot;;score:&quot;</span> <span class="p">+</span> <span class="n">d</span><span class="p">.</span><span class="n">score</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
 </span></code></pre></td></tr></table></div></figure>
 
 ]]></content>

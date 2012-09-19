@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Stonelee's Blog]]></title>
   <link href="http://stonelee.info/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2012-08-31T16:19:59+08:00</updated>
+  <updated>2012-09-19T14:12:27+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[当前端遇到Adblock Plus]]></title>
+    <link href="http://stonelee.info/blog/2012/09/19/adblock-plus-bug/"/>
+    <updated>2012-09-19T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/09/19/adblock-plus-bug</id>
+    <content type="html"><![CDATA[<p>今天将最近开发的演示程序集成到同事的业务框架中去，结果在同事的浏览器中报错：</p>
+
+<p><img src="/images/blog/adblock-bug.png" alt="" /></p>
+
+<p>Firebug中显示报错，但是没有具体错误提示，只显示问题所在代码</p>
+
+<p><code>
+r.open('GET', url, true)
+</code></p>
+
+<p>点进去看发现其上下文只是一般的ajax调用而已，why？</p>
+
+<h2>排错</h2>
+
+<h3>浏览器问题？</h3>
+
+<p>最初怀疑跟浏览器有关,我测试使用的是chrome和firefox14，而同事使用firefox15.
+于是在测试服务器上安装firefox15，木有报错...</p>
+
+<h3>调用库代码问题？</h3>
+
+<p>报错的代码属于seajs，google搜索关键字无果，更新到最新版本还是没效果</p>
+
+<h3>冷静思考</h3>
+
+<p>一共有5个tpl模板文件需要加载，此处加载了4个，出问题的为track.tpl.
+于是怀疑模板文件是否格式有问题，难道有未闭合的html标签？
+反复对照查看发现没有问题...</p>
+
+<p>索性将调用改为其他模板，这下不再报错了，虽然模板渲染还是有问题。</p>
+
+<p>难道是文件编码问题？隐藏字符？还是文件内容有瑕疵？</p>
+
+<p>猛然想到，同事使用firefox多年，而测试服务器是新安装的纯净版，难道是插件造成的问题?</p>
+
+<h2>原因</h2>
+
+<p>Firefox插件Adblock Plus的过滤列表ChinaList+EasyList中
+有规则：</p>
+
+<p><code>
+|http://*/track.
+</code></p>
+
+<p>导致模板文件track.tpl被屏蔽，从而ajax加载该文件失败</p>
+
+<p>因此解决方案是将该文件改名为tracks.tpl</p>
+
+<p>苦逼前端，除了应付各种浏览器兼容问题，尼玛还要应付浏览器插件兼容!!!
+摔！！！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Bootstrap modal源码分析]]></title>
@@ -323,481 +381,6 @@ c.update(2, 8, 'some'); //3
 <li>Ext.getDom获取dom node</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Ext Core学习笔记]]></title>
-    <link href="http://stonelee.info/blog/2012/01/30/ext-core-record/"/>
-    <updated>2012-01-30T00:00:00+08:00</updated>
-    <id>http://stonelee.info/blog/2012/01/30/ext-core-record</id>
-    <content type="html"><![CDATA[<p>Ext Core与jQuery类似，提供了跨浏览器的js封装。
-主要功能包括DOM操作，Ajax，Event，Animation，template，OO等。
-作为类库它提供了更高层次的抽象，方便具体问题的解决
-参考: <a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
-
-<p>```js
-Ext.onReady(function() {</p>
-
-<pre><code>Ext.DomHelper.append(document.body, {tag: 'p', cls: 'some-class'});
-Ext.select('p.some-class').update('Ext Core successfully injected');
-</code></pre>
-
-<p>});
-```</p>
-
-<h2>Class System</h2>
-
-<ul>
-<li>Ext.extend 创建新class，将新的properties/functions添加到prototype中,使用superclass引用父类</li>
-<li>Ext.override 用来更改原来的class</li>
-</ul>
-
-
-<p>```js
-Person = Ext.extend(Object, {</p>
-
-<pre><code>constructor: function(first, last) {
-    this.firstName = first; //property
-    this.lastName = last;
-},
-
-getName: function() {
-    return this.firstName + ' ' + this.lastName;
-}
-</code></pre>
-
-<p>});</p>
-
-<p>Developer = Ext.extend(Person, {</p>
-
-<pre><code>getName: function() {
-    if (this.isCoding) {
-        return 'Go Away!';
-    } else {
-        // Access the superclass getName method
-        return Developer.superclass.getName.call(this);
-    }
-}
-</code></pre>
-
-<p>});</p>
-
-<p>var p = new Developer('John', 'Smith');
-console.log(p.getName()); //John Smith
-p.isCoding = true;
-console.log(p.getName()); //Go Away!
-```</p>
-
-<p>prototype中的会被share，特别要注意{}会被多个子类共享修改，小心！！</p>
-
-<p>```js
-MyClass = Ext.extend(Object, {</p>
-
-<pre><code>// This object literal is now shared between all instances of MyClass.
-baseParams: {},
-
-foo: function() {
-    this.baseParams.bar = 'baz';
-}
-</code></pre>
-
-<p>});</p>
-
-<p>Ext.onReady(function() {</p>
-
-<pre><code>var a = new MyClass();
-var b = new MyClass();
-
-a.foo();
-// Modifying baseParams in a affects baseParams in b.
-console.log(b.baseParams);
-</code></pre>
-
-<p>});
-```</p>
-
-<ul>
-<li>apply 复制所有property</li>
-<li>applyIf 对于重复的property则不复制</li>
-</ul>
-
-
-<p>```js
-var person = {</p>
-
-<pre><code>name: 'John Smith',
-age: 30,
-hobby: 'Rock Band'
-</code></pre>
-
-<p>};</p>
-
-<p>Ext.applyIf(person, {</p>
-
-<pre><code>hobby: 'Coding',
-city: 'London'
-</code></pre>
-
-<p>}); // hobby is not copied over
-```</p>
-
-<h2>函数</h2>
-
-<p>函数式编程：</p>
-
-<p>```js
-var sayHello = function(firstName, lastName) {</p>
-
-<pre><code>alert('Hello ' + firstName + ' ' + lastName);
-</code></pre>
-
-<p>};
-Ext.get('myButton').on('click', sayHello.createCallback('John', 'Smith'));
-等价于
-Ext.get('myButton').on('click', function() {</p>
-
-<pre><code>sayHello('John', 'Smith');
-</code></pre>
-
-<p>});
-```</p>
-
-<p>TaskRunner用来固定时间间隔执行函数，例如每隔5s进行ajax请求，TaskMgr是TaskRunner的单例，用起来更方便</p>
-
-<p>```js
-var stop = false;
-var task = {</p>
-
-<pre><code>run: function() {
-    if (!stop) {
-        console.log(new Date());
-    } else {
-        runner.stop(task); // we can stop the task here if we need to.
-    }
-},
-interval: 1000 // every 1 seconds
-</code></pre>
-
-<p>};
-var runner = new Ext.util.TaskRunner();
-runner.start(task);
-```</p>
-
-<p>```js
-var stop = false;
-Ext.TaskMgr.start({</p>
-
-<pre><code>run: function() {
-    if (!stop) {
-        console.log(new Date());
-    }
-},
-interval: 1000
-</code></pre>
-
-<p>});
-```</p>
-
-<p>DelayedTask 延时触发事件，如果在延时时间内触发两次事件，则后一次事件会覆盖前一次的触发</p>
-
-<p>```js
-var task = new Ext.util.DelayedTask(function() {</p>
-
-<pre><code>console.log(Ext.getDom('myInputField').value.length);
-</code></pre>
-
-<p>});
-// Wait 500ms before calling our function. If the user presses another key
-// during that 500ms, it will be cancelled and we'll wait another 500ms.
-Ext.get('myInputField').on('keypress', function() {</p>
-
-<pre><code>task.delay(500);
-</code></pre>
-
-<p>});
-```</p>
-
-<p>延时函数：</p>
-
-<p>```js
-var task = new Ext.util.DelayedTask(function() {</p>
-
-<pre><code>console.log(Ext.getDom('myInputField').value.length);
-</code></pre>
-
-<p>});
-// Wait 500ms before calling our function. If the user presses another key
-// during that 500ms, it will be cancelled and we'll wait another 500ms.
-Ext.get('myInputField').on('keypress', function() {</p>
-
-<pre><code>task.delay(500);
-</code></pre>
-
-<p>});
-```</p>
-
-<p>```js
-var whatsTheTime = function(){</p>
-
-<pre><code>alert(new Date());
-</code></pre>
-
-<p>};
-whatsTheTime.defer(3000); //Wait 3 seconds before executing.
-```</p>
-
-<h2>格式</h2>
-
-<p>urlEncode、urlDecode将object-literal与GET request parameter（key1=value1&amp;key2=value2）互相转化</p>
-
-<p>```js
-var params = {</p>
-
-<pre><code>foo: 'value1',
-bar: 100
-</code></pre>
-
-<p>};
-var s = Ext.encode(params); // s is now foo=value1&amp;bar=100
-```</p>
-
-<p>encode、decode将object与json互相转换</p>
-
-<p>```js
-var s = Ext.encode({</p>
-
-<pre><code>foo: 1,
-bar: 2
-</code></pre>
-
-<p>}); //"{"foo":1,"bar":2}"
-```</p>
-
-<p>字符串格式化：</p>
-
-<p><code>js
-var s = String.format(
-   'Hey {0} {1}', how are you?',
-   'John',
-   'Smith'
-);
-</code></p>
-
-<h2>DOM</h2>
-
-<p>DomQuery提供了高性能的selector/xpath处理，可以应用于html和xml，主要使用select函数，可以使用get预先获取Root来进一步提升性能</p>
-
-<ul>
-<li>多重选择 Ext.select('div.foo, span.bar');</li>
-<li>链式选择 Ext.select('div.foo[title=bar]:first');</li>
-<li>子选择 Ext.select('div span');</li>
-<li>直接子选择 Ext.select('ul > li');</li>
-<li>属性选择 Ext.select('a[href=http://extjs.com]');</li>
-<li>有alt tag Ext.select('img[alt]');</li>
-<li>伪类 Ext.select('div:next(span.header));</li>
-<li>css值选择 E{display<sup>=none}</sup> //css value "display" that starts with "none"</li>
-</ul>
-
-
-<p>DomHelper动态生成html片段：</p>
-
-<p>```js
-Ext.DomHelper.append(document.body, {</p>
-
-<pre><code>id: 'my-div',
-cn: [{
-    tag: 'a', 
-    href: 'http://www.yahoo.com/', 
-    html: 'My Link', 
-    target: '_blank'
-}]
-</code></pre>
-
-<p>});
-```</p>
-
-<h2>Ext.Element</h2>
-
-<p>浏览器加载页面时，将每个tag解析为HTMLElement，建立DOM，保存到全局变量document里。使用getElementById来获取每个HTMLElement
-Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
-
-<h3>CSS &amp; Styling(setStyle, addClass)</h3>
-
-<ul>
-<li>radioClass实现单选效果，同类中有同样class则remove，否则add</li>
-<li>toggleClass切换</li>
-</ul>
-
-
-<h3>Dom Querying or Traversal(query, select, findParent)</h3>
-
-<p>is 测试element是否符合selector</p>
-
-<p>```js
-//向上找parent:
-Ext.fly('elId').findParent('div'); //returns a dom node
-Ext.fly('elId').up('div'); //返回Ext.Element</p>
-
-<p>//查找
-Ext.fly('elId').select('div:nth-child(2)'); //返回CompositeElement
-Ext.fly('elId').select('div:nth-child(2)', true); //返回Array of elements
-Ext.query('div:nth-child(2)'); //返回Array of dom nodes</p>
-
-<p>//返回Ext.Element，第二参数为true则返回dom node
-Ext.fly('elId').child('p.highlight'); //任意深度的single child
-Ext.fly('elId').down('span');  //直接single child
-```</p>
-
-<p>还有parent()，next()，prev()，first()，last()</p>
-
-<h3>Dom Manipulation(createChild, remove)</h3>
-
-<p>使用id或Ext.Element或dom node或selectors或CompositeElement</p>
-
-<p><code>js
-Ext.fly('elId').appendTo('elId2');
-</code></p>
-
-<p>使用DomHelper config</p>
-
-<p>```js
-Ext.fly('elId').insertFirst({</p>
-
-<pre><code>tag: 'p',
-html: 'Hi I am the new first child'
-</code></pre>
-
-<p>});
-```</p>
-
-<p>使用Html Fragments</p>
-
-<p><code>js
-Ext.fly('elId').insertHtml('beforeBegin', '&lt;p&gt;Hi&lt;/p&gt;')
-</code></p>
-
-<p>包括beforeBegin, beforeEnd, afterBegin, afterEnd</p>
-
-<h3>Event Handling</h3>
-
-<p>Ext.EventObject提供了跨浏览器的event实现，例如按键判断，event-propagation ，preventDefault()</p>
-
-<p>```js
-el.on('click', function(e,t) {</p>
-
-<pre><code>// e is a normalized event object (Ext.EventObject)
-// t the target that was clicked, this is an Ext.Element.       
-</code></pre>
-
-<p>});
-el.un('click', this.handlerFn);
-```</p>
-
-<p>Event delegation是利用冒泡机制在container中注册event，而不是在每个元素中注册，这样可以减少内存消耗，防止内存泄漏，更好地集中管理event</p>
-
-<p>```js
-Ext.fly('actions').on('click, function(e,t) {</p>
-
-<pre><code>switch(t.id) {
-    case ''btn-edit':
-    // handle the event
-    break;
-    case 'btn-delete':
-    // handle the event
-    break;
-}
-</code></pre>
-
-<p>});
-```</p>
-
-<p>configuration option:</p>
-
-<p>```js
-el.on('click', function(e,t) {</p>
-
-<pre><code>// handle click
-</code></pre>
-
-<p>}, this, {</p>
-
-<pre><code>delegate: '.clickable',// will filter target to be a descendant with the class 'clickable'
-single: true, // 只响应一次，然后自动删除
-buffer: 1000, // 延时1s，如果在时间间隔内多次触发会覆盖
-delay: 1000, // 延时1s，不会覆盖
-target: el.up('div') // only handles the event when it has bubbled up to the first 'div'.
-</code></pre>
-
-<p>});
-```</p>
-
-<p>hover</p>
-
-<p>```js
-function over(e,t){</p>
-
-<pre><code>Ext.get(t).toggleClass('red');
-</code></pre>
-
-<p>}
-function out(e,t){</p>
-
-<pre><code>Ext.get(t).toggleClass('red');
-</code></pre>
-
-<p>}
-Ext.fly('myButton').hover(over, out);
-```</p>
-
-<h3>Dimensions(getHeight, getWidth)</h3>
-
-<p>可以添加动画configure或直接true</p>
-
-<p>```js
-// changes the height to 200px and animates with default configuration
-Ext.fly('elId').setHeight(200, true);</p>
-
-<p>// changes the height to 150px and animates with a custom configuration
-Ext.fly('elId').setHeight(150, {</p>
-
-<pre><code>duration : .5, // animation will have a duration of .5 seconds
-// will change the content to "finished"
-callback: function(){ this.update("finished"); } 
-</code></pre>
-
-<p>});
-```</p>
-
-<p>```js
-getPadding('lrtb');//返回四个方向padding之和</p>
-
-<p>//同时得到x,y坐标
-var elXY = Ext.fly('elId').getXY() //elXY is an array
-Ext.fly('elId').setXY([20,10])</p>
-
-<p>//得到相对位置
-var elOffsets = Ext.fly('elId').getOffsetsTo(anotherEl);</p>
-
-<p>//设置位置
-setLocation(15,32)
-```</p>
-
-<p>clearPositioning，getPositioning，setPositioning用来存储恢复position</p>
-
-<h3>Animations</h3>
-
-<p>```js
-//共八个方向，'r'表示朝右边滑动
-Ext.fly('slideEl').slideOut('r', {</p>
-
-<pre><code>callback : function(){
-    alert('Finished sliding the element out');
-}
-</code></pre>
-
-<p>});
-```</p>
 ]]></content>
   </entry>
   
