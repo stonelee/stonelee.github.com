@@ -1,0 +1,111 @@
+---
+layout: post
+title: 构建基于spm的前端开发流水线
+comments: true
+categories: [javascript]
+---
+
+[seajs](http://seajs.org) 是由支付宝玉伯开源的一个浏览器端的js模块加载库，最近的项目中一直在使用，确实是解决js代码组织的利器。
+
+seajs解决的是模块书写和加载问题，而另一个开源项目[spm](https://github.com/seajs/spm)则解决了模块打包和部署的流程问题。
+
+这几天抽时间看了下，感觉还不错，对我们自己的前端开发流水线构建有很大启发，记录试验过程如下。
+
+###服务器私有源配置
+
+nginx中配置私有源路径为/modules
+
+```
+location /modules {
+  alias       "/home/vboxadmin/lxd/dev/static";
+  autoindex   on;
+}
+```
+
+创建私有源目录
+
+```
+mkdir -p dev/static/
+```
+
+在目录中配置config.json
+
+```
+{¬
+  "servers": {¬
+    "dev": {¬
+      "user": "vboxadmin",¬
+      "pass": "vboxadmin"¬
+    }¬
+  },¬
+  "deploy": {¬
+    "server": "dev",¬
+    "host": "10.10.22.86",¬
+    "path": "/home/vboxadmin/lxd/dev/static/"¬
+  }¬
+}¬
+```
+
+这个配置提供给scp使用，从而可以使用spm deploy来部署远程服务器。
+deploy中的server在servers中配置，从中配置登录远程服务器的用户名和密码。
+host为远程ip或者域名，path为远程目的路径。
+
+###本地配置
+
+创建私有模块开发目录
+
+```
+mkdir my-module
+```
+
+目录中放置所有私有模块共同的配置config.json
+
+```
+{
+    "sources": ["10.10.22.86:8090/modules"]
+}
+```
+
+sources为远程私有源访问路径
+
+创建私有模块，例如kjquery
+
+```
+mkdir kjquery
+cd kjquery
+spm init
+```
+
+自动创建的package.json需要进行修改
+加入 "parent": "../config.json",
+
+
+###组件开发
+
+配置完成，在私有模块中进行组件开发。
+
+```
+|-- examples
+|   `-- index.md
+|-- src
+|   `-- kjquery.js
+`-- tests
+    |-- runner.html
+    `-- kjquery-spec.js
+```
+
+* src中放置组件源码
+* tests中对组件进行测试，这里直接调用src中的代码
+* examples中对组件调用方式给出使用例子，调用的是dist中的代码
+
+开发完成后
+
+* $ spm build 会在当前目录的dist下生成打包后的文件
+* $ spm upload 版本稳定后发布到本地库，默认为~/.spm，按照我司的情况，估计会将这个目录作为hg版本库
+* $ spm deploy 部署到远程服务器
+
+###业务开发
+
+调用 [共用组件](http://aralejs.org/) 和私有组件，进行业务系统开发
+
+通过config.map进行映射，从而切换开发和生产环境
