@@ -9,7 +9,8 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="今天重新安装了ubuntu，准备作为个人开发的主环境。 晚上的时候忽然蹦出来个激活硬件驱动的提示，我手贱了下随手就点了，结果重启后系统就进不去了，一直是黑屏，连ctrl+alt+F1都进不去。 解决方法 重启，在GRUB中按e进入编辑，删除quiet and splash， &hellip;">
+  <meta name="description" content="最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。 要求 能够实现前后台数据通信
+保持前端纯洁性， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +81,128 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-09-13T00:00:00+08:00" pubdate data-updated="true">2011-09-13</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。</p>
+
+<h2>要求</h2>
+
+<ul>
+<li>能够实现前后台数据通信</li>
+<li>保持前端纯洁性，不掺杂过多服务端代码</li>
+<li>前端js使用相对url来获取数据,需要解决跨域问题</li>
+</ul>
+
+
+<h2>解决方案</h2>
+
+<h3>静态服务器nginx</h3>
+
+<p>提供前端html+js+css的静态展示</p>
+
+<p>需要配置nginx.conf:
+alias可以指定映射路径,
+autoindex可以自动列出文件目录</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>location /develop <span class="o">{</span>
+</span><span class='line'>  <span class="nb">alias</span>       <span class="s2">&quot;/home/lxd/Develop&quot;</span>;
+</span><span class='line'>  autoindex   on;
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>后台测试服务器tornado</h3>
+
+<p>不使用template_path和static_path,直接使用write来返回字符串数据,
+服务端简化到只需一个文件,
+tornado只用来产生数据，以独立应用的形式提供服务</p>
+
+<h3>跨域问题</h3>
+
+<p>使用nginx反向代理tornado服务器，来解决跨域问题</p>
+
+<p>nginx.conf添加反向代理</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>location /develop/gmf/zhunqi/tornado <span class="o">{</span>
+</span><span class='line'>  proxy_pass       <span class="s2">&quot;http://localhost:8888&quot;</span>;
+</span><span class='line'>  proxy_redirect   off;
+</span><span class='line'>  proxy_set_header X-Real-IP <span class="nv">$remote_addr</span>;
+</span><span class='line'>  proxy_set_header X-Forwarded-For <span class="nv">$proxy_add_x_forwarded_for</span>;
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tornado文件指定url映射</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">(</span><span class="s">r&quot;/develop/gmf/zhunqi/tornado/mines&quot;</span><span class="p">,</span> <span class="n">MineHandler</span><span class="p">),</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1300,106 +1423,6 @@ IE8需要借助ChromeFrame插件</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/06/27/linq-trick/">LINQ技巧小结</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-06-27T00:00:00+08:00" pubdate data-updated="true">2011-06-27</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>LINQ可不是简单的SQL语句的替代品，它将繁琐的数据操作（排序、求和、分组、投影、打包）统一起来，极大地简化了代码。</p>
-
-<h2>查询所有以ABC开头的字符串</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span><span class="p">[]</span> <span class="n">xx</span><span class="p">={</span><span class="s">&quot;ABCEFG&quot;</span><span class="p">,</span><span class="s">&quot;ABCASDFASDF&quot;</span><span class="p">,</span><span class="s">&quot;12312ADSFASD&quot;</span><span class="p">};</span>
-</span><span class='line'><span class="n">xx</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">x</span><span class="p">=&gt;</span><span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">&quot;ABC&quot;</span><span class="p">)).</span><span class="n">ToList</span><span class="p">()</span>
-</span><span class='line'>  <span class="p">.</span><span class="n">ForEach</span><span class="p">(</span><span class="n">x</span><span class="p">=&gt;</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>使用正则来解决</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span><span class="p">[]</span> <span class="n">xx</span> <span class="p">=</span> <span class="p">{</span> <span class="s">&quot;ABCEFG&quot;</span><span class="p">,</span> <span class="s">&quot;abcASDFASDF&quot;</span><span class="p">,</span> <span class="s">&quot;12312ADSFASD&quot;</span> <span class="p">};</span>
-</span><span class='line'><span class="n">xx</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">Regex</span><span class="p">.</span><span class="n">IsMatch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&quot;^abc&quot;</span><span class="p">,</span><span class="n">RegexOptions</span><span class="p">.</span><span class="n">IgnoreCase</span><span class="p">))</span>
-</span><span class='line'>  <span class="p">.</span><span class="n">ToList</span><span class="p">().</span><span class="n">ForEach</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">s</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>简化字符</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span> <span class="n">source</span> <span class="p">=</span> <span class="s">@&quot;西瓜,1,a</span>
-</span><span class='line'><span class="s">苹果,2,b</span>
-</span><span class='line'><span class="s">橙子,3,c&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="err">结果数组：西瓜</span><span class="p">,</span><span class="err">苹果</span><span class="p">,</span><span class="err">橙子</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">string</span><span class="p">[]</span> <span class="n">array1</span> <span class="p">=</span> <span class="n">source</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="k">new</span> <span class="kt">char</span><span class="p">[]</span> <span class="p">{</span> <span class="err">&#39;</span><span class="p">/</span><span class="n">r</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="p">/</span><span class="n">n</span><span class="err">&#39;</span> <span class="p">})</span>
-</span><span class='line'>                  <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;,&#39;</span><span class="p">)[</span><span class="m">0</span><span class="p">]).</span><span class="n">ToArray</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1428,6 +1451,10 @@ IE8需要借助ChromeFrame插件</p>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/09/19/adblock-plus-bug/">当前端遇到Adblock Plus</a>
@@ -1463,10 +1490,6 @@ IE8需要借助ChromeFrame插件</p>
     
       <li class="post">
         <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
       </li>
     
   </ul>

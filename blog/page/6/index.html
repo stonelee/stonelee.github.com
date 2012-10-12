@@ -9,7 +9,19 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="Inkscape是一款功能强大的svg图形绘制软件,开源免费，而且可以用python写扩展。 正好项目需要借助Inkscape来绘制图形，需要开发相应的插件，翻遍Inkscape的插件系统，觉得它的实现比较弱，尤其是界面控件，仅仅提供了基本的文本、下拉框几种，不给力啊~ 在与同事谈论许久之后， &hellip;">
+  <meta name="description" content="问题场景 有多个线程，分别负责建造房子，种树，养花之类的工作，这些工作都需要一定的等待时间，在等待过程中需要与服务端通信来保持连接。连接的提交不能太过频繁，最好2-3秒一次。 对于这种多线程之间的同步问题可以利用RLock来实现锁机制。 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +92,171 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/09/29/use-rlock-to-achieve-multithread-synchronization/">RLock来实现多线程同步</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-09-29T00:00:00+08:00" pubdate data-updated="true">2010-09-29</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><h2>问题场景</h2>
+
+<p>有多个线程，分别负责建造房子，种树，养花之类的工作，这些工作都需要一定的等待时间，在等待过程中需要与服务端通信来保持连接。连接的提交不能太过频繁，最好2-3秒一次。</p>
+
+<p>对于这种多线程之间的同步问题可以利用RLock来实现锁机制。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#coding=utf-8</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="sd">Created on 2010-9-14</span>
+</span><span class='line'><span class="sd">@author: stonelee</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">random</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="n">p_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+</span><span class='line'><span class="n">s_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">my_post</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">p_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">print</span> <span class="nb">str</span>
+</span><span class='line'>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">p_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">my_sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">s_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">s_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">my_wait</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">last_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">last_seconds</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="n">last_seconds</span> <span class="o">&lt;</span> <span class="n">seconds</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">my_post</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">name</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">my_sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">last_seconds</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">last_time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">ThreadA</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">my_post</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:==================build house&#39;</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+</span><span class='line'>            <span class="n">my_wait</span><span class="p">(</span><span class="s">&#39;a wait&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">ThreadB</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">my_post</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:=================plant tree&#39;</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+</span><span class='line'>            <span class="n">my_wait</span><span class="p">(</span><span class="s">&#39;b wait&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">threadA</span> <span class="o">=</span> <span class="n">ThreadA</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadA</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'><span class="n">threadB</span> <span class="o">=</span> <span class="n">ThreadB</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadB</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">threadA</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadB</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadA</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</span><span class='line'><span class="n">threadB</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -691,6 +868,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/19/adblock-plus-bug/">当前端遇到Adblock Plus</a>
       </li>
     
@@ -724,10 +905,6 @@
     
       <li class="post">
         <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
       </li>
     
   </ul>

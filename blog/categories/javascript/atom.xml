@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Stonelee's Blog]]></title>
   <link href="http://stonelee.info/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2012-09-19T14:12:27+08:00</updated>
+  <updated>2012-10-12T22:28:41+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -12,6 +12,135 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[构建基于spm的前端开发流水线]]></title>
+    <link href="http://stonelee.info/blog/2012/10/09/spm-build/"/>
+    <updated>2012-10-09T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/10/09/spm-build</id>
+    <content type="html"><![CDATA[<p><a href="http://seajs.org">seajs</a> 是由支付宝玉伯开源的一个浏览器端的js模块加载库，最近的项目中一直在使用，确实是解决js代码组织的利器。</p>
+
+<p>seajs解决的是模块书写和加载问题，而另一个开源项目<a href="https://github.com/seajs/spm">spm</a>则解决了模块打包和部署的流程问题。</p>
+
+<p>这几天抽时间看了下，感觉还不错，对我们自己的前端开发流水线构建有很大启发，记录试验过程如下。</p>
+
+<h3>服务器私有源配置</h3>
+
+<p>nginx中配置私有源路径为/modules</p>
+
+<p><code>
+location /modules {
+  alias       "/home/vboxadmin/lxd/dev/static";
+  autoindex   on;
+}
+</code></p>
+
+<p>创建私有源目录</p>
+
+<p><code>
+mkdir -p dev/static/
+</code></p>
+
+<p>在目录中配置config.json</p>
+
+<p>```
+{¬
+  "servers": {¬</p>
+
+<pre><code>"dev": {¬
+  "user": "vboxadmin",¬
+  "pass": "vboxadmin"¬
+}¬
+</code></pre>
+
+<p>  },¬
+  "deploy": {¬</p>
+
+<pre><code>"server": "dev",¬
+"host": "10.10.22.86",¬
+"path": "/home/vboxadmin/lxd/dev/static/"¬
+</code></pre>
+
+<p>  }¬
+}¬
+```</p>
+
+<p>这个配置提供给scp使用，从而可以使用spm deploy来部署远程服务器。
+deploy中的server在servers中配置，从中配置登录远程服务器的用户名和密码。
+host为远程ip或者域名，path为远程目的路径。</p>
+
+<h3>本地配置</h3>
+
+<p>创建私有模块开发目录</p>
+
+<p><code>
+mkdir my-module
+</code></p>
+
+<p>目录中放置所有私有模块共同的配置config.json</p>
+
+<p>```
+{</p>
+
+<pre><code>"sources": ["10.10.22.86:8090/modules"]
+</code></pre>
+
+<p>}
+```</p>
+
+<p>sources为远程私有源访问路径</p>
+
+<p>创建私有模块，例如kjquery</p>
+
+<p><code>
+mkdir kjquery
+cd kjquery
+spm init
+</code></p>
+
+<p>自动创建的package.json需要进行修改
+加入 "parent": "../config.json",</p>
+
+<h3>组件开发</h3>
+
+<p>配置完成，在私有模块中进行组件开发。</p>
+
+<p><code>``
+|-- examples
+|  </code>-- index.md
+|-- src
+|   <code>-- kjquery.js
+</code>-- tests</p>
+
+<pre><code>|-- runner.html
+`-- kjquery-spec.js
+</code></pre>
+
+<p>```</p>
+
+<ul>
+<li>src中放置组件源码</li>
+<li>tests中对组件进行测试，这里直接调用src中的代码</li>
+<li>examples中对组件调用方式给出使用例子，调用的是dist中的代码</li>
+</ul>
+
+
+<p>开发完成后</p>
+
+<ul>
+<li>$ spm build 会在当前目录的dist下生成打包后的文件</li>
+<li>$ spm upload 版本稳定后发布到本地库，默认为~/.spm，按照我司的情况，估计会将这个目录作为hg版本库</li>
+<li>$ spm deploy 部署到远程服务器</li>
+</ul>
+
+
+<h3>业务开发</h3>
+
+<p>调用 <a href="http://aralejs.org/">共用组件</a> 和私有组件，进行业务系统开发</p>
+
+<p>通过config.map进行映射，从而切换开发和生产环境</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[当前端遇到Adblock Plus]]></title>
@@ -299,88 +428,6 @@ this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p
 <p>ps:</p>
 
 <p>从开始研究Ext打包，形成思路，到最终完成完整的打包工具并应用到项目中一共用了两天时间，其中纯python编码时间也就半天时间，看来经过这半年的js编码之后，我的python还没太手生嘛哈哈。动态语言之间的学习可以互相促进？待验证~</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Ext Core设计模式]]></title>
-    <link href="http://stonelee.info/blog/2012/02/01/ext-core-design-pattern/"/>
-    <updated>2012-02-01T00:00:00+08:00</updated>
-    <id>http://stonelee.info/blog/2012/02/01/ext-core-design-pattern</id>
-    <content type="html"><![CDATA[<p>参考:
-<a href="http://docs.sencha.com/core/manual/">http://docs.sencha.com/core/manual/</a></p>
-
-<h2>Singletons 单例模式</h2>
-
-<p>适用于只有static method或者只需要实例化一次的类，例如应用入口类。可以隐藏私有variables和methods</p>
-
-<p>```js
-MyApp = function() {</p>
-
-<pre><code>var data; //data is private and can't be accessed from outside.
-return {
-    init: function() {
-        console.log('init');
-        //Initialize application here
-    },
-
-    getData: function() {
-        return data;
-    }
-};
-</code></pre>
-
-<p>} ();
-Ext.onReady(MyApp.init, MyApp);
-```</p>
-
-<h2>Observable观察者模式</h2>
-
-<p>Ext.util.Observable使用events实现在多个objects之间解耦</p>
-
-<p>事件触发流程：state changes -> fire event -> notified</p>
-
-<p>```js
-var MyClass = Ext.extend(Ext.util.Observable, {</p>
-
-<pre><code>constructor: function(config) {
-    this.addEvents('datachanged'); //specify the events we're going to fire
-},
-
-update: function() {
-    this.fireEvent('datachanged', this, arguments.length);
-}
-</code></pre>
-
-<p>});</p>
-
-<p>// To subscribe to an event
-var c = new MyClass();
-c.on('datachanged', function(obj, num) {</p>
-
-<pre><code>console.log(num);
-</code></pre>
-
-<p>});
-c.update(2, 8, 'some'); //3
-```</p>
-
-<h2>Composite 组合模式</h2>
-
-<p>将对象组与单一对象作统一处理，方便用户调用</p>
-
-<p>例如使用select取得的Ext.CompositeElement跟Ext.Element具有同样的调用接口</p>
-
-<h2>Flyweight 享元模式</h2>
-
-<p>使用共有的object，避免创建额外对象，减少内存占用，适用于单行原子操作。</p>
-
-<ul>
-<li>使用Ext.fly来以享元的方式获取Element,只能一次性使用</li>
-<li>Ext.get可以获取Element，然后保存以供未来使用</li>
-<li>Ext.getDom获取dom node</li>
-</ul>
-
 ]]></content>
   </entry>
   

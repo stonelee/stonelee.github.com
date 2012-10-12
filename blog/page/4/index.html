@@ -9,12 +9,8 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="接上篇，在继续优化过程中发现几个问题，记述如下： 更改表格某行的字体，如果此表格中有合并单元格，会报错： 1
-"无法访问此集合中单独的行，因为表格有纵向合并的单元格。" 经研究，不能使用如下语句 1
-word.Selection.Tables[0].Rows[0] 解决方案： 1
-2
-3
-word &hellip;">
+  <meta name="description" content="在这个神奇的国度，有时候需要制作电子印章来应急。
+本人是PS菜鸟，现学现卖，将电子印章的制作方案总结如下。 特别注明:本文仅用于研究和学习，禁止用于非法用途或其他目的,本人对此不负任何法律责任,一切违法后果与本人无关。 1.软件印章大师制作印章 新建一个圆形章， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,6 +81,103 @@ word &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/07/make-electronic-stamp/">菜鸟制作电子印章经验小结</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-07T00:00:00+08:00" pubdate data-updated="true">2011-03-07</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>在这个神奇的国度，有时候需要制作电子印章来应急。
+本人是PS菜鸟，现学现卖，将电子印章的制作方案总结如下。</p>
+
+<blockquote><p>特别注明:本文仅用于研究和学习，禁止用于非法用途或其他目的,本人对此不负任何法律责任,一切违法后果与本人无关。</p></blockquote>
+
+<h2>1.软件印章大师制作印章</h2>
+
+<p>新建一个圆形章，根据要制作的印章样式调整文字大小和位置，颜色选红色，默认生成的是蓝色印章。导出为bmp文件。</p>
+
+<h2>2.Photoshop做旧</h2>
+
+<ul>
+<li>打开之前的bmp文件</li>
+<li>alt+鼠标滚轮可以缩放图片</li>
+<li>用“魔棒”工具选中文字和印章部分，按住shift可以多选。</li>
+<li>滤镜-画笔描边-喷溅，增加边缘的毛刺,夸张点即可，缩小后才能显示出效果来</li>
+<li>滤镜-模糊-高斯模糊，明显减淡颜色</li>
+</ul>
+
+
+<p>其余技巧：</p>
+
+<ul>
+<li>油漆桶，填充比较暗比较浅的红色，显示做旧的效果。</li>
+<li>滤镜-纹理-颗粒-柔和，适当加点小点</li>
+<li>滤镜-锐化-智能锐化，适当加点小白点</li>
+<li>如果觉得白点太均匀了，用铅笔自己描写点</li>
+<li>减淡工具，减淡半边</li>
+</ul>
+
+
+<h2>3.导出gif白色为透明</h2>
+
+<p>文件-存储为Web和设备所用格式-GIF-选中透明度-选中颜色表右下角的白色小块-将选中的颜色映射为透明-存储</p>
+
+<h2>4.word中插入改图片</h2>
+
+<p>插入图片-文字环绕-衬于文字下方，将图片大小设为4.2厘米，适当旋转，放到合适的文档位置。</p>
+
+<p>制作电子印章和一般的作图不一样，印章越旧、越模糊，显得越真实。</p>
+
+<p><img src="/images/blog/stamp.png" alt="" /></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1702,97 +1795,6 @@ zm 所有折叠</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/12/24/draw-algorithm/">算法时间复杂度直观展示</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-12-24T00:00:00+08:00" pubdate data-updated="true">2010-12-24</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>整天看算法复杂度说什么冒泡排序o(N*N)，快排o(NlogN)，今天有空实际画了下，还真是差别挺大的。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-</span><span class='line'><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">s1</span> <span class="o">=</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span>
-</span><span class='line'><span class="n">s2</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="s">&#39;b-&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="s">&#39;r-&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s">r&#39;$n^2$&#39;</span><span class="p">,</span> <span class="s">&#39;nlog(n)&#39;</span><span class="p">),</span> <span class="n">shadow</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p> 效果：</p>
-
-<p><img src="/images/blog/algorithm.png" alt="" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1821,6 +1823,10 @@ zm 所有折叠</p>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/09/19/adblock-plus-bug/">当前端遇到Adblock Plus</a>
@@ -1856,10 +1862,6 @@ zm 所有折叠</p>
     
       <li class="post">
         <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
       </li>
     
   </ul>

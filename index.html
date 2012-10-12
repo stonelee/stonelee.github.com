@@ -9,8 +9,7 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="今天将最近开发的演示程序集成到同事的业务框架中去，结果在同事的浏览器中报错： Firebug中显示报错，但是没有具体错误提示，只显示问题所在代码 1
-r.open('GET', url, true) 点进去看发现其上下文只是一般的ajax调用而已，why？ 排错 浏览器问题？ 最初怀疑跟浏览器有关 &hellip;">
+  <meta name="description" content="seajs 是由支付宝玉伯开源的一个浏览器端的js模块加载库，最近的项目中一直在使用，确实是解决js代码组织的利器。 seajs解决的是模块书写和加载问题，而另一个开源项目spm则解决了模块打包和部署的流程问题。 这几天抽时间看了下，感觉还不错，对我们自己的前端开发流水线构建有很大启发， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +80,195 @@ r.open('GET', url, true) 点进去看发现其上下文只是一般的ajax调用
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T00:00:00+08:00" pubdate data-updated="true">2012-10-09</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://seajs.org">seajs</a> 是由支付宝玉伯开源的一个浏览器端的js模块加载库，最近的项目中一直在使用，确实是解决js代码组织的利器。</p>
+
+<p>seajs解决的是模块书写和加载问题，而另一个开源项目<a href="https://github.com/seajs/spm">spm</a>则解决了模块打包和部署的流程问题。</p>
+
+<p>这几天抽时间看了下，感觉还不错，对我们自己的前端开发流水线构建有很大启发，记录试验过程如下。</p>
+
+<h3>服务器私有源配置</h3>
+
+<p>nginx中配置私有源路径为/modules</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>location /modules {
+</span><span class='line'>  alias       "/home/vboxadmin/lxd/dev/static";
+</span><span class='line'>  autoindex   on;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>创建私有源目录</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir -p dev/static/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在目录中配置config.json</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{¬
+</span><span class='line'>  "servers": {¬
+</span><span class='line'>    "dev": {¬
+</span><span class='line'>      "user": "vboxadmin",¬
+</span><span class='line'>      "pass": "vboxadmin"¬
+</span><span class='line'>    }¬
+</span><span class='line'>  },¬
+</span><span class='line'>  "deploy": {¬
+</span><span class='line'>    "server": "dev",¬
+</span><span class='line'>    "host": "10.10.22.86",¬
+</span><span class='line'>    "path": "/home/vboxadmin/lxd/dev/static/"¬
+</span><span class='line'>  }¬
+</span><span class='line'>}¬</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个配置提供给scp使用，从而可以使用spm deploy来部署远程服务器。
+deploy中的server在servers中配置，从中配置登录远程服务器的用户名和密码。
+host为远程ip或者域名，path为远程目的路径。</p>
+
+<h3>本地配置</h3>
+
+<p>创建私有模块开发目录</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir my-module</span></code></pre></td></tr></table></div></figure>
+
+
+<p>目录中放置所有私有模块共同的配置config.json</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>    "sources": ["10.10.22.86:8090/modules"]
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>sources为远程私有源访问路径</p>
+
+<p>创建私有模块，例如kjquery</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir kjquery
+</span><span class='line'>cd kjquery
+</span><span class='line'>spm init</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自动创建的package.json需要进行修改
+加入 &#8220;parent&#8221;: &#8220;../config.json&#8221;,</p>
+
+<h3>组件开发</h3>
+
+<p>配置完成，在私有模块中进行组件开发。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>|-- examples
+</span><span class='line'>|   `-- index.md
+</span><span class='line'>|-- src
+</span><span class='line'>|   `-- kjquery.js
+</span><span class='line'>`-- tests
+</span><span class='line'>    |-- runner.html
+</span><span class='line'>    `-- kjquery-spec.js</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>src中放置组件源码</li>
+<li>tests中对组件进行测试，这里直接调用src中的代码</li>
+<li>examples中对组件调用方式给出使用例子，调用的是dist中的代码</li>
+</ul>
+
+
+<p>开发完成后</p>
+
+<ul>
+<li>$ spm build 会在当前目录的dist下生成打包后的文件</li>
+<li>$ spm upload 版本稳定后发布到本地库，默认为~/.spm，按照我司的情况，估计会将这个目录作为hg版本库</li>
+<li>$ spm deploy 部署到远程服务器</li>
+</ul>
+
+
+<h3>业务开发</h3>
+
+<p>调用 <a href="http://aralejs.org/">共用组件</a> 和私有组件，进行业务系统开发</p>
+
+<p>通过config.map进行映射，从而切换开发和生产环境</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1774,128 +1962,6 @@ Google是不是把资源都放到canvas上了，svg这么明显的bug都不管�
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-09-13T00:00:00+08:00" pubdate data-updated="true">2011-09-13</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。</p>
-
-<h2>要求</h2>
-
-<ul>
-<li>能够实现前后台数据通信</li>
-<li>保持前端纯洁性，不掺杂过多服务端代码</li>
-<li>前端js使用相对url来获取数据,需要解决跨域问题</li>
-</ul>
-
-
-<h2>解决方案</h2>
-
-<h3>静态服务器nginx</h3>
-
-<p>提供前端html+js+css的静态展示</p>
-
-<p>需要配置nginx.conf:
-alias可以指定映射路径,
-autoindex可以自动列出文件目录</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>location /develop <span class="o">{</span>
-</span><span class='line'>  <span class="nb">alias</span>       <span class="s2">&quot;/home/lxd/Develop&quot;</span>;
-</span><span class='line'>  autoindex   on;
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>后台测试服务器tornado</h3>
-
-<p>不使用template_path和static_path,直接使用write来返回字符串数据,
-服务端简化到只需一个文件,
-tornado只用来产生数据，以独立应用的形式提供服务</p>
-
-<h3>跨域问题</h3>
-
-<p>使用nginx反向代理tornado服务器，来解决跨域问题</p>
-
-<p>nginx.conf添加反向代理</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>location /develop/gmf/zhunqi/tornado <span class="o">{</span>
-</span><span class='line'>  proxy_pass       <span class="s2">&quot;http://localhost:8888&quot;</span>;
-</span><span class='line'>  proxy_redirect   off;
-</span><span class='line'>  proxy_set_header X-Real-IP <span class="nv">$remote_addr</span>;
-</span><span class='line'>  proxy_set_header X-Forwarded-For <span class="nv">$proxy_add_x_forwarded_for</span>;
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>tornado文件指定url映射</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">(</span><span class="s">r&quot;/develop/gmf/zhunqi/tornado/mines&quot;</span><span class="p">,</span> <span class="n">MineHandler</span><span class="p">),</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1922,6 +1988,10 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/09/19/adblock-plus-bug/">当前端遇到Adblock Plus</a>
@@ -1957,10 +2027,6 @@ tornado只用来产生数据，以独立应用的形式提供服务</p>
     
       <li class="post">
         <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/09/13/crossdomain-with-nginx-tornado-javascript/">打造纯净前端开发环境(附nginx反向代理解决跨域问题)</a>
       </li>
     
   </ul>
