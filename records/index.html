@@ -4,32 +4,72 @@
     <meta charset="utf-8" />
     <title>Records</title>
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
+    <style type="text/css">
+      dd {
+        text-indent: 2em;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    </style>
 </head>
 <body>
   <div class="container">
-    <h1>Records</h1>
+    <h1 style="text-align:center;">Records</h1>
     <h2>2012年</h2>
       <ul>
-        <li><a href="2012-08.html">8月</a></li>
         <li>
-          <a href="2012-09.html">9月</a>
-          <p>这个月完成了人生中的一件大事：结婚。</p>
-          <p>我和老婆的两个导师竟然专程开车过来参加结婚典礼，实在是太荣幸了！刚开学没几天，不是周末，4、5个小时车程，就为了过来给我们的喜事作个见证，师恩难忘！！</p>
-          <p>还有好几个同学也来了，检讨来的时候都下午了，连婚宴都没赶上，在家里吃了点喜饺^-^</p>
-          <p>之后跑昆明，丽江玩了一个星期，算是蜜月啦</p>
-          <p>工作上主要将前端svg系统跟后端进行联调，顺便优化了下交互逻辑，比之前清爽多了～</p>
-          <p>之前svg的currentScale在webkit上实现不能，导致chrome，乃至Android，iPhone都不能正常运行。本来一直期待chrome团队能给个解释，都等了快一年了还是没信。这次终于下狠心，参考svg-editor进行了重新实现，计划加入到下个版本中。</p>
-          <p>尝试将svg系统移植到移动设备上，发觉移动设备和传统浏览器在交互上还是有很大的不同啊，比如touch事件，比如mouseover事件，比如鼠标滚轮...还是针对移动端进行定制开发比较靠谱。</p>
-          <p>利用晚上时间看完了<a href="http://book.douban.com/subject/7056800/">《Ruby元编程》</a>这本书，学到了各种魔法技巧，希望可以有机会订制自己的DSL。</p>
+          <h3><a href="2012-08.html">8月</a></h3>
         </li>
         <li>
-          <a href="2012-10.html">10月</a>
-          <p>本月主要在之前应用经验基础上对kjsvg库进行重构</p>
-          <p>在项目过程中发现，Bootstrap在IE下的表现相当的不尽如人意，与ASV协同使用时甚至会导致CPU瞬间占用100%，造成IE崩溃。最终痛下决心还是使用jqueryui代替，顺便重构了前端界面。</p>
-          <p>对kjsvg库底层进行重构，core提供svg加载、DOM操作和事件处理，常用功能分模块开发，各模块在kjsvg中统一组装供业务层调用，未来针对不同业务应用可能要配置不同的kjsvg。</p>
-          <p>重新梳理组件库架构，所有组件继承于control类，使用集合controls来控制。控件之间使用Class库实现继承。</p>
-          <p>重构之后，项目结构更加合理，对未来功能开发更有信心！欧耶！</p>
+          <h3><a href="2012-09.html">9月</a></h3>
+          <dl>
+            <dt>完成了人生中的一件大事：结婚。</dt>
+            <dd>我和老婆的两个导师竟然专程开车过来参加结婚典礼，实在是太荣幸了！刚开学没几天，不是周末，4、5个小时车程，就为了过来给我们的喜事作个见证，师恩难忘！！</dd>
+            <dd>还有好几个同学也来了，检讨来的时候都下午了，连婚宴都没赶上，在家里吃了点喜饺^-^</dd>
+            <dd>之后跑昆明，丽江玩了一个星期，算是蜜月啦</dd>
+          </dl>
+          <dl>
+            <dt>工作</dt>
+            <dd>主要将前端svg系统跟后端进行联调，顺便优化了下交互逻辑，比之前清爽多了～</dd>
+            <dd>之前svg的currentScale在webkit上实现不能，导致chrome，乃至Android，iPhone都不能正常运行。本来一直期待chrome团队能给个解释，都等了快一年了还是没信。这次终于下狠心，参考svg-editor进行了重新实现，计划加入到下个版本中。</dd>
+            <dd>尝试将svg系统移植到移动设备上，发觉移动设备和传统浏览器在交互上还是有很大的不同啊，比如touch事件，比如mouseover事件，比如鼠标滚轮...还是针对移动端进行定制开发比较靠谱。</dd>
+          </dl>
+          <dl>
+            <dt>其他</dt>
+            <dd>利用晚上时间看完了<a href="http://book.douban.com/subject/7056800/">《Ruby元编程》</a>这本书，学到了各种魔法技巧，希望可以有机会订制自己的DSL。</dd>
+          </dl>
         </li>
+        <li>
+          <h3><a href="2012-10.html">10月</a></h3>
+          <dl>
+            <dt>主要在之前应用经验基础上对kjsvg库进行重构</dt>
+            <dd>在项目过程中发现，Bootstrap在IE下的表现相当的不尽如人意，与ASV协同使用时甚至会导致CPU瞬间占用100%，造成IE崩溃。最终痛下决心还是使用jqueryui代替，顺便重构了前端界面。</dd>
+            <dd>对kjsvg库底层进行重构，core提供svg加载、DOM操作和事件处理，常用功能分模块开发，各模块在kjsvg中统一组装供业务层调用，未来针对不同业务应用可能要配置不同的kjsvg。</dd>
+            <dd>重新梳理组件库架构，所有组件继承于control类，使用集合controls来控制。控件之间使用Class库实现继承。</dd>
+            <dd>重构之后，项目结构更加合理，对未来功能开发更有信心！欧耶！</dd>
+          </dl>
+        </li>
+        <li>
+          <h3><a href="2012-11.html">11月</a></h3>
+          <dl>
+            <dt>开始妄图构建自己的前端框架!</dt>
+            <dd>领导要求对原来基于Extjs的项目的运行速度进行优化，然而经过多层面反复调优效果依然不明显，尤其对于老旧IE来说。痛定思痛，Extjs界面对于企业开发来说非常专业，就开发速度来说也是一流的，但是其使用js生成一切的想法，在IE面前纯粹是在搞笑，而且封装着实紧密，进行功能扩展着实有点束手束脚。因此萌生了借鉴Ext的UI自己封装模块的想法。</dd>
+            <dd>首先用了一周时间将常用界面元素从Ext中抽出，本着KISS原则，同时考虑一定的业务扩展性，借鉴之前了解的<a href="http://smacss.com/">smacss</a>、<a href="http://oocss.org/">OOCSS</a>，很快完成了任务。</dd>
+            <dd>然后对常用组件进行js封装，基于<a href="http://aralejs.org/">arale项目</a>，目前已经完成Tree、TreeGrid、Tab，Accordion、Grid，本着持续集成的想法搭建了集成框架，效果不错。</dd>
+            <blockquote><p>基于一流模块，而不是框架，针对自己的业务需求，订制通用内部模块，搭建自己的前端集成构建流水线。</p></blockquote>
+          </dl>
+          <dl>
+            <dt>开源</dt>
+            <dd>学习使用<a href="https://github.com/spmjs/spm">spm</a>打包部署的方法，发觉alipay团队真心给力，发现问题后在github上提一下<a href="https://github.com/spmjs/spm/issues/created_by/stonelee">issues</a>，开发人员往往在几小时之内就能给予答复，怒赞！</dd>
+            <dd>第一次提交Pull Request并被采纳，还是vim插件 <a href="https://github.com/maksimr/vim-jsbeautify/pull/10">vim-jsbeautify</a>。很惭愧用了两年的vim，对于其插件开发还是一知半解，了解一下还是挺有意思的。</dd>
+            <dd>Open Source的人真是挺nice的，分享使人快乐！</dd>
+          </dl>
+          <dl>
+            <dt>其他</dt>
+            <dd>kjsvg项目解决了直接载入svg文件的问题，极大的扩展了系统的想象空间，例如控件不失真缩放、底图分步加载、各系统作为插件独立加载等。</dd>
+            <dd>终于下决心开始看 <a href="http://book.douban.com/subject/10549733/">犀牛书</a>，对自己的js知识体系进行查缺补漏，作为一名靠谱的前端，这貌似是必须的吧。截至月底第一部分“JavaScript语言核心”达成！</dd>
+            <dd>虽然整天看英语文档，但是感觉词汇量还是自己的短板，找到一个 <a href="http://www.shanbay.com/">好网站</a>，希望能够坚持下去。</dd>
+          </dl>
       </ul>
   </div>
 </body>
