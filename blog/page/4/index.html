@@ -9,8 +9,8 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="在这个神奇的国度，有时候需要制作电子印章来应急。
-本人是PS菜鸟，现学现卖，将电子印章的制作方案总结如下。 特别注明:本文仅用于研究和学习，禁止用于非法用途或其他目的,本人对此不负任何法律责任,一切违法后果与本人无关。 1.软件印章大师制作印章 新建一个圆形章， &hellip;">
+  <meta name="description" content="来自stackoverflow中python标签下按投票数排列第一位的问题：
+Hidden features of Python 题记：我们没有黑魔法，我们是可读的。 Python is a dynamically and strongly typed programming language &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,320 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/18/hidden-features-in-python/">你可能所不知道的python中有用的特性</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-18T00:00:00+08:00" pubdate data-updated="true">2011-03-18</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>来自stackoverflow中python标签下按投票数排列第一位的问题：
+<a href="http://stackoverflow.com/questions/101268/hidden-features-of-python?tab=votes#tab-top">Hidden features of Python</a></p>
+
+<blockquote><p>题记：我们没有黑魔法，我们是可读的。</p>
+
+<p>Python is a dynamically and strongly typed programming language that encourages readability.</p></blockquote>
+
+<h2>1.链式操作符，要注意执行顺序问题，方法是加括号。</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="mi">10</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">20</span>
+</span><span class='line'><span class="bp">False</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">&lt;</span> <span class="n">x</span><span class="o">*</span><span class="mi">10</span> <span class="o">&lt;</span> <span class="mi">100</span>
+</span><span class='line'><span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>2.debug regex</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="s"> ^              # start of a line</span>
+</span><span class='line'><span class="s"> \[font         # the font tag</span>
+</span><span class='line'><span class="s"> (?:=(?P&lt;size&gt;  # optional [font=+size]</span>
+</span><span class='line'><span class="s"> [-+][0-9]{1,2} # size specification</span>
+</span><span class='line'><span class="s"> ))?</span>
+</span><span class='line'><span class="s"> \]             # end of tag</span>
+</span><span class='line'><span class="s"> (.*?)          # text between the tags</span>
+</span><span class='line'><span class="s"> \[/font\]      # end of the tag</span>
+</span><span class='line'><span class="s"> &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DEBUG</span><span class="o">|</span><span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="o">|</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另附name match：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;(?P&lt;word&gt;\b\w+\b)&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">search</span><span class="p">(</span> <span class="s">&#39;(((( Lots of punctuation )))&#39;</span> <span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&#39;word&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="s">&#39;Lots&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>3.generator object</h2>
+
+<p>可以节省内存，但是只能使用一次</p>
+
+<h2>4.同时yield列表中的项和序号。</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">,</span> <span class="s">&#39;e&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">a</span><span class="p">):</span> <span class="k">print</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>5.iter() can take a callable argument</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">seek_next_line</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>6.Decorators</h2>
+
+<p>下面的评论中有人说这已经不算太hidden了</p>
+
+<h2>7.yield中send的使用</h2>
+
+<h2>8.</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>  <span class="c"># iterate over the whole list in 2-increments</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>反转</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对比</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span><span class="c">#这种方法返回的是iterator</span>
+</span><span class='line'><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>9.默认参数可能会变</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[]):</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="o">...</span>     <span class="k">print</span> <span class="n">x</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Instead, you should use a sentinel value denoting &#8220;not given&#8221; and replace with the mutable you&#8217;d like as default:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</span><span class='line'><span class="o">...</span>     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>         <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="o">...</span>     <span class="k">print</span> <span class="n">x</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>默认参数不过是函数的一个属性foo.func_defaults而已，因此对于list类型的可能会变动</p>
+
+<h2>10.defaultdict可以增强dict</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;yellow&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;yellow&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span class='line'><span class="p">[(</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s">&#39;yellow&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>相当于</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>     <span class="n">d</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对于列表中的每个key，如果该defaultdict中不存在，会使用default_factory来创建该值</p>
+
+<h2>11.for..else</h2>
+
+<p>对于丑陋的代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">found</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">foo</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">found</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>        <span class="k">break</span>
+</span><span class='line'><span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;i was never 0&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以使用下面代码来替代</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">foo</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">break</span>
+</span><span class='line'><span class="k">else</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;i was never 0&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>else在for循环从来没有break时调用，有人提议这个关键字else实际上用finally更合适。</p>
+
+<h2>12.值替换，“，”隐含的构成了一个tuple</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+</span><span class='line'><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+</span><span class='line'><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1455,346 +1769,6 @@ zm 所有折叠</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/12/24/mark-time-to-plant-and-build/">盖房子种树记好时间</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-12-24T00:00:00+08:00" pubdate data-updated="true">2010-12-24</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><h2>问题描述</h2>
-
-<p>设想以下场景：盖个房子，房子需要m秒才能盖好；然后种了棵树，树需要n秒才能长好。盖房子、种树等行为都是连续的操作，手动即可，不能间断，而时间的存储一般人是需要存到脑子中，或者记到笔记本上，或者定个闹钟。时间到后再进行相应的处理。</p>
-
-<h2>解决方案</h2>
-
-<p>模拟人的行为：手动操作作为主线程顺序执行，需要存储时间时开启新的一个线程来保存时间并计时（也就是说两者需要做到异步）。仅仅存储时间是不够的，还需要将该时间所对应的状态信息保存下来，以供时间到后的下步操作。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
-</span><span class='line'><span class="c"># Last Update:</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
-</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">TimeThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-</span><span class='line'>    <span class="sd">&quot;&quot;&quot;等待线程</span>
-</span><span class='line'><span class="sd">    &quot;&quot;&quot;</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
-</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
-</span><span class='line'><span class="sd">        name如果已存在，则会覆盖原来的</span>
-</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
-</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">TimeThread</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
-</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
-</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
-</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
-</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
-</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
-</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
-</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;farm1&#39;</span><span class="p">,</span> <span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
-</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
-</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
-</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p> 结果如下：</p>
-
-<p><img src="/images/blog/plant_build.png" alt="" /></p>
-
-<p>改进了一下代码，去掉了不必要的线程名，这样就不用去考虑命名重复的问题了。另外把线程类简化成一个内部函数：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
-</span><span class='line'><span class="c"># Last Update:</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
-</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
-</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
-</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
-</span><span class='line'>        <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
-</span><span class='line'>            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="p">))</span>
-</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
-</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
-</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
-</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
-</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
-</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
-</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
-</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
-</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
-</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
-</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1808,21 +1782,42 @@ zm 所有折叠</p>
 <aside class="sidebar">
   
     <section>
-	<h1>Who&#8217;s stonelee</h1>
-	<a href="/about"><img src="/images/stonelee.jpg"/></a>
-	<p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
-	<p>
-		<a href="http://www.douban.com/people/istonelee/">豆瓣</a>
-		<a href="http://www.renren.com/profile.do?id=72210924">人人</a>
-		<a style="white-space:normal;display:block;"target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
-			<img style="border:0;" border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
-		</a>
-	</p>
+  <h1>Who&#8217;s stonelee</h1>
+  <a href="/about" style="float:left;"><img src="/images/stonelee.jpg"/></a>
+  <style type="text/css">
+    .about-info {
+      display:inline-block;
+    }
+    .about-info p {
+      margin-top: 0.5em;
+      margin-bottom: 0;
+      padding-left: 5px;
+    }
+    .about-info a {
+      text-decoration: none;
+    }
+    .about-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <div class="about-info">
+    <p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
+    <p><a href="http://www.weibo.com/imstonelee">新浪微博</a></p>
+    <p><a href="http://www.douban.com/people/istonelee/">豆瓣</a></p>
+    <p><a href="https://github.com/stonelee">Github</a></p>
+    <p><a style="white-space:normal;display:block;" target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
+      <img style="border:0;" border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
+    </a></p>
+  </div>
 </section>
 
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/12/31/my-2012/">我的2012</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a>
@@ -1858,10 +1853,6 @@ zm 所有折叠</p>
     
       <li class="post">
         <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
       </li>
     
   </ul>

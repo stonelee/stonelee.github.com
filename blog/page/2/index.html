@@ -9,8 +9,7 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="最近在搞前端javascript编码, 公司项目使用的后台语言是.net和java,这些东西对于我而言太笨重了。而我钟爱的python又由于种种原因不能应用到项目中。因此需要一个比较纯净的前端开发测试环境，开发出来的代码可以容易的供其他后端语言使用。 要求 能够实现前后台数据通信
-保持前端纯洁性， &hellip;">
+  <meta name="description" content="IE6下svg的渲染是个问题，目前主要有以下几种解决方案： svgweb 优点:开源，可在不支持svg的浏览器中使用flash来渲染，有效解决客户端下载插件问题 缺点:svg封装不完全，flash渲染效率比较低，刷新页面时内存泄漏严重 adobe SVGViewer 优点：对svg支持较好 缺点： &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +80,170 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-24T00:00:00+08:00" pubdate data-updated="true">2011-10-24</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>IE6下svg的渲染是个问题，目前主要有以下几种解决方案：</p>
+
+<h2><a href="http://code.google.com/p/svgweb/">svgweb</a></h2>
+
+<p>优点:开源，可在不支持svg的浏览器中使用flash来渲染，有效解决客户端下载插件问题</p>
+
+<p>缺点:svg封装不完全，flash渲染效率比较低，刷新页面时内存泄漏严重</p>
+
+<h2><a href="http://www.adobe.com/svg/viewer/install/">adobe SVGViewer</a></h2>
+
+<p>优点：对svg支持较好</p>
+
+<p>缺点：adobe已于2009年1月份明确表示不再提供支持，需要客户端下载插件</p>
+
+<h2><a href="http://code.google.com/intl/zh-CN/chrome/chromeframe/">Chrome Frame</a></h2>
+
+<p>优点：IE下使用chrome模式来渲染，速度快，原生支持svg</p>
+
+<h2>svgweb+chrome frame</h2>
+
+<p>这时目前我们项目组所使用的解决方案，可以较好地满足我们的需求</p>
+
+<ul>
+<li>系统整体框架为遗留系统，IE only，这决定了我们的客户必须使用IE（煤矿客户本来就对此喜闻乐见）</li>
+<li>一般客户端使用频率较低，使用svgweb提供的flash渲染，不用下载flash以外的插件</li>
+<li>监控中心中客户端数量较少，而且设备可控，使用chromeframe渲染svg单页面，渲染效率高，减少内存泄漏</li>
+</ul>
+
+
+<h3>发现问题：</h3>
+
+<p>在实际使用过程中发现，使用frame方式调用svg单页面时，通过指定chromeframe渲染头的方式是无效的:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;X-UA-Compatible&quot;</span> <span class="na">content=</span><span class="s">&quot;chrome=1&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>此时访问调用frameset的页面，会发现其依然是IE渲染，而单独访问该svg页面会使用chrome方式。</p>
+
+<p><a href="http://groups.google.com/group/google-chrome-frame/browse_thread/thread/d5ffe442658bc60e/e6d7a4c1c179c931">网上讨论结果</a>是目前chromeframe只支持顶层meta tag检测，而且貌似也不打算修正这一问题。</p>
+
+<h3>解决方案：</h3>
+
+<p>经过不断尝试，发现有一个取巧方法可以解决此问题，即使用gcf前缀指定渲染方式，形如gcf:http://gmail.com
+猛击 <a href="http://www.chromium.org/developers/how-tos/chrome-frame-getting-started#TOC-Testing-Your-Sites">参考网址</a></p>
+
+<p>这需要修改注册表：HEKY_CURRENT_USER\Software\Google\ChromeFrame下新建DWORD类型的键 AllowUnsafeURLs=1
+然后就可以这样调用该svg页面</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;frame</span> <span class="na">src=</span><span class="s">&quot;gcf:http://127.0.0.1/svg/index.html&quot;</span> <span class="na">name=</span><span class="s">&quot;MainFrame&quot;</span> <span class="na">id=</span><span class="s">&quot;MainFrame&quot;</span>  <span class="na">frameborder=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果要兼容没有安装chromeframe的浏览器，可以使用js动态更改。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">IsGCFInstalled</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">try</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="s1">&#39;ChromeTab.ChromeFrame&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>              <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">frame</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;MainFrame&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;MainFrame&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;frameborder&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">IsGCFInstalled</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;gcf:http://10.10.22.84/develop/gmf/zhunqi/index.html&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">frame</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;zhunqi/index.html&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="nx">frame</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#TreeFrameSet&#39;</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">})();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ps</h3>
+
+<p>注册表中指定RenderInGcfUrls的方法也是无效的，原因估计等同于指定meta tag的方法。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1187,242 +1350,6 @@ IE8需要借助ChromeFrame插件</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/07/14/continue-bill-number-reject/">连续票号剔除算法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-07-14T00:00:00+08:00" pubdate data-updated="true">2011-07-14</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><h2>问题场景</h2>
-
-<p>现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>原来： 0-999
-</span><span class='line'>领取： 0-99 100-199 400-499
-</span><span class='line'>===========运算求解======================
-</span><span class='line'>剩余： 200-399 500-999</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>分析</h2>
-
-<p>如果单纯分析这个问题，此时票据只有1000张，数量很少，因此只需要将每个票号放到一个set中，然后进行简单的集合运算即可求出结果。</p>
-
-<p>但是现实系统中票据量往往很大(9位票据就是近10亿条记录)，每张票据一条记录进行存储是不现实的，因此需要进行分段存储，即将一次领取的几本票据（票号连续）作为一条记录，只记录起始票号和终止票号，运算时因为内存空间有限，也不能整体集合求解，需要另辟蹊径。</p>
-
-<p>既然是边界条件判断，如果用各种if应该可以解决问题，但是这样太繁琐，非常容易出错。今天早上忽然想到，这个问题中票号是连续的，因此只要找到前后几个关键点，整段票号就能确定，而段内的票号是不重要的。</p>
-
-<h2>算法</h2>
-
-<p>1.找到全部关键点</p>
-
-<p>原来的号：0 999</p>
-
-<p>每段领取号各向外扩展一个号，作为可能的关键点：
--1 100 99 200 399 500</p>
-
-<p>2.将上两种关键点放到一个数组中，去重复排序，得到：
--1 0 99 100 200 399 500 999</p>
-
-<p>3.去掉领取号中重复的点，剩余：
--1 200 399 500 999</p>
-
-<p>4.只取原来范围内的点，剩余
-200 399 500 999</p>
-
-<p>5.两两一组，即为所求解
-(200,399),(500,999)</p>
-
-<h2>c#技巧</h2>
-
-<ul>
-<li>HashSet可以去重复，也可使用Distinct</li>
-<li>引入Linq后，数组可以进行集合运算。交集Intersect，差集Except，联集Union</li>
-<li>数组只能存储相同类型的数据</li>
-<li>二维数组和交错数组是不同的，二维数组形如int[,],GetLength(0)可获得第0维长度，依次类推</li>
-<li>需要筛选操作的话，使用交错数组string[][]，而不要使用多维数组int[,]</li>
-</ul>
-
-
-<h2>无码无真相</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//从父表票号段中剔除子表中的票号段  </span>
-</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">getLeftNums</span><span class="p">(</span><span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span><span class="p">,</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//填入所有可能的关键点  </span>
-</span><span class='line'>    <span class="c1">//HashSet可去重复  </span>
-</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">possibleSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">fathers</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sons</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//去掉sons中已经使用过的点  </span>
-</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sonSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">sons</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">sonSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">withoutSonsSets</span> <span class="p">=</span> <span class="n">possibleSets</span><span class="p">.</span><span class="n">Except</span><span class="p">(</span><span class="n">sonSets</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//只取fathers范围内的点  </span>
-</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">inFatherSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="k">value</span> <span class="k">in</span> <span class="n">withoutSonsSets</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">fathers</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">&gt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">&amp;&amp;</span> <span class="k">value</span> <span class="p">&lt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">])</span>
-</span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="n">inFatherSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
-</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//排序  </span>
-</span><span class='line'>    <span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sortedLists</span> <span class="p">=</span> <span class="n">inFatherSets</span><span class="p">.</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">).</span><span class="n">ToList</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//两两一组  </span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">()</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">();</span> <span class="n">i</span><span class="p">++)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="kt">int</span> <span class="n">index</span> <span class="p">=</span> <span class="n">i</span> <span class="p">/</span> <span class="m">2</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
-</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">else</span>
-</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">results</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>测试用例</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[Test]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">getLeftNum2</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">999</span> <span class="p">}</span> <span class="p">};</span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">99</span> <span class="p">},</span> <span class="p">{</span> <span class="m">100</span><span class="p">,</span> <span class="m">199</span> <span class="p">},</span> <span class="p">{</span> <span class="m">400</span><span class="p">,</span> <span class="m">499</span> <span class="p">}</span> <span class="p">};</span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="n">frmQueryBillDistribute</span><span class="p">.</span><span class="n">getLeftNums</span><span class="p">(</span><span class="n">fathers</span><span class="p">,</span> <span class="n">sons</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">asserts</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">200</span><span class="p">,</span> <span class="m">399</span> <span class="p">},</span> <span class="p">{</span> <span class="m">500</span><span class="p">,</span> <span class="m">999</span> <span class="p">}};</span>
-</span><span class='line'>    <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">asserts</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1436,21 +1363,42 @@ IE8需要借助ChromeFrame插件</p>
 <aside class="sidebar">
   
     <section>
-	<h1>Who&#8217;s stonelee</h1>
-	<a href="/about"><img src="/images/stonelee.jpg"/></a>
-	<p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
-	<p>
-		<a href="http://www.douban.com/people/istonelee/">豆瓣</a>
-		<a href="http://www.renren.com/profile.do?id=72210924">人人</a>
-		<a style="white-space:normal;display:block;"target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
-			<img style="border:0;" border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
-		</a>
-	</p>
+  <h1>Who&#8217;s stonelee</h1>
+  <a href="/about" style="float:left;"><img src="/images/stonelee.jpg"/></a>
+  <style type="text/css">
+    .about-info {
+      display:inline-block;
+    }
+    .about-info p {
+      margin-top: 0.5em;
+      margin-bottom: 0;
+      padding-left: 5px;
+    }
+    .about-info a {
+      text-decoration: none;
+    }
+    .about-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <div class="about-info">
+    <p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
+    <p><a href="http://www.weibo.com/imstonelee">新浪微博</a></p>
+    <p><a href="http://www.douban.com/people/istonelee/">豆瓣</a></p>
+    <p><a href="https://github.com/stonelee">Github</a></p>
+    <p><a style="white-space:normal;display:block;" target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
+      <img style="border:0;" border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
+    </a></p>
+  </div>
 </section>
 
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/12/31/my-2012/">我的2012</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a>
@@ -1486,10 +1434,6 @@ IE8需要借助ChromeFrame插件</p>
     
       <li class="post">
         <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
       </li>
     
   </ul>

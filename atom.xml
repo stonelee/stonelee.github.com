@@ -4,7 +4,7 @@
   <title><![CDATA[Stonelee's Blog]]></title>
   <link href="http://stonelee.info/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2013-01-04T14:16:37+08:00</updated>
+  <updated>2013-01-04T16:51:06+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -12,6 +12,79 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[我的2012]]></title>
+    <link href="http://stonelee.info/blog/2012/12/31/my-2012/"/>
+    <updated>2012-12-31T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2012/12/31/my-2012</id>
+    <content type="html"><![CDATA[<h3>编程</h3>
+
+<p>2012，充实的一年。</p>
+
+<p>这一年我的工作重心完全偏向了前端开发，技术上感觉得到了很大的提升。</p>
+
+<p>JavaScript已经成为我最熟练的开发语言，真心感受到js编程的便利和舒适。
+譬如其灵活的原型继承，譬如其优雅的函数式编程，都让我对其爱不释手。</p>
+
+<p>js方面不敢妄称精通，但是应该已经达到了熟练的程度。平常已经遇不到什么费解的难题，需要的就是研究更多的优秀类库源码，以及在不同浏览器中进行不断的开发实践。</p>
+
+<p>css方面可以说已经入门，对于基本样式可以想到至少两种实现方式，在实现之余还能考虑一下浏览器兼容，后期扩展等问题。当然这种程度还只能算得上入门而已，还需要在实践中不断练习，积累更多的经验。</p>
+
+<p>html方面没有什么大的进展，还是只能使用基本的标签，希望来年能有所提升。</p>
+
+<p>设计，交互什么的恐怕目前还是我的软肋，希望来年能有所提升。</p>
+
+<p>作为一名码农，编程是我的职业，也是我的爱好。</p>
+
+<p>有同事问我晚上回家不带电脑，想编程的时候怎么办。
+我说很简单啊，家里有个娱乐用的笔记本，想编程了，打开Chrome浏览器，F12开控制台，代码什么的随便写丫。
+根本不用理会开发环境配置运行库安装什么滴。</p>
+
+<p>平常上网看到精美的页面，第一时间想到的是这个css该怎么实现，然后开控制台瞅瞅是不是有什么特别的。
+家里人说，看你整天盯着淘宝首页，干嘛呢？哈！看它的css结构，嗯嗯，有点启发～</p>
+
+<p>当年选择python，貌似也是基于这种考虑，打开命令行随写随运行。现在使用js更加方便，随便找台电脑就可以。</p>
+
+<h3>工作</h3>
+
+<p>2012，渐进增强的一年。</p>
+
+<p>对前端架构的选择，经历了一个转变的过程:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Ext JS -&gt; jQuery UI -&gt; Arale -&gt; 新前端框架</span></code></pre></td></tr></table></div></figure>
+
+
+<p>年初参与了一个信息化项目，当时的情况是工期非常紧，工作量非常大，人员非常少，开发水平非常一般，包括负责前端技术研究的我都是半吊子的新手。
+在没办法的情况下，使用了Ext JS作为前端开发框架，使用MVC分离耦合，为快出成果大量使用其中的界面控件，并且根据项目需要扩展了几个控件，最终算是按期交出了东西。
+但是在使用过程中发现问题很多。最突出的问题是用户反映操作各种慢，然后是代码各种乱，然后是调试各种不顺，系统扩展各种困难。
+Ext JS这种一揽子方案恐怕不是银弹!</p>
+
+<p>接着我被抽调参与另一个项目，原项目组之前已经开发过类似项目，但是前端代码写的比较杂乱，不太成体系，因此让我进行一下封装，以方便后续开发。
+这次我吸取了上次的教训，直接使用jQuery，从最简单的功能入手，仿照jQuery UI的做法，仅仅用了两个星期就将所有控件封装完毕，然后交给业务开发同事使用。
+结果反响还不错，界面响应速度比较快，开发也相对简单容易。不足之处就是调用方法有些别扭（所有控件都以jQuery插件形式提供），this指针到处都u是搞得人头大（初次尝试开发jQuery插件，许多用法不够优雅，比较山寨）。</p>
+
+<p>紧急项目完成了，然后接着做去年的SVG项目。在此期间接触了不少优秀的源码，如SeaJS, Arale, Backbone等等。对原有项目架构的理解也更加深入，因此进行了几次重构，扩充了功能。</p>
+
+<p>在阅读源码，跟随大牛的过程中，我对js模块化、版本控制、测试集成、前端工作流等都有了进一步的认识，因此萌生了开发适合部门业务发展需要的自有前端框架的想法。
+简单说来，就是从我们已经做过的项目入手，抽象最基本模块和功能，自己封装控件，然后供业务开发人员调用，并根据实际业务需求不断完善。这样开发出来的模块，因为从底层封装所以高效灵活，因为功能针对性强所以精简易懂。
+目前已经完成大部分组件的开发，等待来年项目的检验。</p>
+
+<h3>生活</h3>
+
+<p>2012，幸福的一年。</p>
+
+<p>7月领证，9月结婚，然后云南蜜月，北京宴请同学。
+完成了人生的一件大事，也总算给了相恋七年的LP一个承诺。</p>
+
+<p>喂！工作狂！留一点时间给家庭喽！</p>
+
+<p>做好时间管理，提高工作效率，少做无用之事，腾出时间来陪伴爱我和我爱的人。</p>
+
+<p>2012年 <a href="http://www.yuedudna.com/users/1455680/book/2012">读书14本</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[构建基于spm的前端开发流水线]]></title>
@@ -2100,195 +2173,6 @@ IE8需要借助ChromeFrame插件</p>
 </span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupClose</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">showFullText</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[连续票号剔除算法]]></title>
-    <link href="http://stonelee.info/blog/2011/07/14/continue-bill-number-reject/"/>
-    <updated>2011-07-14T00:00:00+08:00</updated>
-    <id>http://stonelee.info/blog/2011/07/14/continue-bill-number-reject</id>
-    <content type="html"><![CDATA[<h2>问题场景</h2>
-
-<p>现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>原来： 0-999
-</span><span class='line'>领取： 0-99 100-199 400-499
-</span><span class='line'>===========运算求解======================
-</span><span class='line'>剩余： 200-399 500-999</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>分析</h2>
-
-<p>如果单纯分析这个问题，此时票据只有1000张，数量很少，因此只需要将每个票号放到一个set中，然后进行简单的集合运算即可求出结果。</p>
-
-<p>但是现实系统中票据量往往很大(9位票据就是近10亿条记录)，每张票据一条记录进行存储是不现实的，因此需要进行分段存储，即将一次领取的几本票据（票号连续）作为一条记录，只记录起始票号和终止票号，运算时因为内存空间有限，也不能整体集合求解，需要另辟蹊径。</p>
-
-<p>既然是边界条件判断，如果用各种if应该可以解决问题，但是这样太繁琐，非常容易出错。今天早上忽然想到，这个问题中票号是连续的，因此只要找到前后几个关键点，整段票号就能确定，而段内的票号是不重要的。</p>
-
-<h2>算法</h2>
-
-<p>1.找到全部关键点</p>
-
-<p>原来的号：0 999</p>
-
-<p>每段领取号各向外扩展一个号，作为可能的关键点：
--1 100 99 200 399 500</p>
-
-<p>2.将上两种关键点放到一个数组中，去重复排序，得到：
--1 0 99 100 200 399 500 999</p>
-
-<p>3.去掉领取号中重复的点，剩余：
--1 200 399 500 999</p>
-
-<p>4.只取原来范围内的点，剩余
-200 399 500 999</p>
-
-<p>5.两两一组，即为所求解
-(200,399),(500,999)</p>
-
-<h2>c#技巧</h2>
-
-<ul>
-<li>HashSet可以去重复，也可使用Distinct</li>
-<li>引入Linq后，数组可以进行集合运算。交集Intersect，差集Except，联集Union</li>
-<li>数组只能存储相同类型的数据</li>
-<li>二维数组和交错数组是不同的，二维数组形如int[,],GetLength(0)可获得第0维长度，依次类推</li>
-<li>需要筛选操作的话，使用交错数组string[][]，而不要使用多维数组int[,]</li>
-</ul>
-
-
-<h2>无码无真相</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//从父表票号段中剔除子表中的票号段  </span>
-</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">getLeftNums</span><span class="p">(</span><span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span><span class="p">,</span> <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//填入所有可能的关键点  </span>
-</span><span class='line'>    <span class="c1">//HashSet可去重复  </span>
-</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">possibleSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">fathers</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sons</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">possibleSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sons</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">+</span> <span class="m">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//去掉sons中已经使用过的点  </span>
-</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sonSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">sons</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">sonSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">withoutSonsSets</span> <span class="p">=</span> <span class="n">possibleSets</span><span class="p">.</span><span class="n">Except</span><span class="p">(</span><span class="n">sonSets</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//只取fathers范围内的点  </span>
-</span><span class='line'>    <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">inFatherSets</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="k">value</span> <span class="k">in</span> <span class="n">withoutSonsSets</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">fathers</span><span class="p">.</span><span class="n">GetLength</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="n">i</span><span class="p">++)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="p">&gt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">&amp;&amp;</span> <span class="k">value</span> <span class="p">&lt;=</span> <span class="n">fathers</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="m">1</span><span class="p">])</span>
-</span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="n">inFatherSets</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
-</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//排序  </span>
-</span><span class='line'>    <span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">sortedLists</span> <span class="p">=</span> <span class="n">inFatherSets</span><span class="p">.</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">).</span><span class="n">ToList</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//两两一组  </span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">()</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">sortedLists</span><span class="p">.</span><span class="n">Count</span><span class="p">();</span> <span class="n">i</span><span class="p">++)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="kt">int</span> <span class="n">index</span> <span class="p">=</span> <span class="n">i</span> <span class="p">/</span> <span class="m">2</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">%</span> <span class="m">2</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
-</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">else</span>
-</span><span class='line'>            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span> <span class="p">=</span> <span class="n">sortedLists</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">results</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>测试用例</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[Test]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">getLeftNum2</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">fathers</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">999</span> <span class="p">}</span> <span class="p">};</span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">sons</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="m">99</span> <span class="p">},</span> <span class="p">{</span> <span class="m">100</span><span class="p">,</span> <span class="m">199</span> <span class="p">},</span> <span class="p">{</span> <span class="m">400</span><span class="p">,</span> <span class="m">499</span> <span class="p">}</span> <span class="p">};</span>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">results</span> <span class="p">=</span> <span class="n">frmQueryBillDistribute</span><span class="p">.</span><span class="n">getLeftNums</span><span class="p">(</span><span class="n">fathers</span><span class="p">,</span> <span class="n">sons</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">int</span><span class="p">[,]</span> <span class="n">asserts</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">]</span> <span class="p">{</span> <span class="p">{</span> <span class="m">200</span><span class="p">,</span> <span class="m">399</span> <span class="p">},</span> <span class="p">{</span> <span class="m">500</span><span class="p">,</span> <span class="m">999</span> <span class="p">}};</span>
-</span><span class='line'>    <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">asserts</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 

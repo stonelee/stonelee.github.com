@@ -5,16 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>数据抓包及分析经验小结 - Stonelee's Blog</title>
+  <title>我的2012 - Stonelee's Blog</title>
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="分析网络包——Wireshark
-查看AMF数据结构工具——AMF Explorer
-查看cookie工具——Firecookie
-cookie操作
-cookie分析 1.分析网络包——Wireshark ubuntu下需要sudo wireshark启动
-Capture-interfaces: &hellip;">
+  <meta name="description" content="编程 2012，充实的一年。 这一年我的工作重心完全偏向了前端开发，技术上感觉得到了很大的提升。 JavaScript已经成为我最熟练的开发语言，真心感受到js编程的便利和舒适。
+譬如其灵活的原型继承，譬如其优雅的函数式编程，都让我对其爱不释手。 js方面不敢妄称精通，但是应该已经达到了熟练的程度 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -23,7 +19,7 @@ Capture-interfaces: &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis">
+  <link rel="canonical" href="http://stonelee.info/blog/2012/12/31/my-2012">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -88,7 +84,7 @@ Capture-interfaces: &hellip;">
   
   <header>
     
-      <h1 class="entry-title">数据抓包及分析经验小结</h1>
+      <h1 class="entry-title">我的2012</h1>
     
     
       <p class="meta">
@@ -104,7 +100,7 @@ Capture-interfaces: &hellip;">
   
 
 
-<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">2011-04-08</time>
+<time datetime="2012-12-31T00:00:00+08:00" pubdate data-updated="true">2012-12-31</time>
         
       </p>
     
@@ -131,94 +127,71 @@ Capture-interfaces: &hellip;">
   </header>
 
 
-<div class="entry-content"><ul>
-<li>分析网络包——Wireshark</li>
-<li>查看AMF数据结构工具——AMF Explorer</li>
-<li>查看cookie工具——Firecookie</li>
-<li>cookie操作</li>
-<li>cookie分析</li>
-</ul>
+<div class="entry-content"><h3>编程</h3>
+
+<p>2012，充实的一年。</p>
+
+<p>这一年我的工作重心完全偏向了前端开发，技术上感觉得到了很大的提升。</p>
+
+<p>JavaScript已经成为我最熟练的开发语言，真心感受到js编程的便利和舒适。
+譬如其灵活的原型继承，譬如其优雅的函数式编程，都让我对其爱不释手。</p>
+
+<p>js方面不敢妄称精通，但是应该已经达到了熟练的程度。平常已经遇不到什么费解的难题，需要的就是研究更多的优秀类库源码，以及在不同浏览器中进行不断的开发实践。</p>
+
+<p>css方面可以说已经入门，对于基本样式可以想到至少两种实现方式，在实现之余还能考虑一下浏览器兼容，后期扩展等问题。当然这种程度还只能算得上入门而已，还需要在实践中不断练习，积累更多的经验。</p>
+
+<p>html方面没有什么大的进展，还是只能使用基本的标签，希望来年能有所提升。</p>
+
+<p>设计，交互什么的恐怕目前还是我的软肋，希望来年能有所提升。</p>
+
+<p>作为一名码农，编程是我的职业，也是我的爱好。</p>
+
+<p>有同事问我晚上回家不带电脑，想编程的时候怎么办。
+我说很简单啊，家里有个娱乐用的笔记本，想编程了，打开Chrome浏览器，F12开控制台，代码什么的随便写丫。
+根本不用理会开发环境配置运行库安装什么滴。</p>
+
+<p>平常上网看到精美的页面，第一时间想到的是这个css该怎么实现，然后开控制台瞅瞅是不是有什么特别的。
+家里人说，看你整天盯着淘宝首页，干嘛呢？哈！看它的css结构，嗯嗯，有点启发～</p>
+
+<p>当年选择python，貌似也是基于这种考虑，打开命令行随写随运行。现在使用js更加方便，随便找台电脑就可以。</p>
+
+<h3>工作</h3>
+
+<p>2012，渐进增强的一年。</p>
+
+<p>对前端架构的选择，经历了一个转变的过程:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Ext JS -&gt; jQuery UI -&gt; Arale -&gt; 新前端框架</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>1.分析网络包——Wireshark</h2>
+<p>年初参与了一个信息化项目，当时的情况是工期非常紧，工作量非常大，人员非常少，开发水平非常一般，包括负责前端技术研究的我都是半吊子的新手。
+在没办法的情况下，使用了Ext JS作为前端开发框架，使用MVC分离耦合，为快出成果大量使用其中的界面控件，并且根据项目需要扩展了几个控件，最终算是按期交出了东西。
+但是在使用过程中发现问题很多。最突出的问题是用户反映操作各种慢，然后是代码各种乱，然后是调试各种不顺，系统扩展各种困难。
+Ext JS这种一揽子方案恐怕不是银弹!</p>
 
-<ul>
-<li>ubuntu下需要sudo wireshark启动</li>
-<li>Capture-interfaces:Start有ip的Device</li>
-<li>本机网络包无法抓取</li>
-<li>filter中填写:
+<p>接着我被抽调参与另一个项目，原项目组之前已经开发过类似项目，但是前端代码写的比较杂乱，不太成体系，因此让我进行一下封装，以方便后续开发。
+这次我吸取了上次的教训，直接使用jQuery，从最简单的功能入手，仿照jQuery UI的做法，仅仅用了两个星期就将所有控件封装完毕，然后交给业务开发同事使用。
+结果反响还不错，界面响应速度比较快，开发也相对简单容易。不足之处就是调用方法有些别扭（所有控件都以jQuery插件形式提供），this指针到处都u是搞得人头大（初次尝试开发jQuery插件，许多用法不够优雅，比较山寨）。</p>
 
-<ul>
-<li>http and ip.src==192.168.1.103只显示本机发送的http协议包</li>
-<li>http and ip.addr==192.168.1.103只显示本机发送和接收的http协议包</li>
-</ul>
-</li>
-</ul>
+<p>紧急项目完成了，然后接着做去年的SVG项目。在此期间接触了不少优秀的源码，如SeaJS, Arale, Backbone等等。对原有项目架构的理解也更加深入，因此进行了几次重构，扩充了功能。</p>
 
+<p>在阅读源码，跟随大牛的过程中，我对js模块化、版本控制、测试集成、前端工作流等都有了进一步的认识，因此萌生了开发适合部门业务发展需要的自有前端框架的想法。
+简单说来，就是从我们已经做过的项目入手，抽象最基本模块和功能，自己封装控件，然后供业务开发人员调用，并根据实际业务需求不断完善。这样开发出来的模块，因为从底层封装所以高效灵活，因为功能针对性强所以精简易懂。
+目前已经完成大部分组件的开发，等待来年项目的检验。</p>
 
-<h2>2.查看AMF数据结构工具——AMF Explorer</h2>
+<h3>生活</h3>
 
-<p>AMF Explorer基于Firebug的AMF查看插件</p>
+<p>2012，幸福的一年。</p>
 
-<h2>3.查看cookie工具——Firecookie</h2>
+<p>7月领证，9月结婚，然后云南蜜月，北京宴请同学。
+完成了人生的一件大事，也总算给了相恋七年的LP一个承诺。</p>
 
-<p>Firecookie基于Firebug的cookie查看、删除修改等操作插件，还可以下断点</p>
+<p>喂！工作狂！留一点时间给家庭喽！</p>
 
-<h2>4.cookie操作</h2>
+<p>做好时间管理，提高工作效率，少做无用之事，腾出时间来陪伴爱我和我爱的人。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">urllib2</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">cookielib</span>
-</span><span class='line'><span class="c">#自动记录cookie</span>
-</span><span class='line'><span class="n">cj</span> <span class="o">=</span> <span class="n">cookielib</span><span class="o">.</span><span class="n">CookieJar</span><span class="p">()</span>
-</span><span class='line'><span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="n">cj</span><span class="p">))</span>
-</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/def/linkedlist.php?busynothing=12345&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">response</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#获取服务器返回的cookie</span>
-</span><span class='line'><span class="n">cookies</span> <span class="o">=</span> <span class="n">cj</span><span class="o">.</span><span class="n">make_cookies</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span> <span class="c"># extract all cookies that this request-response pair added to the jar</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#修改cookie</span>
-</span><span class='line'><span class="n">cookie</span> <span class="o">=</span> <span class="n">cookies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span class='line'><span class="n">cookie</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#39;the flowers are on their way&#39;</span> <span class="c"># 将其值设为要发送的，不必自己转码</span>
-</span><span class='line'><span class="n">request</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s">&#39;http://www.pythonchallenge.com/pc/stuff/violin.php&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span>
-</span><span class='line'><span class="n">cj</span><span class="o">.</span><span class="n">add_cookie_header</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="c">#将cookies放入请求头部</span>
-</span><span class='line'><span class="k">print</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>5.cookie分析</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'>Connection   keep-alive
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>说明使用的是长连接，应该使用Httplib2而不是Urllib2</p>
-
-<p>网站登录信息往往保存在基于session的cookie里，因此在发送数据包的时候提供</p>
-
-<p>服务端Response Headers   set-cookie发送给客户端cookie然后</p>
-
-<p>客户端Request Headers    Cookie才能保存</p>
+<p>2012年 <a href="http://www.yuedudna.com/users/1455680/book/2012">读书14本</a></p>
 </div>
 
 
@@ -241,12 +214,12 @@ Capture-interfaces: &hellip;">
   
 
 
-<time datetime="2011-04-08T00:00:00+08:00" pubdate data-updated="true">2011-04-08</time>
+<time datetime="2012-12-31T00:00:00+08:00" pubdate data-updated="true">2012-12-31</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/web/'>web</a>
+    <a class='category' href='/blog/categories/life/'>life</a>
   
 </span>
 
@@ -268,10 +241,8 @@ Capture-interfaces: &hellip;">
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2011/04/08/analysis-complicated-cell-of-word/" title="Previous Post: 如何解析word中存在合并单元格的表格">&laquo; 如何解析word中存在合并单元格的表格</a>
+        <a class="basic-alignment left" href="/blog/2012/10/09/spm-build/" title="Previous Post: 构建基于spm的前端开发流水线">&laquo; 构建基于spm的前端开发流水线</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2011/06/27/linq-score-collect/" title="Next Post: LINQ方式实现学生成绩汇总（右连接、聚合函数）">LINQ方式实现学生成绩汇总（右连接、聚合函数） &raquo;</a>
       
     </p>
   </footer>
@@ -423,8 +394,8 @@ Capture-interfaces: &hellip;">
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis/';
-        var disqus_url = 'http://stonelee.info/blog/2011/04/08/data-scratch-and-analysis/';
+        var disqus_identifier = 'http://stonelee.info/blog/2012/12/31/my-2012/';
+        var disqus_url = 'http://stonelee.info/blog/2012/12/31/my-2012/';
         var disqus_script = 'embed.js';
       
     (function () {

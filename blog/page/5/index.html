@@ -9,23 +9,7 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="整天看算法复杂度说什么冒泡排序o(N*N)，快排o(NlogN)，今天有空实际画了下，还真是差别挺大的。 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import numpy as &hellip;">
+  <meta name="description" content="问题描述 设想以下场景：盖个房子，房子需要m秒才能盖好；然后种了棵树，树需要n秒才能长好。盖房子、种树等行为都是连续的操作，手动即可，不能间断，而时间的存储一般人是需要存到脑子中，或者记到笔记本上，或者定个闹钟。时间到后再进行相应的处理。 解决方案 模拟人的行为：手动操作作为主线程顺序执行， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,6 +80,346 @@ import numpy as &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/24/mark-time-to-plant-and-build/">盖房子种树记好时间</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-24T00:00:00+08:00" pubdate data-updated="true">2010-12-24</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><h2>问题描述</h2>
+
+<p>设想以下场景：盖个房子，房子需要m秒才能盖好；然后种了棵树，树需要n秒才能长好。盖房子、种树等行为都是连续的操作，手动即可，不能间断，而时间的存储一般人是需要存到脑子中，或者记到笔记本上，或者定个闹钟。时间到后再进行相应的处理。</p>
+
+<h2>解决方案</h2>
+
+<p>模拟人的行为：手动操作作为主线程顺序执行，需要存储时间时开启新的一个线程来保存时间并计时（也就是说两者需要做到异步）。仅仅存储时间是不够的，还需要将该时间所对应的状态信息保存下来，以供时间到后的下步操作。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;等待线程</span>
+</span><span class='line'><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">seconds</span> <span class="o">=</span> <span class="n">seconds</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
+</span><span class='line'><span class="sd">        name如果已存在，则会覆盖原来的</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
+</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">TimeThread</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
+</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="s">&#39;farm1&#39;</span><span class="p">,</span> <span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
+</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 结果如下：</p>
+
+<p><img src="/images/blog/plant_build.png" alt="" /></p>
+
+<p>改进了一下代码，去掉了不必要的线程名，这样就不用去考虑命名重复的问题了。另外把线程类简化成一个内部函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'><span class="c"># Last Update:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TimeWorks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span> <span class="o">=</span> <span class="p">{}</span><span class="c">#等待工作列表，包括工作的所有细节</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span> <span class="o">=</span> <span class="p">[]</span><span class="c">#线程列表</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">setTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;将data放入等待工作列表中，并将工作放入线程中等待</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">atime</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="p">))</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">atime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">checkTimeThread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;获得时间已到的工作</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">atime</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="n">atime</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">wait_times_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atime</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_works</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">atime</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&#39;start&#39;</span>
+</span><span class='line'>    <span class="n">timeWorks</span> <span class="o">=</span> <span class="n">TimeWorks</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">build</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;build&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;build1&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">build</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">farm</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;kind&#39;</span><span class="p">:</span><span class="s">&#39;farm&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;tom&#39;</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
+</span><span class='line'>    <span class="n">timeWorks</span><span class="o">.</span><span class="n">setTime</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;build_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;farm_something&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&#39;do_something&#39;</span><span class="p">,</span> <span class="n">i</span>
+</span><span class='line'>        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">timeWorks</span><span class="o">.</span><span class="n">checkTimeThread</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;build&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">build_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;kind&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;farm&#39;</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">farm_something</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1477,98 +1801,6 @@ import numpy as &hellip;">
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/10/10/matpoltlib-draw-love-equation/">Matpoltlib绘制爱的方程式</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-10-10T00:00:00+08:00" pubdate data-updated="true">2010-10-10</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>灵感来自 <a href="http://www.matrix67.com/blog/archives/85">http://www.matrix67.com/blog/archives/85</a></p>
-
-<p>使用matplotlib绘制二维图形，使用contour来绘制方程，省去了手工计算的麻烦，解决思路参见
-<a href="http://stackoverflow.com/questions/2484527/is-it-possible-to-plot-implicit-equations-using-matplotlib">http://stackoverflow.com/questions/2484527/is-it-possible-to-plot-implicit-equations-using-matplotlib</a></p>
-
-<p>效果：</p>
-
-<p><img src="/images/blog/love_equation.jpg" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-</span><span class='line'><span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-</span><span class='line'><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
-</span><span class='line'><span class="n">f</span> <span class="o">=</span> <span class="mi">17</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">17</span> <span class="o">*</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">225</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-</span><span class='line'><span class="n">CS</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$17x^2-16|x|y+17y^2=255$&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>但是对于3D版 <a href="http://www.matrix67.com/blog/archives/223">http://www.matrix67.com/blog/archives/223</a> ，小弟还没有找到优雅的求解方法，期待牛人的解答。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/6/">&larr; Older</a>
@@ -1582,21 +1814,42 @@ import numpy as &hellip;">
 <aside class="sidebar">
   
     <section>
-	<h1>Who&#8217;s stonelee</h1>
-	<a href="/about"><img src="/images/stonelee.jpg"/></a>
-	<p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
-	<p>
-		<a href="http://www.douban.com/people/istonelee/">豆瓣</a>
-		<a href="http://www.renren.com/profile.do?id=72210924">人人</a>
-		<a style="white-space:normal;display:block;"target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
-			<img style="border:0;" border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
-		</a>
-	</p>
+  <h1>Who&#8217;s stonelee</h1>
+  <a href="/about" style="float:left;"><img src="/images/stonelee.jpg"/></a>
+  <style type="text/css">
+    .about-info {
+      display:inline-block;
+    }
+    .about-info p {
+      margin-top: 0.5em;
+      margin-bottom: 0;
+      padding-left: 5px;
+    }
+    .about-info a {
+      text-decoration: none;
+    }
+    .about-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <div class="about-info">
+    <p><a href="mailto:istonelee@gmail.com">istonelee@gmail.com</a></p>
+    <p><a href="http://www.weibo.com/imstonelee">新浪微博</a></p>
+    <p><a href="http://www.douban.com/people/istonelee/">豆瓣</a></p>
+    <p><a href="https://github.com/stonelee">Github</a></p>
+    <p><a style="white-space:normal;display:block;" target="_blank" href="http://sighttp.qq.com/authd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c">
+      <img style="border:0;" border="0" src="http://wpa.qq.com/imgd?IDKEY=aeec06efbfbbaa5a9a850656a0aab3788df4c572abb5206c&pic=49" alt="点击这里给我发消息" title="点击这里给我发消息">
+    </a></p>
+  </div>
 </section>
 
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/12/31/my-2012/">我的2012</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/10/09/spm-build/">构建基于spm的前端开发流水线</a>
@@ -1632,10 +1885,6 @@ import numpy as &hellip;">
     
       <li class="post">
         <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/10/24/svg-solution-in-ie6/">IE6下渲染svg的解决方案</a>
       </li>
     
   </ul>
