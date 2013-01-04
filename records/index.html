@@ -19,9 +19,11 @@
       <ul>
         <li>
           <h3><a href="2012-08.html">8月</a></h3>
+          <hr />
         </li>
         <li>
           <h3><a href="2012-09.html">9月</a></h3>
+          <hr />
           <dl>
             <dt>完成了人生中的一件大事：结婚。</dt>
             <dd>我和老婆的两个导师竟然专程开车过来参加结婚典礼，实在是太荣幸了！刚开学没几天，不是周末，4、5个小时车程，就为了过来给我们的喜事作个见证，师恩难忘！！</dd>
@@ -41,6 +43,7 @@
         </li>
         <li>
           <h3><a href="2012-10.html">10月</a></h3>
+          <hr />
           <dl>
             <dt>主要在之前应用经验基础上对kjsvg库进行重构</dt>
             <dd>在项目过程中发现，Bootstrap在IE下的表现相当的不尽如人意，与ASV协同使用时甚至会导致CPU瞬间占用100%，造成IE崩溃。最终痛下决心还是使用jqueryui代替，顺便重构了前端界面。</dd>
@@ -51,6 +54,7 @@
         </li>
         <li>
           <h3><a href="2012-11.html">11月</a></h3>
+          <hr />
           <dl>
             <dt>开始妄图构建自己的前端框架!</dt>
             <dd>领导要求对原来基于Extjs的项目的运行速度进行优化，然而经过多层面反复调优效果依然不明显，尤其对于老旧IE来说。痛定思痛，Extjs界面对于企业开发来说非常专业，就开发速度来说也是一流的，但是其使用js生成一切的想法，在IE面前纯粹是在搞笑，而且封装着实紧密，进行功能扩展着实有点束手束脚。因此萌生了借鉴Ext的UI自己封装模块的想法。</dd>
@@ -70,6 +74,48 @@
             <dd>终于下决心开始看 <a href="http://book.douban.com/subject/10549733/">犀牛书</a>，对自己的js知识体系进行查缺补漏，作为一名靠谱的前端，这貌似是必须的吧。截至月底第一部分“JavaScript语言核心”达成！</dd>
             <dd>虽然整天看英语文档，但是感觉词汇量还是自己的短板，找到一个 <a href="http://www.shanbay.com/">好网站</a>，希望能够坚持下去。</dd>
           </dl>
+        </li>
+        <li>
+          <h3><a href="2012-12.html">12月</a></h3>
+          <hr />
+          <dl>
+            <dt>信息化系统前端框架</dt>
+            <dd>完成弹出窗口dialog，实现标题栏拖动，封装alert，confirm，show三种常用样式方便调用。</dd>
+            <dd>基于
+              <a href="http://aralejs.org/calendar/">calendar</a>
+              封装日期选择控件date-picker，可以基于页面配置直接autoRender</dd>
+            <dd>完成下拉选择控件choose的基本功能，调用悬浮组件layer进行展示，为后面各种复杂下拉查询选择做准备。目前已经实现静态指定项的下拉选择和基本的后端json数据选择功能。</dd>
+            <dd>重新设计表单中控件的布局方式。原来采用Ext的table布局方式，结构变更比较繁琐；现在借鉴
+              <a href="http://twitter.github.com/bootstrap/scaffolding.html#gridSystem">bootstrap的布局方式</a>
+              ，使用row来布局行，span布局列，针对常用列宽指定不同class，并优化各种控件的显示宽度</dd>
+            <dd>借鉴
+              <a href="http://stonelee.info/notes/_build/html/css/regulate.html">Mozilla的规范</a>
+              对已完成的css属性的顺序进行调整，规范了Hacks方法。</dd>
+            <dd>重构css样式，使用
+              <a href="http://lesscss.org/">LESS</a>
+              封装常用CSS属性。目前保证框架在Chrome、Firefox以及IE8以上浏览器中可用。</dd>
+            <dd>完成下拉选择控件，多选控件，自定义下拉控件，工具条，多级菜单，多选树的css样式</dd>
+            <dd>通读Arale底层四大模块
+              <a href="http://aralejs.org/class/">class</a>、
+              <a href="http://aralejs.org/base/">base</a>、
+              <a href="http://aralejs.org/events/">events</a>、
+              <a href="http://aralejs.org/widget/">widget</a>
+              的源码、测试用例。</dd>
+          </dl>
+          <dl>
+            <dt>svg图形展示系统</dt>
+            <dd>实现了多应用系统的统一配置、管理、展现、编辑等功能。</dd>
+            <dd>原来的keydown事件响应使用jquery.hotkeys.js库,后来发现采用这种方法附加的按键事件会互相影响，而且绑定后无法单独取消。经研究发现这是因为其没有考虑svg独有的document问题。因此重写了按键事件响应代码，目前可以绑定Del，Esc两个键盘事件，并可以分别解除绑定。从而解决了原来系统的按键冲突bug。</dd>
+            <dd>将拖动图元改变其位置的功能合并到系统中，当拖动完毕时通过自定义事件触发来保存坐标位置到后端数据库中。</dd>
+            <dd>与后端同事讨论登录权限验证问题。后端提供的REST接口无法调用session，因此无法使用传统的权限验证方式。为解决此问题，开始研究
+              <a href="http://developers.douban.com/wiki/?title=oauth2">豆瓣网的开发平台API调用方式</a>。研究发现开发平台使用OAuth2方式向第三方平台提供接口，第三方平台需要事先申请API Key和Secret Code，然后使用API Key获取authorization_code，然后使用API Key，Secret Code以及authorization_code获取access_token，然后在所有的权限操作的header中添加Authorization:Bearer access_token，这样后端就能根据access_token安全的进行操作。这种权限验证方式是目前业界流行的规范，但是对于我们自己平台的REST调用来说有点繁琐，可以将流程进行梳理简化，从而应用于我们的平台接口调用过程中。</dd>
+          </dl>
+          <dl>
+            <dt>其他</dt>
+            <dd>读完<a href="http://book.douban.com/subject/4851107/">Hacking Vim 7.2</a>，重新整理了vimrc配置</dd>
+            <dd>试用了下<a href="http://www.sencha.com/products/touch">Sencha Touch</a>，走了一遍<a href="http://phonegap.com/">PhoneGap</a>打包流程，使用这套东西开发个演示玩具貌似是挺简单的事情，但是作为产品方案的话还需要慎重考虑。</dd>
+          </dl>
+        </li>
       </ul>
   </div>
 </body>
