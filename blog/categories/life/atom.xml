@@ -4,7 +4,7 @@
   <title><![CDATA[Category: life | Stonelee's Blog]]></title>
   <link href="http://stonelee.info/blog/categories/life/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2013-01-04T16:51:06+08:00</updated>
+  <updated>2013-01-05T09:11:00+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -42,7 +42,7 @@
 根本不用理会开发环境配置运行库安装什么滴。</p>
 
 <p>平常上网看到精美的页面，第一时间想到的是这个css该怎么实现，然后开控制台瞅瞅是不是有什么特别的。
-家里人说，看你整天盯着淘宝首页，干嘛呢？哈！看它的css结构，嗯嗯，有点启发～</p>
+LP说，看你整天盯着淘宝首页，干嘛呢？哈！看它的css结构，嗯嗯，有点启发～</p>
 
 <p>当年选择python，貌似也是基于这种考虑，打开命令行随写随运行。现在使用js更加方便，随便找台电脑就可以。</p>
 
@@ -83,6 +83,44 @@ Ext JS这种一揽子方案恐怕不是银弹!</p>
 <p>做好时间管理，提高工作效率，少做无用之事，腾出时间来陪伴爱我和我爱的人。</p>
 
 <p>2012年 <a href="http://www.yuedudna.com/users/1455680/book/2012">读书14本</a></p>
+
+<p>虽然读得不算太多，但是尽量读好书，简单罗列如下</p>
+
+<p>技术：</p>
+
+<ul>
+<li>《JavaScript权威指南》对js知识查缺补漏</li>
+<li>《JavaScript Web Applications》前端MVC实现</li>
+<li>《精通CSS》对css有了全局的认识，入门好书；</li>
+<li>《七周七语言》接触更多的编程范式，开阔视野;</li>
+<li>《Pro Git》让我更加放心的使用Git，更自如的加入到Github这个乐园中；</li>
+<li>《The Definitive Guide to Django》不能忘了后端老本行，django还是挺好用的</li>
+<li>《松本行弘的程序世界》,《Ruby元编程》入手ruby</li>
+<li>《Hacking Vim 7.2》对每天都在使用的编辑器不了解的多一些怎么对的起它？</li>
+<li>《数学之美》了解一下基础知识</li>
+</ul>
+
+
+<p>社会科普：</p>
+
+<ul>
+<li>《我們最幸福》</li>
+<li>《寻路中国》</li>
+<li>《青花鱼教练让男人拥有“王”字腹肌》</li>
+<li>《大象为什么不长毛》</li>
+</ul>
+
+
+<h3>希望</h3>
+
+<p>2013年可以期待的有什么呢？</p>
+
+<ol>
+<li>在技术上能有更大的突破。js,css,html能够融会贯通，搭建自己的前端框架；建立部门的前端开发测试部署维护流水线；向部门同事分享前端开发心得体会，共同成长；关注移动平台发展，做几个演示Demo。</li>
+<li>保持身体健康，养成定期健身的习惯。</li>
+<li>工资增长能不能跟上物价和房价？我还是相信先尽好人事，然后其他的再说吧～</li>
+</ol>
+
 ]]></content>
   </entry>
   
