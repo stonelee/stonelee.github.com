@@ -105,7 +105,7 @@
         <dl>
           <dt>svg图形展示系统</dt>
           <dd>实现了多应用系统的统一配置、管理、展现、编辑等功能。</dd>
-          <dd>原来的keydown事件响应使用jquery.hotkeys.js库,后来发现采用这种方法附加的按键事件会互相影响，而且绑定后无法单独取消。经研究发现这是因为其没有考虑svg独有的document问题。因此重写了按键事件响应代码，目前可以绑定Del，Esc两个键盘事件，并可以分别解除绑定。从而解决了原来系统的按键冲突bug。</dd>
+          <dd>原来的keydown事件响应使用jquery.hotkeys.js库，后来发现采用这种方法附加的按键事件会互相影响，而且绑定后无法单独取消。经研究发现这是因为其没有考虑svg独有的document问题。因此重写了按键事件响应代码，目前可以绑定Del，Esc两个键盘事件，并可以分别解除绑定。从而解决了原来系统的按键冲突bug。</dd>
           <dd>将拖动图元改变其位置的功能合并到系统中，当拖动完毕时通过自定义事件触发来保存坐标位置到后端数据库中。</dd>
           <dd>与后端同事讨论登录权限验证问题。后端提供的REST接口无法调用session，因此无法使用传统的权限验证方式。为解决此问题，开始研究
             <a href="http://developers.douban.com/wiki/?title=oauth2">豆瓣网的开发平台API调用方式</a>。研究发现开发平台使用OAuth2方式向第三方平台提供接口，第三方平台需要事先申请API Key和Secret Code，然后使用API Key获取authorization_code，然后使用API Key，Secret Code以及authorization_code获取access_token，然后在所有的权限操作的header中添加Authorization:Bearer access_token，这样后端就能根据access_token安全的进行操作。这种权限验证方式是目前业界流行的规范，但是对于我们自己平台的REST调用来说有点繁琐，可以将流程进行梳理简化，从而应用于我们的平台接口调用过程中。</dd>
@@ -138,6 +138,27 @@
         <dl>
           <dt>其他</dt>
           <dd>继续配置VIM，在家windows上也可以使用了。</dd>
+        </dl>
+      </li>
+      <li>
+        <h3><a href="2013-02.html">2月</a></h3>
+        <hr />
+        <dl>
+          <dt>svg图形展示系统</dt>
+          <dd>另一个部门项目也要使用本系统，但是需求与原来的功能设计偏差不小。因此需要对系统进行重构，并且提供订制化的解决方案。</dd>
+        </dl>
+        <dl>
+          <dt>其他</dt>
+          <dd>看完<a href="http://book.douban.com/subject/4183808/">《高性能JavaScript》</a>，
+            <a href="http://book.douban.com/subject/2033768/">《批评中医》</a>，
+            重新鼓起勇气看<a href="http://book.douban.com/subject/1885170/">《算法导论》</a>
+          </dd>
+          <dd>对node又一次起了兴趣。看了些 <a href="https://github.com/lepture/nico">nico</a>，
+            <a href="https://github.com/madhums/nodejs-express-mongoose-demo">nodejs-express-mongoose-demo</a>的代码
+          </dd>
+          <dd>读了些源码<a href="https://github.com/documentcloud/underscore">underscore</a>，
+            <a href="https://github.com/jquery/jquery">jquery</a>，pull了几个request，希望能采纳。
+          </dd>
         </dl>
       </li>
     </ul>
