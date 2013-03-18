@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Stonelee's Blog]]></title>
   <link href="http://stonelee.info/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2013-03-04T10:01:33+08:00</updated>
+  <updated>2013-03-18T15:37:09+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -12,6 +12,171 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Underscore源码研究之多种编程范式实现]]></title>
+    <link href="http://stonelee.info/blog/2013/03/18/underscore-style/"/>
+    <updated>2013-03-18T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2013/03/18/underscore-style</id>
+    <content type="html"><![CDATA[<p>Underscore提供了函数(functional)和对象(object-oriented)两种编程范式，使得其API调用既灵活又直观，可以说是整个类库架构中最为精华之处。</p>
+
+<h3>两种调用方式</h3>
+
+<p>函数式</p>
+
+<p><code>
+_.map([1, 2, 3], function(n){ return n * 2; });
+</code></p>
+
+<p>对象式</p>
+
+<p><code>
+_([1, 2, 3]).map(function(n){ return n * 2; });
+</code></p>
+
+<h3>源码分析</h3>
+
+<p>调用入口</p>
+
+<p><code>
+var _ = function(obj) {
+  //如果参数为_对象，说明已经实例化过了，所以直接返回
+  if (obj instanceof _) return obj;
+  //如果实例化时没有使用new，那么在这里包装一下，使得this指向该实例
+  if (!(this instanceof _)) return new _(obj);
+  //将obj保存在内部属性_wrapped中
+  this._wrapped = obj;
+};
+</code></p>
+
+<p>具体功能实现没什么好说的，直接定义为_的方法，因此可以进行函数式调用。
+需要注意的是第一个参数为obj，在对象式调用时会省掉。</p>
+
+<p>```
+_.map = function(obj, iterator, context) {
+  var results = [];
+  if (obj == null) return results;
+  if (nativeMap &amp;&amp; obj.map === nativeMap) return obj.map(iterator, context);
+  each(obj, function(value, index, list) {</p>
+
+<pre><code>results[results.length] = iterator.call(context, value, index, list);
+</code></pre>
+
+<p>  });
+  return results;
+};
+```</p>
+
+<p>重头戏来了。将方法附加到_的prototype上，实现对象式调用</p>
+
+<p>```
+//此方法暴露出来，供自定义扩展使用
+<em>.mixin = function(obj) {
+  each(</em>.functions(obj), function(name){</p>
+
+<pre><code>//定义为_的方法，供函数式调用
+var func = _[name] = obj[name];
+//定义到prototype上，供对象式调用
+_.prototype[name] = function() {
+  //将实例化时传递给构造函数的对象作为第一个参数
+  var args = [this._wrapped];
+  push.apply(args, arguments);
+  //判断是否要链式调用，见下文分析
+  return result.call(this, func.apply(_, args));
+};
+</code></pre>
+
+<p>  });
+};
+//将之前定义到<em>上的方法附加到</em>的prototype上，实现对象式调用
+<em>.mixin(</em>);
+```</p>
+
+<h3>链式调用</h3>
+
+<p>两种编程范式都可以实现链式调用，与普通调用的区别是需要使用chain来声明，最后使用value来取得最终结果。</p>
+
+<p>函数式</p>
+
+<p><code>
+_.chain([1, 2, 3]).map(function(n) {
+  return n * 2;
+}).reduce(function(memo, n) {
+  return memo + n;
+}).value();
+</code></p>
+
+<p>对象式</p>
+
+<p><code>
+_([1, 2, 3]).chain().map(function(n) {
+  return n * 2;
+}).reduce(function(memo, n) {
+  return memo + n;
+}).value();
+</code></p>
+
+<h3>链式调用实现</h3>
+
+<p>```
+//判断是否要链式调用
+var result = function(obj) {
+  return this.<em>chain ? </em>(obj).chain() : obj;
+};</p>
+
+<p>//函数式链式调用
+<em>.chain = function(obj) {
+  return </em>(obj).chain();
+};</p>
+
+<p><em>.extend(</em>.prototype, {</p>
+
+<p>  // 标记为链式调用，这样返回值就为this而不是计算得到的结果
+  chain: function() {</p>
+
+<pre><code>this._chain = true;
+return this;
+</code></pre>
+
+<p>  },</p>
+
+<p>  // 取得最终的结果
+  value: function() {</p>
+
+<pre><code>return this._wrapped;
+</code></pre>
+
+<p>  }</p>
+
+<p>});
+```</p>
+
+<h3>链式调用的调试</h3>
+
+<p>链式调用非常方便，但是要调试中间步骤的结果比较困难，因此提供了tap方法</p>
+
+<p><code>
+_([1, 2, 3]).chain().map(function(n) {
+  return n * 2;
+}).tap(function(obj) {
+  console.log(obj);
+}).reduce(function(memo, n) {
+  return memo + n;
+}).value();
+</code></p>
+
+<h3>源码实现</h3>
+
+<p>将中间过程的obj作为回调函数的参数进行处理，最终依然将其返回</p>
+
+<p><code>
+_.tap = function(obj, interceptor) {
+  interceptor(obj);
+  return obj;
+};
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[构建基于spm的前端开发流水线]]></title>
@@ -361,73 +526,6 @@ this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p
 <p>例如Grid可以拆分为Columns（基本列）,Crud（增删改）,Operate（操作）,filter（筛选）等minin类,这几个类都包含了控件和业务逻辑,可以灵活配置在各个view中。</p>
 
 <p><img src="/images/blog/Extjs-New-MVC.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ExtJS 4打包工具]]></title>
-    <link href="http://stonelee.info/blog/2012/02/16/extjs-4-build-tool/"/>
-    <updated>2012-02-16T00:00:00+08:00</updated>
-    <id>http://stonelee.info/blog/2012/02/16/extjs-4-build-tool</id>
-    <content type="html"><![CDATA[<p>ExtJS 4采用新的MVC思路进行开发。 在项目开发阶段这种分散式的代码组织方式是很爽的，但是应用到生产环境中时为了减少服务端压力，需要对js文件进行压缩打包。 为解决这一问题，官方提供了打包工具<a href="http://www.sencha.com/products/jsbuilder">JSBuilder</a>, 使用方法如下：</p>
-
-<p><code>bash
-创建jsb文件：$sencha create jsb -a http://localhost/helloext/index.html -p app.jsb3
-构建：$sencha build -p app.jsb3 -d .
-</code></p>
-
-<p>但在实际使用时发现，不知道是因为水土不服还是我们的项目结构不合sencha的胃口。在构建jsb3文件的时候不是完全找不到任何路径，就是缺少大量项目文件，可以说是相当鸡肋。</p>
-
-<p>不如自己来吧！</p>
-
-<p>经测试发现，只要按照依赖顺序，将所有文件归置到一个文件中，然后压缩，项目即可正常调用。</p>
-
-<p>打包工具已经放到github上:<a href="https://github.com/stonelee/extjs4-build-tool">https://github.com/stonelee/extjs4-build-tool</a></p>
-
-<h2>思路</h2>
-
-<p>将app下的js文件按照model, store, view, controller的顺序来创建jsb3。</p>
-
-<p>如果view中使用requires加载其它view，则按照依赖顺序先行加载。</p>
-
-<p>然后针对项目需求做了点修改，将app.js按Ext.application分成两部分，分别加载到最后生成的文件中。</p>
-
-<h2>技术点</h2>
-
-<ul>
-<li>按照依赖加载关系进行排列<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/sort.py">sort.py</a></li>
-<li>文本解析<a href="https://github.com/stonelee/extjs4-build-tool/blob/master/parse.py">parse.py</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<p>本工具仅仅将项目开发中自己创建的位于app文件夹中的model, store, view, controller以及用于项目整合的app.js打包成一个文件。
-其它ExtJS或者ux文件还需要自己打包。
-将build-tool放到app同级目录下，项目文档结构如下：</p>
-
-<p><code>
-|app
-|--controller
-|--model
-|--store
-|--view
-|build-tool
-|all.js
-</code></p>
-
-<p>最终生成文件：</p>
-
-<ul>
-<li>app.jsb3 压缩文件路径信息</li>
-<li>all-debug.js 未压缩的打包文件,供调试使用</li>
-<li>all.js 压缩打包文件,生产环境使用</li>
-</ul>
-
-
-<p>ps:</p>
-
-<p>从开始研究Ext打包，形成思路，到最终完成完整的打包工具并应用到项目中一共用了两天时间，其中纯python编码时间也就半天时间，看来经过这半年的js编码之后，我的python还没太手生嘛哈哈。动态语言之间的学习可以互相促进？待验证~</p>
 ]]></content>
   </entry>
   

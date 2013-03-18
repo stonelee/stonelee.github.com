@@ -9,7 +9,7 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="IE6下svg的渲染是个问题，目前主要有以下几种解决方案： svgweb 优点:开源，可在不支持svg的浏览器中使用flash来渲染，有效解决客户端下载插件问题 缺点:svg封装不完全，flash渲染效率比较低，刷新页面时内存泄漏严重 adobe SVGViewer 优点：对svg支持较好 缺点： &hellip;">
+  <meta name="description" content="测试网址 已提交bug，待解决 ps chrome开发者已添加Labels: -Area-Undefined Area-WebKit ps chrome 13中是可以缩放的，因此继续研究，结果在定点缩放这一功能实现时发现大问题： 放大，即currentScale *= 1.1时, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +80,94 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-11T00:00:00+08:00" pubdate data-updated="true">2011-11-11</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p><a href="/demos/currentscale_bug_in_chrome15/index.html">测试网址</a></p>
+
+<p>已提交bug，待解决</p>
+
+<h2>ps</h2>
+
+<p>chrome开发者已添加Labels: -Area-Undefined Area-WebKit</p>
+
+<h2>ps</h2>
+
+<p>chrome 13中是可以缩放的，因此继续研究，结果在定点缩放这一功能实现时发现大问题：</p>
+
+<p>放大，即currentScale *= 1.1时,
+当前鼠标的clientX减小，即event.clientX /= 1.1,
+但是图形中的点clientX不变</p>
+
+<p>移动，即currentTranslate.x -=10 时,
+当前鼠标clientX不变，
+但是图形中的点clientX -=10</p>
+
+<p>即缩放是浏览器行为，不改变图形client坐标，而移动是svg行为，会改变图形client坐标。</p>
+
+<p>两者的实现如此不一致，怪不得chrome 15中currentScale失效了，而currentTranslate没有。
+Google是不是把资源都放到canvas上了，svg这么明显的bug都不管。。。</p>
+
+<p>firefox下都是图形坐标改变，鼠标不变。很容易就能实现定点缩放功能。</p>
+
+<h2>ps</h2>
+
+<p>经反复研究发现，ie端支持svg的Chrome Frame方案不够成熟，该控件体积有20多M，安装需要几分钟，而且时常安装失败，安装体验太差。最重要的是chrome中svg缩放移动条件下鼠标定位与svg坐标换算非常诡异，经两天研究仍无法完美解决，导致无法实现定点缩放功能。页面初次加载也不够快（可能是gcf方式加载的问题），用户体验一般。
+所以&#8230;放弃&#8230;</p>
+
+<p>换用Adobe svg viewer吧。。。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1213,143 +1301,6 @@ IE8需要借助ChromeFrame插件</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/07/22/dotnetbar-combotree-show-path/">DotNetBar中ComboTree显示整条路径信息</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-07-22T00:00:00+08:00" pubdate data-updated="true">2011-07-22</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><h2>背景</h2>
-
-<p>ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Tree
-</span><span class='line'>     — node
-</span><span class='line'>     — node</span></code></pre></td></tr></table></div></figure>
-
-
-<p>点击节点node，默认显示结果为node，即仅仅是节点信息。
-现在需求是要显示Tree node，即返回整条路径信息。</p>
-
-<h2>思路</h2>
-
-<p>看上去很简单的样子，在选择事件中得到该节点的父路径信息，然后设置ComboTree的Text值即可。
-嗯嗯！我擦！Text没用！！</p>
-
-<h2>换个思路</h2>
-
-<p>更改显示节点，即SelectedNode的Text，这下行了。ComboBox显示成功，但问题是原来节点的信息也被更改了，导致树变得很难看。没办法，在弹出菜单出现时再改回去，弹出菜单出现时改回来吧！真是个丑陋的做法！</p>
-
-<p><img src="/images/blog/combobox.gif" alt="" /></p>
-
-<h2>无代码无真相</h2>
-
-<p>主要是用Tag来存储内部信息，没什么技术含量~</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//显示整个路径信息  </span>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">showFullText</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">string</span> <span class="n">strPaths</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">.</span><span class="n">FullPath</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;;&#39;</span><span class="p">).</span><span class="n">ToList</span><span class="p">().</span><span class="n">ForEach</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">strPaths</span> <span class="p">+=</span> <span class="n">s</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span> <span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">//存储原值  </span>
-</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">//更改text  </span>
-</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">strPaths</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupShowing</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//改回原值  </span>
-</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span><span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="k">as</span> <span class="n">Node</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">thisNode</span><span class="p">!=</span><span class="k">null</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupClose</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">showFullText</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1397,6 +1348,10 @@ IE8需要借助ChromeFrame插件</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/18/underscore-style/">Underscore源码研究之多种编程范式实现</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/31/my-2012/">我的2012</a>
       </li>
     
@@ -1430,10 +1385,6 @@ IE8需要借助ChromeFrame插件</p>
     
       <li class="post">
         <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
       </li>
     
   </ul>

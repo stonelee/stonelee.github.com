@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Bootstrap modal源码分析 - Stonelee's Blog</title>
+  <title>Underscore源码研究之多种编程范式实现 - Stonelee's Blog</title>
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="要分析的代码见:
-bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止全局变量污染。 1
-!function ($) {}(window.jQuery); 但是传递的参数为window.jQuery，这个在使用seajs封装时有点小问题，为了迁就它， &hellip;">
+  <meta name="description" content="Underscore提供了函数(functional)和对象(object-oriented)两种编程范式，使得其API调用既灵活又直观，可以说是整个类库架构中最为精华之处。 两种调用方式 函数式 1
+_.map([1, 2, 3], function(n){ return n * 2; }); &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@ bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://stonelee.info/blog/2012/08/22/bootstrap-modal">
+  <link rel="canonical" href="http://stonelee.info/blog/2013/03/18/underscore-style">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -85,7 +84,7 @@ bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止
   
   <header>
     
-      <h1 class="entry-title">Bootstrap Modal源码分析</h1>
+      <h1 class="entry-title">Underscore源码研究之多种编程范式实现</h1>
     
     
       <p class="meta">
@@ -101,7 +100,7 @@ bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止
   
 
 
-<time datetime="2012-08-22T00:00:00+08:00" pubdate data-updated="true">2012-08-22</time>
+<time datetime="2013-03-18T00:00:00+08:00" pubdate data-updated="true">2013-03-18</time>
         
       </p>
     
@@ -128,22 +127,68 @@ bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止
   </header>
 
 
-<div class="entry-content"><p>要分析的代码见:
-<a href="https://github.com/twitter/bootstrap/blob/master/js/bootstrap-modal.js">bootstrap-modal</a></p>
+<div class="entry-content"><p>Underscore提供了函数(functional)和对象(object-oriented)两种编程范式，使得其API调用既灵活又直观，可以说是整个类库架构中最为精华之处。</p>
 
-<h2>整体结构</h2>
+<h3>两种调用方式</h3>
 
-<p>用匿名函数将代码整个包裹起来，防止全局变量污染。</p>
+<p>函数式</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>!function ($) {}(window.jQuery);</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.map([1, 2, 3], function(n){ return n * 2; });</span></code></pre></td></tr></table></div></figure>
 
 
-<p>但是传递的参数为window.jQuery，这个在使用seajs封装时有点小问题，为了迁就它，不得已只好将jQuery暴露出来。</p>
+<p>对象式</p>
 
-<h3>类定义</h3>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).map(function(n){ return n * 2; });</span></code></pre></td></tr></table></div></figure>
 
-<p>提供插件的基本逻辑</p>
+
+<h3>源码分析</h3>
+
+<p>调用入口</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var _ = function(obj) {
+</span><span class='line'>  //如果参数为_对象，说明已经实例化过了，所以直接返回
+</span><span class='line'>  if (obj instanceof _) return obj;
+</span><span class='line'>  //如果实例化时没有使用new，那么在这里包装一下，使得this指向该实例
+</span><span class='line'>  if (!(this instanceof _)) return new _(obj);
+</span><span class='line'>  //将obj保存在内部属性_wrapped中
+</span><span class='line'>  this._wrapped = obj;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>具体功能实现没什么好说的，直接定义为_的方法，因此可以进行函数式调用。
+需要注意的是第一个参数为obj，在对象式调用时会省掉。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.map = function(obj, iterator, context) {
+</span><span class='line'>  var results = [];
+</span><span class='line'>  if (obj == null) return results;
+</span><span class='line'>  if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
+</span><span class='line'>  each(obj, function(value, index, list) {
+</span><span class='line'>    results[results.length] = iterator.call(context, value, index, list);
+</span><span class='line'>  });
+</span><span class='line'>  return results;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重头戏来了。将方法附加到_的prototype上，实现对象式调用</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -155,19 +200,65 @@ bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>//定义对象
-</span><span class='line'>var Modal = function (element, options) {}
-</span><span class='line'>
-</span><span class='line'>//在prototype中定义对象方法
-</span><span class='line'>Modal.prototype = {
-</span><span class='line'>    //constructor重新设置原型链，使得Modal.prototype.constructor === Modal，而不是Object
-</span><span class='line'>    constructor: Modal
-</span><span class='line'>  , show: function () {}
-</span><span class='line'>  , hide: function (e) {}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//此方法暴露出来，供自定义扩展使用
+</span><span class='line'>_.mixin = function(obj) {
+</span><span class='line'>  each(_.functions(obj), function(name){
+</span><span class='line'>    //定义为_的方法，供函数式调用
+</span><span class='line'>    var func = _[name] = obj[name];
+</span><span class='line'>    //定义到prototype上，供对象式调用
+</span><span class='line'>    _.prototype[name] = function() {
+</span><span class='line'>      //将实例化时传递给构造函数的对象作为第一个参数
+</span><span class='line'>      var args = [this._wrapped];
+</span><span class='line'>      push.apply(args, arguments);
+</span><span class='line'>      //判断是否要链式调用，见下文分析
+</span><span class='line'>      return result.call(this, func.apply(_, args));
+</span><span class='line'>    };
+</span><span class='line'>  });
+</span><span class='line'>};
+</span><span class='line'>//将之前定义到_上的方法附加到_的prototype上，实现对象式调用
+</span><span class='line'>_.mixin(_);</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>jQuery插件定义</h3>
+<h3>链式调用</h3>
+
+<p>两种编程范式都可以实现链式调用，与普通调用的区别是需要使用chain来声明，最后使用value来取得最终结果。</p>
+
+<p>函数式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.chain([1, 2, 3]).map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对象式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).chain().map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>链式调用实现</h3>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -191,33 +282,37 @@ bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$.fn.modal = function (option) {
-</span><span class='line'>  //return使得方法可以进行链式调用。
-</span><span class='line'>  return this.each(function () {
-</span><span class='line'>    var $this = $(this)
-</span><span class='line'>      , data = $this.data('modal')
-</span><span class='line'>      , options = $.extend({}, $.fn.modal.defaults, $this.data(), typeof option == 'object' && option)
-</span><span class='line'>    //将内部使用对象存放到data('modal')中，可以轻松从外部获取
-</span><span class='line'>    if (!data) $this.data('modal', (data = new Modal(this, options)))
-</span><span class='line'>    if (typeof option == 'string') data[option]()
-</span><span class='line'>    else if (options.show) data.show()
-</span><span class='line'>  })
-</span><span class='line'>}
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//判断是否要链式调用
+</span><span class='line'>var result = function(obj) {
+</span><span class='line'>  return this._chain ? _(obj).chain() : obj;
+</span><span class='line'>};
 </span><span class='line'>
-</span><span class='line'>//使得插件默认配置项可以在插件代码外重新设置。
-</span><span class='line'>$.fn.modal.defaults = {
-</span><span class='line'>    backdrop: true
-</span><span class='line'>  , keyboard: true
-</span><span class='line'>  , show: true
-</span><span class='line'>}
+</span><span class='line'>//函数式链式调用
+</span><span class='line'>_.chain = function(obj) {
+</span><span class='line'>  return _(obj).chain();
+</span><span class='line'>};
 </span><span class='line'>
-</span><span class='line'>//代码外面可以通过$.fn.modal.Constructor来获得Modal
-</span><span class='line'>$.fn.modal.Constructor = Modal</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>_.extend(_.prototype, {
+</span><span class='line'>
+</span><span class='line'>  // 标记为链式调用，这样返回值就为this而不是计算得到的结果
+</span><span class='line'>  chain: function() {
+</span><span class='line'>    this._chain = true;
+</span><span class='line'>    return this;
+</span><span class='line'>  },
+</span><span class='line'>
+</span><span class='line'>  // 取得最终的结果
+</span><span class='line'>  value: function() {
+</span><span class='line'>    return this._wrapped;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>Data-api</h3>
+<h3>链式调用的调试</h3>
 
-<p>在页面标签中设置data-toggle就可以提供modal调用，为页面编写者提供了最大的便利。</p>
+<p>链式调用非常方便，但是要调试中间步骤的结果比较困难，因此提供了tap方法</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -226,63 +321,28 @@ bootstrap-modal 整体结构 用匿名函数将代码整个包裹起来，防止
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$(function () {
-</span><span class='line'>  $('body').on('click.modal.data-api', '[data-toggle="modal"]', function ( e ) {
-</span><span class='line'>    var $this = $(this)
-</span><span class='line'>      , href = $this.attr('href')
-</span><span class='line'>      , $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
-</span><span class='line'>      , option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
-</span><span class='line'>
-</span><span class='line'>    e.preventDefault()
-</span><span class='line'>
-</span><span class='line'>    $target
-</span><span class='line'>      .modal(option)
-</span><span class='line'>      .one('hide', function () {
-</span><span class='line'>        $this.focus()
-</span><span class='line'>      })
-</span><span class='line'>  })
-</span><span class='line'>})</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).chain().map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).tap(function(obj) {
+</span><span class='line'>  console.log(obj);
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>技术难点</h2>
+<h3>源码实现</h3>
+
+<p>将中间过程的obj作为回调函数的参数进行处理，最终依然将其返回</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var Modal = function (element, options) {
-</span><span class='line'>  this.options = options
-</span><span class='line'>  this.$element = $(element)
-</span><span class='line'>    .delegate('[data-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this))
-</span><span class='line'>  this.options.remote && this.$element.find('.modal-body').load(this.options.remote)
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.tap = function(obj, interceptor) {
+</span><span class='line'>  interceptor(obj);
+</span><span class='line'>  return obj;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
 
-
-<p>上面这段代码中，</p>
-
-<p>this指向的是Modal类的对象，通过new Modal()生成。
-this.options和this.$element是该对象的属性。
-this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p>
-
-<p>$.proxy(this.hide, this)使得hide中的this指向这个代码中的this，即modal对象。
-如果直接在delegate中调用this.hide，会导致hide中的this指向delegate的目标对象，也就是[data-dismiss=&#8221;modal&#8221;]这个页面组件，通常是个按钮。</p>
-
-<h2>结尾</h2>
-
-<p>不得不佩服Twitter员工的水平，代码结构相当优雅清晰，有许多设计细节值得借鉴。</p>
-
-<p>弄清了整体结构和技术难点，其他部分作为实现细节就简单了，对照着代码看下就好。</p>
 </div>
 
 
@@ -305,7 +365,7 @@ this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p
   
 
 
-<time datetime="2012-08-22T00:00:00+08:00" pubdate data-updated="true">2012-08-22</time>
+<time datetime="2013-03-18T00:00:00+08:00" pubdate data-updated="true">2013-03-18</time>
       
 
 <span class="categories">
@@ -332,10 +392,8 @@ this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/04/26/new-extjs-mvc/" title="Previous Post: ExtJS 4 mvc架构演化">&laquo; ExtJS 4 mvc架构演化</a>
+        <a class="basic-alignment left" href="/blog/2012/12/31/my-2012/" title="Previous Post: 我的2012">&laquo; 我的2012</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/09/19/adblock-plus-bug/" title="Next Post: 当前端遇到Adblock Plus">当前端遇到Adblock Plus &raquo;</a>
       
     </p>
   </footer>
@@ -487,8 +545,8 @@ this.hide存在于Modal的原型链上，作为该对象的方法被调用。</p
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://stonelee.info/blog/2012/08/22/bootstrap-modal/';
-        var disqus_url = 'http://stonelee.info/blog/2012/08/22/bootstrap-modal/';
+        var disqus_identifier = 'http://stonelee.info/blog/2013/03/18/underscore-style/';
+        var disqus_url = 'http://stonelee.info/blog/2013/03/18/underscore-style/';
         var disqus_script = 'embed.js';
       
     (function () {

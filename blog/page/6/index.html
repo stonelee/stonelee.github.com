@@ -9,8 +9,15 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="灵感来自 http://www.matrix67.com/blog/archives/85 使用matplotlib绘制二维图形，使用contour来绘制方程，省去了手工计算的麻烦，解决思路参见
-http://stackoverflow.com/questions/2484527/is-it- &hellip;">
+  <meta name="description" content="需求 按一个热键，程序开始循环执行某项操作，按另一个热键，操作终止；可以如此反复。此需求广泛应用于自动脚本执行等工作。 技术点 全局热键的绑定
+热键的阻塞问题 绑定多个全局热键时，如果一个热键执行的操作未停止，程序不会响应其他热键，因此我采用另外开启线程的方法解决。 1
+2
+3
+4
+5
+6
+7
+8 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +88,201 @@ http://stackoverflow.com/questions/2484527/is-it- &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/10/12/hotkey-control-python-program/">使用热键控制python程序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-12T00:00:00+08:00" pubdate data-updated="true">2010-10-12</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><h2>需求</h2>
+
+<p>按一个热键，程序开始循环执行某项操作，按另一个热键，操作终止；可以如此反复。此需求广泛应用于自动脚本执行等工作。</p>
+
+<h2>技术点</h2>
+
+<ul>
+<li>全局热键的绑定</li>
+<li>热键的阻塞问题</li>
+</ul>
+
+
+<p>绑定多个全局热键时，如果一个热键执行的操作未停止，程序不会响应其他热键，因此我采用另外开启线程的方法解决。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#coding=utf-8</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="sd">Created on 2010-10-12</span>
+</span><span class='line'><span class="sd">@author: lxd</span>
+</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">wx</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">win32con</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">WorkThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">isSet</span><span class="p">():</span>
+</span><span class='line'>                <span class="k">print</span> <span class="s">&#39;work&#39;</span>
+</span><span class='line'>                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">break</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">FrameWithHotKey</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">regHotKey</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyStart</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyEnd</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyQuit</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">regHotKey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F1</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span> <span class="o">=</span> <span class="mi">101</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F2</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span> <span class="o">=</span> <span class="mi">102</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="n">WorkThread</span><span class="p">()</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyQuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+</span><span class='line'>        <span class="nb">exit</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">()</span>
+</span><span class='line'><span class="n">FrameWithHotKey</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+</span><span class='line'><span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>程序运行后，按Alt+F1会重复打印‘work’，按Alt+F2停止打印，按Alt+F3结束程序。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -966,6 +1168,10 @@ http://stackoverflow.com/questions/2484527/is-it- &hellip;">
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/18/underscore-style/">Underscore源码研究之多种编程范式实现</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/31/my-2012/">我的2012</a>
       </li>
     
@@ -999,10 +1205,6 @@ http://stackoverflow.com/questions/2484527/is-it- &hellip;">
     
       <li class="post">
         <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
       </li>
     
   </ul>

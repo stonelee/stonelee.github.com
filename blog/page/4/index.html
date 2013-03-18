@@ -9,8 +9,10 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="来自stackoverflow中python标签下按投票数排列第一位的问题：
-Hidden features of Python 题记：我们没有黑魔法，我们是可读的。 Python is a dynamically and strongly typed programming language &hellip;">
+  <meta name="description" content="来自PyCon上的演讲： Hidden Treasures of the Standard Library 发送方： pickle序列化
+生成md5签名
+生成包，格式&#8221;签名\n数据长度\n数据&#8221; 数据传输 接收方： 解析数据包
+根据解析出来的数据生成签名 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +83,184 @@ Hidden features of Python 题记：我们没有黑魔法，我们是可读的。
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/21/data-transfer-based-on-signature/">基于签名的数据传输</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-21T00:00:00+08:00" pubdate data-updated="true">2011-03-21</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>来自PyCon上的演讲：</p>
+
+<p><a href="http://www.slideshare.net/doughellmann/hidden-treasures-of-the-python-standard-library">Hidden Treasures of the Standard Library</a></p>
+
+<p>发送方：</p>
+
+<ul>
+<li>pickle序列化</li>
+<li>生成md5签名</li>
+<li>生成包，格式&#8221;签名\n数据长度\n数据&#8221;</li>
+</ul>
+
+
+<p><strong>数据传输</strong></p>
+
+<p>接收方：</p>
+
+<ul>
+<li>解析数据包</li>
+<li>根据解析出来的数据生成签名</li>
+<li>将新生成的签名与数据包中的签名对比，如果正确说明无篡改, 否则抛出异常</li>
+<li>pickle反序列化</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">hmac</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">pickle</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">h</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">##########send##########</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">send_buffer</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>    <span class="c">#模拟数据传输</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">StringIO</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%d</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">msg</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">send_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">msg</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">signature</span> <span class="o">=</span> <span class="n">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">send_buffer</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">##########get##########</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">parse_buffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">signature</span> <span class="o">=</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="c">#strip \n</span>
+</span><span class='line'>    <span class="n">msg_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">buffer</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+</span><span class='line'>    <span class="n">msg</span> <span class="o">=</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">msg_length</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">signature</span><span class="p">,</span> <span class="n">msg</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">check_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">new_signature</span> <span class="o">=</span> <span class="n">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">new_signature</span> <span class="o">==</span> <span class="n">signature</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">msg</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;signature error&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">buffer</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">signature</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">parse_buffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">message</span> <span class="o">=</span> <span class="n">check_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;some_message&#39;</span>
+</span><span class='line'><span class="n">key</span> <span class="o">=</span> <span class="s">&#39;some_key&#39;</span>
+</span><span class='line'><span class="nb">buffer</span> <span class="o">=</span> <span class="n">send_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="n">get_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">buffer</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1484,291 +1664,6 @@ hotfix自己单独使用，不需要再release了</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/01/09/vim-plugin/">Vim最佳插件实践</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-01-09T00:00:00+08:00" pubdate data-updated="true">2011-01-09</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>基本都是直接复制到bundle，然后添加doc帮助</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>：helptags ~/.vim/bundle/something/doc</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=2332">pathogen</a> 将插件按文件夹放置，方便管理</h2>
-
-<p>将pathogen放到autoload下</p>
-
-<p>.vimrc:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">filetype</span> off
-</span><span class='line'><span class="k">call</span> pathogen#runtime_append_all_bundles<span class="p">()</span>&quot;方便管理plugin
-</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=790">python增强语法高亮</a></h2>
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=30">python增强编辑</a></h2>
-
-<p>会提供一个python菜单，快捷键也相应提供了</p>
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=159">minibufexpl</a>多标签切换</h2>
-
-<p>.vimrc:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="c">&quot;&lt;C-hjkl&gt;minibuffer中移动</span>
-</span><span class='line'><span class="k">let</span> g:miniBufExplMapWindowNavVim <span class="p">=</span> <span class="m">1</span>
-</span><span class='line'><span class="c">&quot;&lt;C-TAB&gt; and &lt;C-S-TAB&gt; 直接在当前窗口切换buffer</span>
-</span><span class='line'><span class="k">let</span> g:miniBufExplMapCTabSwitchBufs <span class="p">=</span> <span class="m">1</span>
-</span><span class='line'><span class="c">&quot;防止与Taglist冲突</span>
-</span><span class='line'><span class="k">let</span> g:miniBufExplModSelTarget <span class="p">=</span> <span class="m">1</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=1218">NERDCommenter</a>自动注释</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">c</span><span class="p">&lt;</span>space<span class="p">&gt;</span>来切换注释与否
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=1658">NERDTree</a>树状菜单</h2>
-
-<p>.vimrc:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">e</span> :NERDTreeToggle<span class="p">&lt;</span><span class="k">cr</span><span class="p">&gt;</span>
-</span><span class='line'><span class="k">let</span> NERDTreeIgnore<span class="p">=</span>[<span class="s1">&#39;.vim$&#39;</span><span class="p">,</span> <span class="s1">&#39;\~$&#39;</span><span class="p">,</span> <span class="s1">&#39;.*\.pyc$&#39;</span><span class="p">,</span> <span class="s1">&#39;pip-log\.txt$&#39;</span>]
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">e</span>来切换树形菜单显示与否
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://code.google.com/p/xptemplate/">xptemplate</a> Snippet Template engine</h2>
-
-<p>支持嵌套，支持同文件多模板识别</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>C<span class="p">-</span>\<span class="p">&gt;</span>显示模板，<span class="p">&lt;</span>Tab<span class="p">&gt;&lt;</span>S<span class="p">-</span>Tab<span class="p">&gt;</span>切换焦点
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>自己更改模板：
-ftplugin下找到对应模板文件，添加新的模板</p>
-
-<p>去掉多余空格：
-.vimrc:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> g:xptemplate_vars <span class="p">=</span> <span class="c">&quot;SParg=&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Ack 目录文件中查找字符</h2>
-
-<p>安装Ack:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ack-grep
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>安装 <a href="https://github.com/mileszs/ack.vim">Ack</a>插件
-.vimrc:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> g:ackprg<span class="p">=</span><span class="s2">&quot;ack-grep -H --nocolor --nogroup --column&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ack something可以在当前目录查找字符</p>
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=2981">zencoding</a>扩展html</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;,</span> 扩展
-</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">n</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">N</span> 到下/上一个输入点
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">d</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span> D选中
-</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">j</span> 简写标签，也可扩展
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span>i img上使用可以自动添加宽高
-</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span>a 在连接上可以添加a标签
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=1234">YankRing</a>增强型粘贴</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>YRShow显示剪贴板
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">p</span><span class="p">&gt;</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">n</span><span class="p">&gt;</span> 轮番切换剪贴板
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=2996">translate</a></h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>Trans翻译光标所在文字
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=1697">surround</a>增删改标签</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">ds</span>“ 删除两端的”“
-</span><span class='line'>dst 删除两端的标签
-</span><span class='line'>cs”{ 将两端的“”改为{  } 有空格
-</span><span class='line'>cs”} 将两端的“”改为{} 无空格
-</span><span class='line'>yss<span class="p">)</span> 两端加上<span class="p">()</span>
-</span><span class='line'>ysiw） 将光标所在单词两端加上（）
-</span><span class='line'>配合repeat实现.重复操作
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="https://github.com/jpalardy/dotfiles/raw/master/vim/plugin/slime.vim">slime</a>测试代码段</h2>
-
-<p>终端中建立一个screen</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>screen -S devshell
-</span><span class='line'>python
-</span><span class='line'>
-</span><span class='line'>选中代码，&lt;C-c&gt;&lt;C-c&gt;可以在screen中查看运行情况。
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>screen的使用可以参看：
-http://hi.baidu.com/ubuntu2me/blog/item/ce61b23798a5a93b0b55a960.html
-http://wiki.ubuntu.org.cn/GNUScreen
-http://www.9usb.net/201002/linux-screen-mingling.html</p>
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=2914">pep8</a>代码静态检查</h2>
-
-<p>需要先安装工具 &#8220;pep8&#8221;:http://github.com/cburroughs/pep8.py
-F5 安装pep8规则检查代码</p>
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=2527">jpythonfold</a>代码折叠</h2>
-
-<p>需要重命名为python.vim
-.vimrc中：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'>nnoremap <span class="p">&lt;</span>space<span class="p">&gt;</span> za
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>空格 折叠、打开代码段
-zr 打开所有折叠
-zm 所有折叠</p>
-
-<p>js代码折叠</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> javaScript_fold<span class="p">=</span><span class="m">1</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://ctags.sourceforge.net/">ctags</a>+ <a href="http://www.vim.org/scripts/script.php?script_id=273">taglist</a>展示代码结构</h2>
-
-<p>安装ctags，在要生成tags的目录下ctags -R
-安装taglist插件</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>TlistToggle切换<span class="k">tags</span>显示与否
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2><a href="http://www.vim.org/scripts/script.php?script_id=2607">tasklist</a>显示todo列表</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">t</span> 打开todo列表
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1816,6 +1711,10 @@ zm 所有折叠</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/18/underscore-style/">Underscore源码研究之多种编程范式实现</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/31/my-2012/">我的2012</a>
       </li>
     
@@ -1849,10 +1748,6 @@ zm 所有折叠</p>
     
       <li class="post">
         <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
       </li>
     
   </ul>

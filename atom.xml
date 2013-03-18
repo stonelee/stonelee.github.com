@@ -4,7 +4,7 @@
   <title><![CDATA[Stonelee's Blog]]></title>
   <link href="http://stonelee.info/atom.xml" rel="self"/>
   <link href="http://stonelee.info/"/>
-  <updated>2013-03-04T10:01:33+08:00</updated>
+  <updated>2013-03-18T15:37:09+08:00</updated>
   <id>http://stonelee.info/</id>
   <author>
     <name><![CDATA[stonelee]]></name>
@@ -12,6 +12,230 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Underscore源码研究之多种编程范式实现]]></title>
+    <link href="http://stonelee.info/blog/2013/03/18/underscore-style/"/>
+    <updated>2013-03-18T00:00:00+08:00</updated>
+    <id>http://stonelee.info/blog/2013/03/18/underscore-style</id>
+    <content type="html"><![CDATA[<p>Underscore提供了函数(functional)和对象(object-oriented)两种编程范式，使得其API调用既灵活又直观，可以说是整个类库架构中最为精华之处。</p>
+
+<h3>两种调用方式</h3>
+
+<p>函数式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.map([1, 2, 3], function(n){ return n * 2; });</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对象式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).map(function(n){ return n * 2; });</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>源码分析</h3>
+
+<p>调用入口</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var _ = function(obj) {
+</span><span class='line'>  //如果参数为_对象，说明已经实例化过了，所以直接返回
+</span><span class='line'>  if (obj instanceof _) return obj;
+</span><span class='line'>  //如果实例化时没有使用new，那么在这里包装一下，使得this指向该实例
+</span><span class='line'>  if (!(this instanceof _)) return new _(obj);
+</span><span class='line'>  //将obj保存在内部属性_wrapped中
+</span><span class='line'>  this._wrapped = obj;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>具体功能实现没什么好说的，直接定义为_的方法，因此可以进行函数式调用。
+需要注意的是第一个参数为obj，在对象式调用时会省掉。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.map = function(obj, iterator, context) {
+</span><span class='line'>  var results = [];
+</span><span class='line'>  if (obj == null) return results;
+</span><span class='line'>  if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
+</span><span class='line'>  each(obj, function(value, index, list) {
+</span><span class='line'>    results[results.length] = iterator.call(context, value, index, list);
+</span><span class='line'>  });
+</span><span class='line'>  return results;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重头戏来了。将方法附加到_的prototype上，实现对象式调用</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//此方法暴露出来，供自定义扩展使用
+</span><span class='line'>_.mixin = function(obj) {
+</span><span class='line'>  each(_.functions(obj), function(name){
+</span><span class='line'>    //定义为_的方法，供函数式调用
+</span><span class='line'>    var func = _[name] = obj[name];
+</span><span class='line'>    //定义到prototype上，供对象式调用
+</span><span class='line'>    _.prototype[name] = function() {
+</span><span class='line'>      //将实例化时传递给构造函数的对象作为第一个参数
+</span><span class='line'>      var args = [this._wrapped];
+</span><span class='line'>      push.apply(args, arguments);
+</span><span class='line'>      //判断是否要链式调用，见下文分析
+</span><span class='line'>      return result.call(this, func.apply(_, args));
+</span><span class='line'>    };
+</span><span class='line'>  });
+</span><span class='line'>};
+</span><span class='line'>//将之前定义到_上的方法附加到_的prototype上，实现对象式调用
+</span><span class='line'>_.mixin(_);</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>链式调用</h3>
+
+<p>两种编程范式都可以实现链式调用，与普通调用的区别是需要使用chain来声明，最后使用value来取得最终结果。</p>
+
+<p>函数式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.chain([1, 2, 3]).map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对象式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).chain().map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>链式调用实现</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//判断是否要链式调用
+</span><span class='line'>var result = function(obj) {
+</span><span class='line'>  return this._chain ? _(obj).chain() : obj;
+</span><span class='line'>};
+</span><span class='line'>
+</span><span class='line'>//函数式链式调用
+</span><span class='line'>_.chain = function(obj) {
+</span><span class='line'>  return _(obj).chain();
+</span><span class='line'>};
+</span><span class='line'>
+</span><span class='line'>_.extend(_.prototype, {
+</span><span class='line'>
+</span><span class='line'>  // 标记为链式调用，这样返回值就为this而不是计算得到的结果
+</span><span class='line'>  chain: function() {
+</span><span class='line'>    this._chain = true;
+</span><span class='line'>    return this;
+</span><span class='line'>  },
+</span><span class='line'>
+</span><span class='line'>  // 取得最终的结果
+</span><span class='line'>  value: function() {
+</span><span class='line'>    return this._wrapped;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>链式调用的调试</h3>
+
+<p>链式调用非常方便，但是要调试中间步骤的结果比较困难，因此提供了tap方法</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).chain().map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).tap(function(obj) {
+</span><span class='line'>  console.log(obj);
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>源码实现</h3>
+
+<p>将中间过程的obj作为回调函数的参数进行处理，最终依然将其返回</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.tap = function(obj, interceptor) {
+</span><span class='line'>  interceptor(obj);
+</span><span class='line'>  return obj;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[我的2012]]></title>
@@ -2124,96 +2348,6 @@ IE8需要借助ChromeFrame插件</p>
 
 
 <p>详细代码可以参见template.py,纯粹是字符串的解析，有时间再看吧。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DotNetBar中ComboTree显示整条路径信息]]></title>
-    <link href="http://stonelee.info/blog/2011/07/22/dotnetbar-combotree-show-path/"/>
-    <updated>2011-07-22T00:00:00+08:00</updated>
-    <id>http://stonelee.info/blog/2011/07/22/dotnetbar-combotree-show-path</id>
-    <content type="html"><![CDATA[<h2>背景</h2>
-
-<p>ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Tree
-</span><span class='line'>     — node
-</span><span class='line'>     — node</span></code></pre></td></tr></table></div></figure>
-
-
-<p>点击节点node，默认显示结果为node，即仅仅是节点信息。
-现在需求是要显示Tree node，即返回整条路径信息。</p>
-
-<h2>思路</h2>
-
-<p>看上去很简单的样子，在选择事件中得到该节点的父路径信息，然后设置ComboTree的Text值即可。
-嗯嗯！我擦！Text没用！！</p>
-
-<h2>换个思路</h2>
-
-<p>更改显示节点，即SelectedNode的Text，这下行了。ComboBox显示成功，但问题是原来节点的信息也被更改了，导致树变得很难看。没办法，在弹出菜单出现时再改回去，弹出菜单出现时改回来吧！真是个丑陋的做法！</p>
-
-<p><img src="http://stonelee.info/images/blog/combobox.gif" alt="" /></p>
-
-<h2>无代码无真相</h2>
-
-<p>主要是用Tag来存储内部信息，没什么技术含量~</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//显示整个路径信息  </span>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">showFullText</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">string</span> <span class="n">strPaths</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">.</span><span class="n">FullPath</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;;&#39;</span><span class="p">).</span><span class="n">ToList</span><span class="p">().</span><span class="n">ForEach</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">strPaths</span> <span class="p">+=</span> <span class="n">s</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span> <span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">//存储原值  </span>
-</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">//更改text  </span>
-</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">strPaths</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupShowing</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//改回原值  </span>
-</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span><span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="k">as</span> <span class="n">Node</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">thisNode</span><span class="p">!=</span><span class="k">null</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupClose</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">showFullText</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   

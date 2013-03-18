@@ -9,13 +9,11 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="问题场景 现有票据0-999，单位A领取前100张（0-99），单位B领取之后100张(100-199),单位C也领取100张(400-499),求剩下的票号段 1
+  <meta name="description" content="背景 ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示： 1
 2
 3
-4
-原来： 0-999
-领取： 0-99 100-199 400-499
-===========运算求解 &hellip;">
+Tree — node — node 点击节点node，默认显示结果为node，即仅仅是节点信息。
+现在需求是要显示Tree node，即返回整条路径信息。 思路 看上去很简单的样子， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -86,6 +84,143 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/07/22/dotnetbar-combotree-show-path/">DotNetBar中ComboTree显示整条路径信息</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-22T00:00:00+08:00" pubdate data-updated="true">2011-07-22</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><h2>背景</h2>
+
+<p>ComboTree是个可以显示树状下拉菜单的ComboBox控件，弹出菜单如下所示：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Tree
+</span><span class='line'>     — node
+</span><span class='line'>     — node</span></code></pre></td></tr></table></div></figure>
+
+
+<p>点击节点node，默认显示结果为node，即仅仅是节点信息。
+现在需求是要显示Tree node，即返回整条路径信息。</p>
+
+<h2>思路</h2>
+
+<p>看上去很简单的样子，在选择事件中得到该节点的父路径信息，然后设置ComboTree的Text值即可。
+嗯嗯！我擦！Text没用！！</p>
+
+<h2>换个思路</h2>
+
+<p>更改显示节点，即SelectedNode的Text，这下行了。ComboBox显示成功，但问题是原来节点的信息也被更改了，导致树变得很难看。没办法，在弹出菜单出现时再改回去，弹出菜单出现时改回来吧！真是个丑陋的做法！</p>
+
+<p><img src="/images/blog/combobox.gif" alt="" /></p>
+
+<h2>无代码无真相</h2>
+
+<p>主要是用Tag来存储内部信息，没什么技术含量~</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//显示整个路径信息  </span>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">showFullText</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">string</span> <span class="n">strPaths</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">.</span><span class="n">FullPath</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;;&#39;</span><span class="p">).</span><span class="n">ToList</span><span class="p">().</span><span class="n">ForEach</span><span class="p">(</span><span class="n">s</span> <span class="p">=&gt;</span> <span class="n">strPaths</span> <span class="p">+=</span> <span class="n">s</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span> <span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">SelectedNode</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//存储原值  </span>
+</span><span class='line'>    <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//更改text  </span>
+</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">strPaths</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupShowing</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//改回原值  </span>
+</span><span class='line'>    <span class="n">Node</span> <span class="n">thisNode</span><span class="p">=</span> <span class="n">comboTreeDate</span><span class="p">.</span><span class="n">Tag</span> <span class="k">as</span> <span class="n">Node</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">thisNode</span><span class="p">!=</span><span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">thisNode</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">Tag</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">comboTreeDate_PopupClose</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">showFullText</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1248,184 +1383,6 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/03/21/data-transfer-based-on-signature/">基于签名的数据传输</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-03-21T00:00:00+08:00" pubdate data-updated="true">2011-03-21</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p>来自PyCon上的演讲：</p>
-
-<p><a href="http://www.slideshare.net/doughellmann/hidden-treasures-of-the-python-standard-library">Hidden Treasures of the Standard Library</a></p>
-
-<p>发送方：</p>
-
-<ul>
-<li>pickle序列化</li>
-<li>生成md5签名</li>
-<li>生成包，格式&#8221;签名\n数据长度\n数据&#8221;</li>
-</ul>
-
-
-<p><strong>数据传输</strong></p>
-
-<p>接收方：</p>
-
-<ul>
-<li>解析数据包</li>
-<li>根据解析出来的数据生成签名</li>
-<li>将新生成的签名与数据包中的签名对比，如果正确说明无篡改, 否则抛出异常</li>
-<li>pickle反序列化</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">__revision__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
-</span><span class='line'><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;lxd&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">hmac</span>
-</span><span class='line'><span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">pickle</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">h</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">##########send##########</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">send_buffer</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-</span><span class='line'>    <span class="c">#模拟数据传输</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">StringIO</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%d</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">msg</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">send_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">msg</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">signature</span> <span class="o">=</span> <span class="n">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">send_buffer</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">##########get##########</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">parse_buffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">signature</span> <span class="o">=</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="c">#strip \n</span>
-</span><span class='line'>    <span class="n">msg_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">buffer</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
-</span><span class='line'>    <span class="n">msg</span> <span class="o">=</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">msg_length</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">signature</span><span class="p">,</span> <span class="n">msg</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">check_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">new_signature</span> <span class="o">=</span> <span class="n">create_signature</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">new_signature</span> <span class="o">==</span> <span class="n">signature</span><span class="p">:</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">msg</span>
-</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
-</span><span class='line'>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;signature error&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">buffer</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">signature</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">parse_buffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">message</span> <span class="o">=</span> <span class="n">check_signature</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;some_message&#39;</span>
-</span><span class='line'><span class="n">key</span> <span class="o">=</span> <span class="s">&#39;some_key&#39;</span>
-</span><span class='line'><span class="nb">buffer</span> <span class="o">=</span> <span class="n">send_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-</span><span class='line'><span class="k">print</span> <span class="n">get_msg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">buffer</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1473,6 +1430,10 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/18/underscore-style/">Underscore源码研究之多种编程范式实现</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/31/my-2012/">我的2012</a>
       </li>
     
@@ -1506,10 +1467,6 @@ Cells数组在计算时会无视行中的合并，将合并单元格作为普通
     
       <li class="post">
         <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
       </li>
     
   </ul>

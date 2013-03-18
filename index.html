@@ -9,8 +9,8 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="编程 2012，充实的一年。 这一年我的工作重心完全偏向了前端开发，技术上感觉得到了很大的提升。 JavaScript已经成为我最熟练的开发语言，真心感受到js编程的便利和舒适。
-譬如其灵活的原型继承，譬如其优雅的函数式编程，都让我对其爱不释手。 js方面不敢妄称精通，但是应该已经达到了熟练的程度 &hellip;">
+  <meta name="description" content="Underscore提供了函数(functional)和对象(object-oriented)两种编程范式，使得其API调用既灵活又直观，可以说是整个类库架构中最为精华之处。 两种调用方式 函数式 1
+_.map([1, 2, 3], function(n){ return n * 2; }); &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,277 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/18/underscore-style/">Underscore源码研究之多种编程范式实现</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-18T00:00:00+08:00" pubdate data-updated="true">2013-03-18</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>Underscore提供了函数(functional)和对象(object-oriented)两种编程范式，使得其API调用既灵活又直观，可以说是整个类库架构中最为精华之处。</p>
+
+<h3>两种调用方式</h3>
+
+<p>函数式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.map([1, 2, 3], function(n){ return n * 2; });</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对象式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).map(function(n){ return n * 2; });</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>源码分析</h3>
+
+<p>调用入口</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var _ = function(obj) {
+</span><span class='line'>  //如果参数为_对象，说明已经实例化过了，所以直接返回
+</span><span class='line'>  if (obj instanceof _) return obj;
+</span><span class='line'>  //如果实例化时没有使用new，那么在这里包装一下，使得this指向该实例
+</span><span class='line'>  if (!(this instanceof _)) return new _(obj);
+</span><span class='line'>  //将obj保存在内部属性_wrapped中
+</span><span class='line'>  this._wrapped = obj;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>具体功能实现没什么好说的，直接定义为_的方法，因此可以进行函数式调用。
+需要注意的是第一个参数为obj，在对象式调用时会省掉。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.map = function(obj, iterator, context) {
+</span><span class='line'>  var results = [];
+</span><span class='line'>  if (obj == null) return results;
+</span><span class='line'>  if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
+</span><span class='line'>  each(obj, function(value, index, list) {
+</span><span class='line'>    results[results.length] = iterator.call(context, value, index, list);
+</span><span class='line'>  });
+</span><span class='line'>  return results;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重头戏来了。将方法附加到_的prototype上，实现对象式调用</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//此方法暴露出来，供自定义扩展使用
+</span><span class='line'>_.mixin = function(obj) {
+</span><span class='line'>  each(_.functions(obj), function(name){
+</span><span class='line'>    //定义为_的方法，供函数式调用
+</span><span class='line'>    var func = _[name] = obj[name];
+</span><span class='line'>    //定义到prototype上，供对象式调用
+</span><span class='line'>    _.prototype[name] = function() {
+</span><span class='line'>      //将实例化时传递给构造函数的对象作为第一个参数
+</span><span class='line'>      var args = [this._wrapped];
+</span><span class='line'>      push.apply(args, arguments);
+</span><span class='line'>      //判断是否要链式调用，见下文分析
+</span><span class='line'>      return result.call(this, func.apply(_, args));
+</span><span class='line'>    };
+</span><span class='line'>  });
+</span><span class='line'>};
+</span><span class='line'>//将之前定义到_上的方法附加到_的prototype上，实现对象式调用
+</span><span class='line'>_.mixin(_);</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>链式调用</h3>
+
+<p>两种编程范式都可以实现链式调用，与普通调用的区别是需要使用chain来声明，最后使用value来取得最终结果。</p>
+
+<p>函数式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.chain([1, 2, 3]).map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对象式</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).chain().map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>链式调用实现</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//判断是否要链式调用
+</span><span class='line'>var result = function(obj) {
+</span><span class='line'>  return this._chain ? _(obj).chain() : obj;
+</span><span class='line'>};
+</span><span class='line'>
+</span><span class='line'>//函数式链式调用
+</span><span class='line'>_.chain = function(obj) {
+</span><span class='line'>  return _(obj).chain();
+</span><span class='line'>};
+</span><span class='line'>
+</span><span class='line'>_.extend(_.prototype, {
+</span><span class='line'>
+</span><span class='line'>  // 标记为链式调用，这样返回值就为this而不是计算得到的结果
+</span><span class='line'>  chain: function() {
+</span><span class='line'>    this._chain = true;
+</span><span class='line'>    return this;
+</span><span class='line'>  },
+</span><span class='line'>
+</span><span class='line'>  // 取得最终的结果
+</span><span class='line'>  value: function() {
+</span><span class='line'>    return this._wrapped;
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>链式调用的调试</h3>
+
+<p>链式调用非常方便，但是要调试中间步骤的结果比较困难，因此提供了tap方法</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_([1, 2, 3]).chain().map(function(n) {
+</span><span class='line'>  return n * 2;
+</span><span class='line'>}).tap(function(obj) {
+</span><span class='line'>  console.log(obj);
+</span><span class='line'>}).reduce(function(memo, n) {
+</span><span class='line'>  return memo + n;
+</span><span class='line'>}).value();</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>源码实现</h3>
+
+<p>将中间过程的obj作为回调函数的参数进行处理，最终依然将其返回</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_.tap = function(obj, interceptor) {
+</span><span class='line'>  interceptor(obj);
+</span><span class='line'>  return obj;
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1869,94 +2140,6 @@ Ext.Element屏蔽DOM操作的浏览器差异，功能包括：</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-11-11T00:00:00+08:00" pubdate data-updated="true">2011-11-11</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><p><a href="/demos/currentscale_bug_in_chrome15/index.html">测试网址</a></p>
-
-<p>已提交bug，待解决</p>
-
-<h2>ps</h2>
-
-<p>chrome开发者已添加Labels: -Area-Undefined Area-WebKit</p>
-
-<h2>ps</h2>
-
-<p>chrome 13中是可以缩放的，因此继续研究，结果在定点缩放这一功能实现时发现大问题：</p>
-
-<p>放大，即currentScale *= 1.1时,
-当前鼠标的clientX减小，即event.clientX /= 1.1,
-但是图形中的点clientX不变</p>
-
-<p>移动，即currentTranslate.x -=10 时,
-当前鼠标clientX不变，
-但是图形中的点clientX -=10</p>
-
-<p>即缩放是浏览器行为，不改变图形client坐标，而移动是svg行为，会改变图形client坐标。</p>
-
-<p>两者的实现如此不一致，怪不得chrome 15中currentScale失效了，而currentTranslate没有。
-Google是不是把资源都放到canvas上了，svg这么明显的bug都不管。。。</p>
-
-<p>firefox下都是图形坐标改变，鼠标不变。很容易就能实现定点缩放功能。</p>
-
-<h2>ps</h2>
-
-<p>经反复研究发现，ie端支持svg的Chrome Frame方案不够成熟，该控件体积有20多M，安装需要几分钟，而且时常安装失败，安装体验太差。最重要的是chrome中svg缩放移动条件下鼠标定位与svg坐标换算非常诡异，经两天研究仍无法完美解决，导致无法实现定点缩放功能。页面初次加载也不够快（可能是gcf方式加载的问题），用户体验一般。
-所以&#8230;放弃&#8230;</p>
-
-<p>换用Adobe svg viewer吧。。。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2002,6 +2185,10 @@ Google是不是把资源都放到canvas上了，svg这么明显的bug都不管�
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/18/underscore-style/">Underscore源码研究之多种编程范式实现</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/31/my-2012/">我的2012</a>
       </li>
     
@@ -2035,10 +2222,6 @@ Google是不是把资源都放到canvas上了，svg这么明显的bug都不管�
     
       <li class="post">
         <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
       </li>
     
   </ul>

@@ -9,7 +9,12 @@
   <meta name="author" content="stonelee">
 
   
-  <meta name="description" content="问题描述 设想以下场景：盖个房子，房子需要m秒才能盖好；然后种了棵树，树需要n秒才能长好。盖房子、种树等行为都是连续的操作，手动即可，不能间断，而时间的存储一般人是需要存到脑子中，或者记到笔记本上，或者定个闹钟。时间到后再进行相应的处理。 解决方案 模拟人的行为：手动操作作为主线程顺序执行， &hellip;">
+  <meta name="description" content="基本都是直接复制到bundle，然后添加doc帮助 1
+：helptags ~/.vim/bundle/something/doc pathogen 将插件按文件夹放置，方便管理 将pathogen放到autoload下 .vimrc: 1
+2
+3
+filetype off
+call &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +85,291 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/01/09/vim-plugin/">Vim最佳插件实践</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-01-09T00:00:00+08:00" pubdate data-updated="true">2011-01-09</time>
+        
+      </p>
+    
+
+<style type="text/css" media="screen">
+  .jiathis .flash-video{
+    border: 0;
+  }
+</style>
+    <div class="jiathis">
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+</div>
+<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
+<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+    </div>
+  </header>
+
+
+  <div class="entry-content"><p>基本都是直接复制到bundle，然后添加doc帮助</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>：helptags ~/.vim/bundle/something/doc</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2332">pathogen</a> 将插件按文件夹放置，方便管理</h2>
+
+<p>将pathogen放到autoload下</p>
+
+<p>.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">filetype</span> off
+</span><span class='line'><span class="k">call</span> pathogen#runtime_append_all_bundles<span class="p">()</span>&quot;方便管理plugin
+</span><span class='line'><span class="k">filetype</span> plugin indent <span class="k">on</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=790">python增强语法高亮</a></h2>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=30">python增强编辑</a></h2>
+
+<p>会提供一个python菜单，快捷键也相应提供了</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=159">minibufexpl</a>多标签切换</h2>
+
+<p>.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="c">&quot;&lt;C-hjkl&gt;minibuffer中移动</span>
+</span><span class='line'><span class="k">let</span> g:miniBufExplMapWindowNavVim <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'><span class="c">&quot;&lt;C-TAB&gt; and &lt;C-S-TAB&gt; 直接在当前窗口切换buffer</span>
+</span><span class='line'><span class="k">let</span> g:miniBufExplMapCTabSwitchBufs <span class="p">=</span> <span class="m">1</span>
+</span><span class='line'><span class="c">&quot;防止与Taglist冲突</span>
+</span><span class='line'><span class="k">let</span> g:miniBufExplModSelTarget <span class="p">=</span> <span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1218">NERDCommenter</a>自动注释</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">c</span><span class="p">&lt;</span>space<span class="p">&gt;</span>来切换注释与否
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1658">NERDTree</a>树状菜单</h2>
+
+<p>.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">e</span> :NERDTreeToggle<span class="p">&lt;</span><span class="k">cr</span><span class="p">&gt;</span>
+</span><span class='line'><span class="k">let</span> NERDTreeIgnore<span class="p">=</span>[<span class="s1">&#39;.vim$&#39;</span><span class="p">,</span> <span class="s1">&#39;\~$&#39;</span><span class="p">,</span> <span class="s1">&#39;.*\.pyc$&#39;</span><span class="p">,</span> <span class="s1">&#39;pip-log\.txt$&#39;</span>]
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">e</span>来切换树形菜单显示与否
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://code.google.com/p/xptemplate/">xptemplate</a> Snippet Template engine</h2>
+
+<p>支持嵌套，支持同文件多模板识别</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>C<span class="p">-</span>\<span class="p">&gt;</span>显示模板，<span class="p">&lt;</span>Tab<span class="p">&gt;&lt;</span>S<span class="p">-</span>Tab<span class="p">&gt;</span>切换焦点
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自己更改模板：
+ftplugin下找到对应模板文件，添加新的模板</p>
+
+<p>去掉多余空格：
+.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> g:xptemplate_vars <span class="p">=</span> <span class="c">&quot;SParg=&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Ack 目录文件中查找字符</h2>
+
+<p>安装Ack:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install ack-grep
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装 <a href="https://github.com/mileszs/ack.vim">Ack</a>插件
+.vimrc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> g:ackprg<span class="p">=</span><span class="s2">&quot;ack-grep -H --nocolor --nogroup --column&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ack something可以在当前目录查找字符</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2981">zencoding</a>扩展html</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;,</span> 扩展
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">n</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">N</span> 到下/上一个输入点
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">d</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span> D选中
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span><span class="k">j</span> 简写标签，也可扩展
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span>i img上使用可以自动添加宽高
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">y</span><span class="p">&gt;</span>a 在连接上可以添加a标签
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1234">YankRing</a>增强型粘贴</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>YRShow显示剪贴板
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span>C<span class="p">-</span><span class="k">p</span><span class="p">&gt;</span> <span class="p">&lt;</span>C<span class="p">-</span><span class="k">n</span><span class="p">&gt;</span> 轮番切换剪贴板
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2996">translate</a></h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>Trans翻译光标所在文字
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=1697">surround</a>增删改标签</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">ds</span>“ 删除两端的”“
+</span><span class='line'>dst 删除两端的标签
+</span><span class='line'>cs”{ 将两端的“”改为{  } 有空格
+</span><span class='line'>cs”} 将两端的“”改为{} 无空格
+</span><span class='line'>yss<span class="p">)</span> 两端加上<span class="p">()</span>
+</span><span class='line'>ysiw） 将光标所在单词两端加上（）
+</span><span class='line'>配合repeat实现.重复操作
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="https://github.com/jpalardy/dotfiles/raw/master/vim/plugin/slime.vim">slime</a>测试代码段</h2>
+
+<p>终端中建立一个screen</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>screen -S devshell
+</span><span class='line'>python
+</span><span class='line'>
+</span><span class='line'>选中代码，&lt;C-c&gt;&lt;C-c&gt;可以在screen中查看运行情况。
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>screen的使用可以参看：
+http://hi.baidu.com/ubuntu2me/blog/item/ce61b23798a5a93b0b55a960.html
+http://wiki.ubuntu.org.cn/GNUScreen
+http://www.9usb.net/201002/linux-screen-mingling.html</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2914">pep8</a>代码静态检查</h2>
+
+<p>需要先安装工具 &#8220;pep8&#8221;:http://github.com/cburroughs/pep8.py
+F5 安装pep8规则检查代码</p>
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2527">jpythonfold</a>代码折叠</h2>
+
+<p>需要重命名为python.vim
+.vimrc中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>nnoremap <span class="p">&lt;</span>space<span class="p">&gt;</span> za
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>空格 折叠、打开代码段
+zr 打开所有折叠
+zm 所有折叠</p>
+
+<p>js代码折叠</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">let</span> javaScript_fold<span class="p">=</span><span class="m">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://ctags.sourceforge.net/">ctags</a>+ <a href="http://www.vim.org/scripts/script.php?script_id=273">taglist</a>展示代码结构</h2>
+
+<p>安装ctags，在要生成tags的目录下ctags -R
+安装taglist插件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">:</span>TlistToggle切换<span class="k">tags</span>显示与否
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2><a href="http://www.vim.org/scripts/script.php?script_id=2607">tasklist</a>显示todo列表</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="p">&lt;</span>leader<span class="p">&gt;</span><span class="k">t</span> 打开todo列表
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1606,201 +1896,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/10/12/hotkey-control-python-program/">使用热键控制python程序</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-10-12T00:00:00+08:00" pubdate data-updated="true">2010-10-12</time>
-        
-      </p>
-    
-
-<style type="text/css" media="screen">
-  .jiathis .flash-video{
-    border: 0;
-  }
-</style>
-    <div class="jiathis">
-<!-- JiaThis Button BEGIN -->
-<div id="ckepop">
-	<span class="jiathis_txt">分享到：</span>
-	<a class="jiathis_button_tools_1"></a>
-	<a class="jiathis_button_tools_2"></a>
-	<a class="jiathis_button_tools_3"></a>
-	<a class="jiathis_button_tools_4"></a>
-	<a href="http://www.jiathis.com/share?uid=1532263" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-</div>
-<script type="text/javascript">var jiathis_config = {data_track_clickback:true};</script>
-<script type="text/javascript" src="http://v2.jiathis.com/code/jia.js?uid=1532263" charset="utf-8"></script>
-<!-- JiaThis Button END -->
-    </div>
-  </header>
-
-
-  <div class="entry-content"><h2>需求</h2>
-
-<p>按一个热键，程序开始循环执行某项操作，按另一个热键，操作终止；可以如此反复。此需求广泛应用于自动脚本执行等工作。</p>
-
-<h2>技术点</h2>
-
-<ul>
-<li>全局热键的绑定</li>
-<li>热键的阻塞问题</li>
-</ul>
-
-
-<p>绑定多个全局热键时，如果一个热键执行的操作未停止，程序不会响应其他热键，因此我采用另外开启线程的方法解决。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#coding=utf-8</span>
-</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
-</span><span class='line'><span class="sd">Created on 2010-10-12</span>
-</span><span class='line'><span class="sd">@author: lxd</span>
-</span><span class='line'><span class="sd">&#39;&#39;&#39;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">wx</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">win32con</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">threading</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">WorkThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeToQuit</span><span class="o">.</span><span class="n">isSet</span><span class="p">():</span>
-</span><span class='line'>                <span class="k">print</span> <span class="s">&#39;work&#39;</span>
-</span><span class='line'>                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>            <span class="k">else</span><span class="p">:</span>
-</span><span class='line'>                <span class="k">break</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">FrameWithHotKey</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">regHotKey</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyStart</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyEnd</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_HOTKEY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnHotKeyQuit</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="bp">None</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">regHotKey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span> <span class="o">=</span> <span class="mi">100</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_start</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F1</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span> <span class="o">=</span> <span class="mi">101</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_end</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F2</span><span class="p">)</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span> <span class="o">=</span> <span class="mi">102</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RegisterHotKey</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotKeyId_quit</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">MOD_ALT</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">VK_F3</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="p">:</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="n">WorkThread</span><span class="p">()</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="p">:</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="bp">None</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">OnHotKeyQuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
-</span><span class='line'>        <span class="nb">exit</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">()</span>
-</span><span class='line'><span class="n">FrameWithHotKey</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
-</span><span class='line'><span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>程序运行后，按Alt+F1会重复打印‘work’，按Alt+F2停止打印，按Alt+F3结束程序。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/6/">&larr; Older</a>
@@ -1848,6 +1943,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/18/underscore-style/">Underscore源码研究之多种编程范式实现</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/31/my-2012/">我的2012</a>
       </li>
     
@@ -1881,10 +1980,6 @@
     
       <li class="post">
         <a href="/blog/2011/11/30/trick-on-jquery/">恶搞jquery</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/11/11/currentscale-bug-of-svg-in-chrome15/">chrome15中无法使用svg的currentScale方法</a>
       </li>
     
   </ul>
