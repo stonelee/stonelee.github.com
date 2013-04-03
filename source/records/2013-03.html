@@ -1,0 +1,3768 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="hamster-applet" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" rel="stylesheet" />
+
+
+    <title>Activity log for March 01 – 31, 2013</title>
+    <style type="text/css">
+        body {
+            font-family: "sans-serif";
+            font-size: 12px;
+            padding: 12px;
+            color: #303030;
+        }
+
+        h2 {
+            margin-top: 2em;
+            border-bottom: 2px solid #303030;
+        }
+        th, td {
+            text-align: left;
+            padding-right: 24px;
+        }
+
+        th {
+            padding-top: 12px;
+        }
+
+        .even {background-color: #eee;}
+        .odd {background-color: #fff;}
+
+        .by_day_controls {
+            margin-bottom: 24px;
+        }
+    </style>
+
+    <style type="text/css" media="print">
+        div#tabs ul {
+            display: none;
+        }
+
+        div#tabs {
+            border: none;
+        }
+
+        div.by_day_controls {
+            display: none;
+        }
+
+        p.template-instructions {
+            display: none;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#tabs").tabs()
+
+            $("#show_details").click(function() {
+                if ($(this).attr("checked")) {
+                    $(".by_date_row").show();
+                } else {
+                    $(".by_date_row").hide();
+                }
+
+            })
+
+            $("#show_totals").click(function() {
+                if ($(this).attr("checked")) {
+                    $(".by_date_total_row").show();
+                } else {
+                    $(".by_date_total_row").hide();
+                }
+
+
+            })
+        });
+    </script>
+</head>
+<body>
+
+<h1>Activity log for March 01 – 31, 2013</h1>
+
+<div id="tabs">
+	<ul>
+            <li><a href="#tabs-1">Totals</a></li>
+            <li><a href="#tabs-2">Activity Log</a></li>
+	</ul>
+	<div id="tabs-1">
+        <h2>Totals</h2>
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Activity</th>
+                <th>Duration</th>
+            </tr>
+            
+                <tr><td>gtd</td><td>record</td><td>2h 23min</td></tr>
+            
+
+                <tr><td>js</td><td>kjui</td><td>11h 30min</td></tr>
+            
+
+                <tr><td>js</td><td>node</td><td>9h</td></tr>
+            
+
+                <tr><td>project</td><td>game</td><td>3h</td></tr>
+            
+
+                <tr><td>project</td><td>hack</td><td>4h</td></tr>
+            
+
+                <tr><td>project</td><td>kjplat</td><td>6h 10min</td></tr>
+            
+
+                <tr><td>project</td><td>kjsvg</td><td>16h 40min</td></tr>
+            
+
+                <tr><td>study</td><td>android</td><td>2h</td></tr>
+            
+
+                <tr><td>study</td><td>book</td><td>30min</td></tr>
+            
+
+                <tr><td>study</td><td>css</td><td>12h 20min</td></tr>
+            
+
+                <tr><td>study</td><td>js</td><td>62h 14min</td></tr>
+            
+
+                <tr><td>study</td><td>linux</td><td>30min</td></tr>
+            
+
+                <tr><td>study</td><td>vim</td><td>1h 30min</td></tr>
+            
+
+                <tr><td>work</td><td>stuff</td><td>6h 54min</td></tr>
+            
+            
+                <tr><th colspan="2" style="text-align:right;">Total</th><th>138h 41min</th></tr>
+            
+        </table>
+
+        <h2>Totals by Day</h2>
+
+        <div class="by_day_controls">
+            Show:
+            <input type="checkbox" id="show_details" checked="checked"></input>
+            <label for="show_details">totals by activity</label>
+
+            <input type="checkbox" id="show_totals" checked="checked"></input>
+            <label for="show_totals">totals by category</label>
+        </div>
+
+        <table>
+            <tr>
+                <th>Date</th>
+                <th class="by_date_row">totals by activity</th>
+                <th class="by_date_total_row">totals by category</th>
+            </tr>
+
+            
+                <tr valign="top">
+                    <td>Mar 01, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>node (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>kjplat (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        50min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 20min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        50min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 20min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 02, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>node (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 03, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>linux (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 04, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>record (gtd)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 22min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>kjplat (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 35min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 19min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>gtd</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 22min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 35min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 19min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 05, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjplat (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 10min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 10min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 06, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjplat (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        45min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>book (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 35min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        45min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        6h 5min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 07, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjplat (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 50min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 50min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 08, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>css (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        4h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        6h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 09, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>css (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        4h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 10, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 11, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 12, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>stuff (work)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>work</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 13, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjsvg (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 14, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjsvg (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>css (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 15, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 16, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 17, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 18, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 50min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>stuff (work)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 10min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 50min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>work</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 10min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 19, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjsvg (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        40min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 10min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>vim (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>stuff (work)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        29min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        40min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        4h 40min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>work</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        29min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 20, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>node (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 40min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 40min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 21, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>node (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>stuff (work)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        40min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>work</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        40min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 22, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjui (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 24, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>game (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 25, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>record (gtd)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>kjui (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        4h 10min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>node (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 20min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>stuff (work)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>gtd</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>work</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 26, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>node (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>kjsvg (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 40min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>css (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h 40min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 27, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjsvg (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 20min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        5h 20min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 28, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>kjsvg (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>css (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>stuff (work)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        55min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>work</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        55min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 29, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>record (gtd)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        31min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>kjui (js)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 50min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>css (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 20min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>stuff (work)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 10min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>gtd</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        31min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 50min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h 20min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>work</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 10min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 30, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>hack (project)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        4h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>css (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>js (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        1h 30min
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>project</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        4h
+                                    </td>
+                                </tr>
+                            
+
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        3h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+
+                <tr valign="top">
+                    <td>Mar 31, 2013</td>
+                    <td class="by_date_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>android (study)</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                    <td class="by_date_total_row">
+                        <table width="100%">
+                            
+                                <tr>
+                                    <td>study</td>
+                                    <td style="text-align: right">
+                                        <!-- there is also duration_decimal and duration_minutes -->
+                                        2h
+                                    </td>
+                                </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            
+        </table>
+	</div>
+	<div id="tabs-2">
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Activity</th>
+                <th>Category</th>
+                <th>Tags</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration</th>
+                <th>Description</th>
+            </tr>
+            
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 01, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        10:40
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>jquery data,queue</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 01, 2013
+                    </td>
+                    <td>kjplat</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        11:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:50
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        50min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 01, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:10
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        14:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 20min
+                    </td>
+                    <td>jquery pull request</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 01, 2013
+                    </td>
+                    <td>node</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>express demo</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 02, 2013
+                    </td>
+                    <td>node</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        22:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        23:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h
+                    </td>
+                    <td>grunt doc</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 03, 2013
+                    </td>
+                    <td>linux</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        12:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 04, 2013
+                    </td>
+                    <td>record</td>
+                    <td>gtd</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        10:02
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 22min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 04, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        10:10
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 20min
+                    </td>
+                    <td>jquery grunt</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 04, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:59
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 59min
+                    </td>
+                    <td>jquery event</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 04, 2013
+                    </td>
+                    <td>kjplat</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:35
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 35min
+                    </td>
+                    <td>轨迹移动原理</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 05, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 40min
+                    </td>
+                    <td>jquery event</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 05, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 30min
+                    </td>
+                    <td>jquery event</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 05, 2013
+                    </td>
+                    <td>kjplat</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h
+                    </td>
+                    <td>animate</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 06, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        10:10
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>High Performance JS - string</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 06, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        10:15
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        45min
+                    </td>
+                    <td>jquery filter</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 06, 2013
+                    </td>
+                    <td>kjplat</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        11:05
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:50
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        45min
+                    </td>
+                    <td>animate</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 06, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:40
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 50min
+                    </td>
+                    <td>jquery css</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 06, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>baidu map api</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 06, 2013
+                    </td>
+                    <td>book</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        21:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        21:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td>编程珠矶</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 07, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 50min
+                    </td>
+                    <td>jquery effect</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 07, 2013
+                    </td>
+                    <td>kjplat</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 08, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 30min
+                    </td>
+                    <td>复习</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 08, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>复习</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 08, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        19:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        21:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 09, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 09, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        19:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 10, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        09:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 10, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        18:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 11, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        19:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        21:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>复习</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 12, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h
+                    </td>
+                    <td>讨论kjsvg实现</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 13, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 30min
+                    </td>
+                    <td>underscore</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 13, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>讨论集成问题</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 14, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 30min
+                    </td>
+                    <td>集成</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 14, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>underscore</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 14, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h
+                    </td>
+                    <td>aliceui</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 15, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        10:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>复习</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 15, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td>underscore</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 16, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        20:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        3h
+                    </td>
+                    <td>EaselJS</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 17, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        20:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        3h
+                    </td>
+                    <td>EaselJS</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 18, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        10:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 40min
+                    </td>
+                    <td>pk</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 18, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        10:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h
+                    </td>
+                    <td>underscore</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 18, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>underscore</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 18, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 18, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 20min
+                    </td>
+                    <td>seajs</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 19, 2013
+                    </td>
+                    <td>vim</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        10:10
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>UltiSnips</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 19, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        10:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:40
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 10min
+                    </td>
+                    <td>seajs</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 19, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>seajs</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 19, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:20
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:49
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        29min
+                    </td>
+                    <td>help to fix bug</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 19, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        40min
+                    </td>
+                    <td>frame</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 19, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td>underscore</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 20, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:40
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        3h
+                    </td>
+                    <td>realtime-game socket.io</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 20, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>realtime-game</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 20, 2013
+                    </td>
+                    <td>node</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 40min
+                    </td>
+                    <td>heroku</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 21, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        09:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        40min
+                    </td>
+                    <td>letter for tencent</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 21, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>backbone</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 21, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>backbone</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 21, 2013
+                    </td>
+                    <td>node</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>express</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 22, 2013
+                    </td>
+                    <td>kjui</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        10:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 50min
+                    </td>
+                    <td>研究arale，nico-arale，将组件进行拆分, 放到github上</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 22, 2013
+                    </td>
+                    <td>kjui</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        3h 40min
+                    </td>
+                    <td>研究arale，nico-arale，将组件进行拆分, 放到github上</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 24, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        11:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        12:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h
+                    </td>
+                    <td>EaselJS</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 24, 2013
+                    </td>
+                    <td>game</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        3h
+                    </td>
+                    <td>将魔兽模型导出为图片，并用imagemagick进行处理</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 25, 2013
+                    </td>
+                    <td>record</td>
+                    <td>gtd</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        09:10
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 25, 2013
+                    </td>
+                    <td>kjui</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:20
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 40min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 25, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        11:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 25, 2013
+                    </td>
+                    <td>kjui</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 30min
+                    </td>
+                    <td>static-demo</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 25, 2013
+                    </td>
+                    <td>node</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:20
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 20min
+                    </td>
+                    <td>deploy</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 26, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        09:10
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 26, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:20
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 10min
+                    </td>
+                    <td>kj83/monitor</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 26, 2013
+                    </td>
+                    <td>node</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>static-demo deploy</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 26, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:10
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>kj83/check</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 27, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 50min
+                    </td>
+                    <td>auto fit screen</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 27, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 28, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        09:35
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        55min
+                    </td>
+                    <td>与三维同事交流</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 28, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:50
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 28, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        14:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        50min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 28, 2013
+                    </td>
+                    <td>kjsvg</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 28, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        18:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h 10min
+                    </td>
+                    <td>css-demo</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 29, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        08:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        09:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        50min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 29, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        09:40
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        11:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 50min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 29, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        13:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        14:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        30min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 29, 2013
+                    </td>
+                    <td>record</td>
+                    <td>gtd</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        14:19
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        14:50
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        31min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 29, 2013
+                    </td>
+                    <td>kjui</td>
+                    <td>js</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        15:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        16:50
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 50min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 29, 2013
+                    </td>
+                    <td>stuff</td>
+                    <td>work</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        16:50
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        17:10
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        20min
+                    </td>
+                    <td></td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 30, 2013
+                    </td>
+                    <td>hack</td>
+                    <td>project</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        11:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        15:00
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        4h
+                    </td>
+                    <td>love</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 30, 2013
+                    </td>
+                    <td>css</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        17:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        18:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>fort awesome</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 30, 2013
+                    </td>
+                    <td>js</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        20:00
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        21:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        1h 30min
+                    </td>
+                    <td>backbone</td>
+                </tr>
+            
+
+                <tr>
+                    <td>
+                        <!-- there is also date_iso -->
+                        Mar 31, 2013
+                    </td>
+                    <td>android</td>
+                    <td>study</td>
+                    <td></td>
+                    <td>
+                        <!-- there is also start_iso -->
+                        17:30
+                    </td>
+                    <td>
+                        <!-- there is also end_iso -->
+                        19:30
+                    </td>
+                    <td>
+                        <!-- there is also duration_decimal and duration_minutes -->
+                        2h
+                    </td>
+                    <td>love打包</td>
+                </tr>
+            
+        </table>
+	</div>
+</div>
+<p class="template-instructions">
+    <a href="file:////usr/share/hamster-applet/report_template.html">Show template</a>.
+    You can override it by storing your version in /home/stonelee/.local/share/hamster-applet.
+</p>
+</body>
+</html>
