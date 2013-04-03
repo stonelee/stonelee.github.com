@@ -161,6 +161,55 @@
           </dd>
         </dl>
       </li>
+      <li>
+        <h3><a href="2013-03.html">3月</a></h3>
+        <hr />
+        <dl>
+          <dt>kjsvg</dt>
+          <dd>同时负责两个系统的svg接入工作，已经基本完成。</dd>
+          <dd>IE9不支持svg动画，自己实现风扇转动</dd>
+          <dd>实现动画队列</dd>
+          <dd>找到更简单的轨迹移动方法</dd>
+          <dd>实现宽度自适应</dd>
+        </dl>
+        <dl>
+          <dt>kjui</dt>
+          <dd>综合考虑维护扩展和实际使用的需要，对原来的extui框架架构进行了重新规划，更名为kjui</dd>
+          <dd>将css部分独立出来，方便针对不同项目更换不同的样式。</dd>
+          <dd>将每个组件作为一个仓库来维护，方便灵活调用，也有利于独立升级。</dd>
+          <dd>对组件文档模板进行更改，目标是在局域网或者外网环境下都可以正常访问。</dd>
+          <dd>最终结果是产生了好多库。简单罗列一下，有
+            综合示例:
+            <a href="https://github.com/stonelee/kjui-static-demo">kjui-static-demo</a>，
+            基本组件:
+            <a href="https://github.com/stonelee/kjui-accordion">kjui-accordion</a>，
+            <a href="https://github.com/stonelee/kjui-date-picker">kjui-date-picker</a>，
+            <a href="https://github.com/stonelee/kjui-dialog">kjui-dialog</a>，
+            <a href="https://github.com/stonelee/kjui-grid">kjui-grid</a>，
+            <a href="https://github.com/stonelee/kjui-tab">kjui-tab</a>，
+            <a href="https://github.com/stonelee/kjui-tree">kjui-tree</a>，
+            仿ExtJS样式:
+            <a href="https://github.com/stonelee/kjui-extui">kjui-extui</a>，
+            文档模板:
+            <a href="https://github.com/stonelee/nico-arale">nico-kjui</a>，
+            以及供外部调用访问的组件库:
+            <a href="https://github.com/stonelee/kjui">kjui</a>，
+          </dd>
+        </dl>
+        <dl>
+          <dt>其他</dt>
+          <dd>认识了几个牛人，看清了自己的不足，继续努力！</dd>
+          <dd>为jquery，underscore提交了pull request，包括：
+            <a href="https://github.com/jquery/jquery/commit/f2cb536127952a30a1b7edc34765e9e1313145e9">jquery 1</a>，
+            <a href="https://github.com/jquery/jquery/commit/92b23673e60569b74ac48304579866c839008e1a">jquery 2</a>，
+            <a href="https://github.com/documentcloud/underscore/pull/1027">underscore pull 1027</a>，
+          目前都已经被merge了，还被列入了jquery authors，开心！</dd>
+          <dd>给LP的小礼物: <a href="https://github.com/stonelee/love">love</a>, 并使用Phonegap打包成app</dd>
+          <dd>总结遇到的CSS问题:<a href="https://github.com/stonelee/css-demo">css-demo</a></dd>
+          <dd>使用socket.io做了一个简单的实时游戏: <a href="https://github.com/stonelee/realtime-game">realtime-game</a>，
+          并部署到<a href="http://www.heroku.com/">heroku</a>中</dd>
+        </dl>
+      </li>
     </ul>
   </div>
 </body>
